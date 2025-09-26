@@ -19,7 +19,7 @@ const PlayerProfile = () => {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const res = await fetch(`http://localhost:5000/api/players/${playerId}`);
+        const res = await fetch(`https://sparta-deployed.onrender.com/api/players/${playerId}`);
         const data = await res.json();
         setPlayer(data);
       } catch (err) {
@@ -35,7 +35,7 @@ const PlayerProfile = () => {
 
   const handleSave = async () => {
     try {
-      const res = await fetch(`http://localhost:5000/api/players/${playerId}/profile`, {
+      const res = await fetch(`https://sparta-deployed.onrender.com/api/players/${playerId}/profile`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(player),
@@ -159,7 +159,7 @@ const PlayerProfile = () => {
                                 <td className="requirement-name">{req.name}</td>
                                 <td className="file-link">
                                   <a
-                                    href={`http://localhost:5000${req.filePath}`}
+                                    href={`https://sparta-deployed.onrender.com${req.filePath}`}
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     className="document-link"

@@ -41,7 +41,7 @@ const CreateTeam = () => {
         formData.append("teamIcon", teamIcon); // ✅ add file
       }
 
-      const response = await fetch("http://localhost:5000/api/team", {
+      const response = await fetch("https://sparta-deployed.onrender.com/api/team", {
         method: "POST",
         body: formData, // ✅ send formData instead of JSON
       });
@@ -67,7 +67,7 @@ const CreateTeam = () => {
 
       try {
         const res = await fetch(
-          `http://localhost:5000/api/coordinators?institution=${institution}&event=${decodedEventName}`
+          `https://sparta-deployed.onrender.com/api/coordinators?institution=${institution}&event=${decodedEventName}`
         );
         const data = await res.json();
         setCoordinators(Array.isArray(data) ? data : []);

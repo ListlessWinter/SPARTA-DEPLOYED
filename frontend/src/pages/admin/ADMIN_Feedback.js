@@ -13,7 +13,7 @@ const Feedback = () => {
   useEffect(() => {
     const fetchFeedbacks = async () => {
       try {
-        const res = await fetch(`http://localhost:5000/api/feedback/${decodedEvent}`);
+        const res = await fetch(`https://sparta-deployed.onrender.com/api/feedback/${decodedEvent}`);
         const data = await res.json();
         setFeedbacks(data);
       } catch (err) {

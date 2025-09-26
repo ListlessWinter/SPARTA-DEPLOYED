@@ -29,7 +29,7 @@ const TeamPlayers = () => {
     const fetchPlayers = async () => {
       try {
         const res = await fetch(
-          `http://localhost:5000/api/players?institution=${encodeURIComponent(
+          `https://sparta-deployed.onrender.com/api/players?institution=${encodeURIComponent(
             userInstitution
           )}&eventName=${encodeURIComponent(
             decodedEvent
@@ -50,7 +50,7 @@ const TeamPlayers = () => {
     const fetchTeamDetails = async () => {
       try {
         const res = await fetch(
-          `http://localhost:5000/api/team?institution=${encodeURIComponent(
+          `https://sparta-deployed.onrender.com/api/team?institution=${encodeURIComponent(
             userInstitution
           )}&event=${encodeURIComponent(decodedEvent)}&teamName=${encodeURIComponent(decodedTeam)}`
         );

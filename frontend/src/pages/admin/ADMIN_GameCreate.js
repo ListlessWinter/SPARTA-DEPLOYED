@@ -29,7 +29,7 @@ const CreateGame = () => {
     if (!user?.institution) return;
 
     fetch(
-      `http://localhost:5000/api/teams?institution=${encodeURIComponent(
+      `https://sparta-deployed.onrender.com/api/teams?institution=${encodeURIComponent(
         user.institution
       )}&event=${encodeURIComponent(decodedEventName)}`
     )
@@ -86,7 +86,7 @@ const CreateGame = () => {
         formData.append("rules", rules);
       }
 
-      const response = await fetch("http://localhost:5000/api/games", {
+      const response = await fetch("https://sparta-deployed.onrender.com/api/games", {
         method: "POST",
         body: formData,
       });
@@ -112,7 +112,7 @@ const CreateGame = () => {
 
       try {
         const res = await fetch(
-          `http://localhost:5000/api/coordinators?institution=${institution}&event=${decodedEventName}`
+          `https://sparta-deployed.onrender.com/api/coordinators?institution=${institution}&event=${decodedEventName}`
         );
         const data = await res.json();
         setCoordinators(Array.isArray(data) ? data : []);

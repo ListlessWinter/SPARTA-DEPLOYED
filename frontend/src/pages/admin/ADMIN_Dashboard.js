@@ -20,7 +20,7 @@ const Dashboard = () => {
 
     const fetchGames = async () => {
       try {
-        const res = await axios.get(`http://localhost:5000/api/games?institution=${encodeURIComponent(userInstitution)}`);
+        const res = await axios.get(`https://sparta-deployed.onrender.com/api/games?institution=${encodeURIComponent(userInstitution)}`);
         const matches = [];
         const multiDay = [];
 

@@ -19,7 +19,7 @@ const SpecificEvent = () => {
     const fetchEventDetails = async () => {
       try {
         const response = await fetch(
-          `http://localhost:5000/api/event?eventName=${encodeURIComponent(decodedName)}`
+          `https://sparta-deployed.onrender.com/api/event?eventName=${encodeURIComponent(decodedName)}`
         );
         const data = await response.json();
         setEventDetails(data);
