@@ -1,0 +1,324 @@
+.player-profile-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  max-width: 1000px;
+  margin: 25px auto;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+  border-radius: 5px;
+}
+
+.profile-view {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+@media (min-width: 768px) {
+  .profile-view {
+    flex-direction: row;
+  }
+}
+
+/* Cards */
+.player-main-card,
+.other-info-card,
+.profile-form {
+  background: #fff;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.215);
+  flex: 1;
+}
+
+.player-main-card {
+    max-width: 15vw;
+    height: 55vh;
+}
+
+.other-info-card {
+    width: 50vw;
+    height: 55vh;
+}
+
+.other-info-card .profile-details {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 15px 20px;
+  align-items: start;
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+
+/* Make address wider */
+.other-info-card .profile-field.address-field {
+  grid-column: 1 / -1; /* spans across all columns */
+}
+
+.other-info-card .profile-field.address-field .profile-value-rect {
+  white-space: normal; /* allow wrapping */
+  word-wrap: break-word;
+}
+
+
+/* Profile picture */
+.profile-pic {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 15px;
+  margin: 10px auto;
+  width: 200px;
+  height: auto;
+  border: none;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  white-space: normal;
+}
+
+.profile-pic img {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 50%;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+  text-align: center;
+}
+
+
+.profile-pic p:first-of-type {
+  font-weight: bold;
+  font-size: 14px;
+  margin-top: 10px;
+}
+
+.profile-pic p:last-of-type {
+  font-size: 12px;
+  color: #666;
+  margin-top: 4px;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  white-space: normal;
+}
+
+/* Profile fields */
+.profile-details {
+  margin-top: 10px;
+}
+.profile-field {
+  margin-bottom: 12px;
+}
+.profile-label {
+  display: block;
+  font-size: 14px;
+  color: #666;
+}
+.profile-value-rect {
+  background: #f7f7f7;
+  border-radius: 6px;
+  padding: 6px 10px;
+  font-size: 15px;
+  margin-top: 4px;
+}
+
+/* Tabs */
+.profile-tabs {
+  display: flex;
+  border-bottom: 1px solid #ddd;
+  margin-bottom: 15px;
+}
+.profile-tabs button {
+  flex: 1;
+  padding: 10px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-weight: 700;
+}
+.profile-tabs button.active {
+  border-radius: 5px 5px 0 0;
+  color: white;
+  font-weight: 500px;
+  background-color: #ce892c;
+}
+
+.profile-tabs button:hover {
+ background-color: #1A2A49;
+ color: white;
+ border-radius: 5px 5px 0 0;
+}
+
+.tab-content p {
+  margin: 6px 0;
+}
+
+/* Form */
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+@media (min-width: 600px) {
+  .form-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+.form-actions {
+  margin-top: 20px;
+  display: flex;
+  gap: 10px;
+}
+
+/* Keep inputs styled like your rect values */
+.profile-input {
+  background: #f7f7f7;
+  border: 2px solid transparent;
+  border-radius: 6px;
+  padding: 6px 10px;
+  font-size: 15px;
+  margin-top: 4px;
+  width: 100%;
+  box-sizing: border-box;
+  font-family: inherit;
+}
+
+/* Highlight inputs when editing */
+.is-editing .profile-input {
+  border-color: rgb(17, 20, 189);
+  outline: none;
+}
+
+/* Make address span full width */
+.address-field .profile-input {
+  width: 100%;
+}
+
+/* Buttons */
+.profile-actions {
+  margin-top: 15px;
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+.btn {
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-family: Poppins, sans-serif;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.edit-btn {
+  background-color: #c4c4c4;
+  color: white;
+}
+
+.edit-btn:hover {
+  background-color: #c99326;
+}
+
+.save-btn {
+  background-color: #28a745;
+  color: white;
+}
+
+.save-btn:hover {
+  background-color: #218838;
+}
+
+.cancel-btn {
+  background-color: #dc3545;
+  color: white;
+}
+
+.cancel-btn:hover {
+  background-color: #b02a37;
+}
+
+.documents-section {
+  width: 100%;
+}
+
+.table-container {
+  max-height: 400px; /* Adjust based on your needs */
+  overflow-y: auto;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+}
+
+.documents-table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: white;
+  margin: 0;
+  font-size: 14px;
+}
+
+.documents-table th {
+  background-color: #f5f5f5;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  color: black;
+}
+
+.documents-table th,
+.documents-table td {
+  padding: 12px 16px;
+  text-align: left;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.requirement-column {
+  width: 60%;
+  font-weight: 600;
+}
+
+.file-column {
+  width: 40%;
+}
+
+.document-row:hover {
+  background-color: #f9f9f9;
+}
+
+.document-link {
+  color: #0066cc;
+  text-decoration: none;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+}
+
+.document-link:hover {
+  background-color: #e6f0ff;
+  text-decoration: underline;
+}
+
+.requirement-name {
+  font-weight: 500;
+}
+
+/* Scrollbar styling */
+.table-container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.table-container::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 0 8px 8px 0;
+}
+
+.table-container::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 4px;
+}
+
+.table-container::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}

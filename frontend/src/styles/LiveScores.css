@@ -1,0 +1,68 @@
+.live-scores-main-div {
+  width: 1200px;
+}
+
+.live-scores-header {
+  width: 1200px;
+  text-align: center;
+  font-family: Montserrat, sans-serif;
+}
+
+.live-scores-container {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.live-scores-content {
+  margin-left: 170px;
+  margin-top: 95px;
+  padding: 20px;
+  min-height: calc(100vh - 60px);
+  background-color: #f8f9fa;
+  box-sizing: border-box;
+}
+.teams-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.team-score {
+  cursor: pointer;
+  padding: 20px;
+  margin: 5px;
+  border-radius: 15px;
+  font-family: Poppins, sans-serif;
+  text-transform: capitalize;
+  width: 500px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-weight: bold;
+  font-size: 18px;
+  color: white;
+}
+
+.team-score .rank-team {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.no-matches-found {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-family: Montserrat, sans-serif;
+  text-align: center;
+  justify-content: center;
+  padding: 15px;
+  margin: 20px;
+  height: 50vh;
+  min-width: 80vw;
+  border: 2px solid #a8cdec;
+  border-radius: 15px;
+}

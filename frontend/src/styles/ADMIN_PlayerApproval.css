@@ -1,0 +1,76 @@
+.approval-table {
+    font-family: Monteserrat, sans-serif;
+    margin: 20px 0;
+    font-size: 14px;
+}
+
+.approval-header {
+  width: 100%;
+  padding: 18px 0;
+  border-radius: 15px;
+  background: white;
+  position: relative;
+  overflow: hidden;
+  font-family: Monteserrat, sans-serif;
+  font-size: 15px;
+  text-align: center;
+  margin: 10px;
+}
+
+th {
+    background-color: #CE892C;
+    padding: 20px;
+    color: snow;
+}
+
+.approval-table table {
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.approval-table tbody tr:nth-child(even) {
+    background: #F2F0FF;
+}
+
+.approve-btn {
+    background-color: #06923E;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 15px;
+    cursor: pointer;
+    margin: 0px 5px;
+}
+
+.decline-btn {
+    background-color: #FF0000;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 15px;
+    cursor: pointer;
+}
+
+.approve-btn:hover {
+    background-color: #386641;
+}
+
+.decline-btn:hover {
+    background-color: darkred;
+}
+
+.no-players-message {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-family: Montserrat, sans-serif;
+  text-align: center;
+  justify-content: center;
+  padding: 15px;
+  width: 62vw;
+  margin: 20px auto;
+  height: 50vh;
+  border: 2px solid #82859c;
+  border-radius: 15px;
+  background-color: #ffffff;
+}

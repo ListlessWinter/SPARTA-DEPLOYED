@@ -1,0 +1,256 @@
+/* Container */
+.bracket-container {
+  display: flex;
+  flex-direction: column;
+  gap: 60px;
+  overflow-x: auto;
+  padding: 20px;
+  color: rgb(255, 255, 255);
+  text-transform: uppercase;
+  border-radius: 12px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Override SeedItem default */
+.bracket-container .seed-item {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 10px !important;
+  margin: 10px 0 !important;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+/* Each team box */
+.bracket-container .seed-team {
+  background: #ffffff !important;
+  border: 2px solid #d1d5db !important;
+  border-radius: 8px !important;
+  padding: 10px 12px !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  text-align: center !important;
+  transition: all 0.2s ease-in-out !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08) !important;
+  color: #111827 !important; /* Tailwind "gray-900" */
+}
+
+.single-elim, .double-elim, .round-robin, .swiss {
+  position: relative;
+  border: 2px solid none;
+  border-radius: 12px;
+  padding: 20px;
+  z-index: 1;
+  color: #063173;
+  text-align: center;
+}
+
+.single-elim::before, .double-elim::before, .round-robin::before, .swiss::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 12px; /* rounded corners */
+  padding: 2px; /* border thickness */
+  background: linear-gradient(to right, #CE892C, #1e40af);
+  -webkit-mask: 
+    linear-gradient(#fff 0 0) content-box, 
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+          mask-composite: exclude;
+  z-index: -1;
+}
+
+/* Hover */
+.bracket-container .seed-team:hover {
+  border-color: #3b82f6 !important;
+  transform: translateY(-2px) !important;
+  background: #f9fafb !important;
+}
+
+/* Placeholder (TBD) */
+.bracket-container .seed-team:contains("TBD") {
+  background: #fef2f2 !important;
+  color: #b91c1c !important;
+  font-style: italic !important;
+  border-color: #fca5a5 !important;
+}
+
+/* ✅ Winner highlight */
+.bracket-container .seed-team.winner {
+  background-color: #ffffff !important; /* Green */
+  color: #000000 !important;
+  border-color: #388e3c !important;
+  font-weight: 700 !important;
+}
+
+/* ❌ Loser highlight */
+.bracket-container .seed-team.loser {
+  background-color: #ffffff !important; /* Red-400 */
+  color: #000000 !important;
+  border-color: #b91c1c !important;
+  font-weight: 700 !important;
+}
+
+.round-robin {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+
+.round-robin .rr-round {
+  display: flex;
+  flex-direction: column; /* keep title above, matches below */
+  align-items: center;
+  gap: 10px;
+}
+
+.round-robin .rr-matches {
+  display: flex;
+  flex-direction: row;   /* horizontal layout */
+  gap: 20px;
+  justify-content: center;
+  flex-wrap: wrap;       /* wrap if too many matches */
+}
+
+.round-robin .seed-item {
+  max-width: 220px;
+  min-width: 180px;
+}
+
+.modal-overlay {
+  position: fixed;
+  inset: 0; /* shorthand for top:0; right:0; bottom:0; left:0 */
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000; /* make sure it's above everything */
+}
+
+.modal {
+  background: #fff;
+  padding: 24px 32px;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+  max-width: 420px;
+  width: 90%;
+  text-align: center;
+  animation: popup 0.25s ease-out;
+  position: relative;
+  z-index: 2100; /* ensure it's above overlay */
+}
+
+.modal h3 {
+  margin-bottom: 16px;
+}
+
+.modal.rules-modal {
+  background: #fff;
+  padding: 20px;
+  width: 80%;
+  max-width: 900px;
+  border-radius: 10px;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+}
+
+.rules-section {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.rules-section > button {
+  background-color: #1A2A49;
+  color: white;
+  padding: 6px 12px;
+  font-size: 13px;
+  border: none;
+  border-radius: 20px;
+  max-width: fit-content;
+  cursor: pointer;
+}
+
+.rules-section > button:hover {
+  background-color: #CE892C;
+  color: white;
+}
+
+.score-input {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 12px 0;
+}
+
+.score-input label {
+  flex: 1;
+  text-align: left;
+  margin-right: 10px;
+}
+
+.score-input input {
+  width: 80px;
+  padding: 6px;
+  font-size: 14px;
+  text-align: center;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+  gap: 12px;
+}
+
+.modal-actions button {
+  flex: 1;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.modal-actions button:first-child {
+  background: #4caf50;
+  color: white;
+}
+
+.modal-actions button:last-child {
+  background: #f44336;
+  color: white;
+}
+
+@keyframes popup {
+  from { transform: scale(0.8); opacity: 0; }
+  to   { transform: scale(1); opacity: 1; }
+}
+
+.game-bracket-info {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #111827;
+  margin: 10px;
+  text-align: center;
+  border: 2px solid #1A2A49;
+  border-radius: 15px;
+  padding: 10px 20px;
+}
+
+.game-bracket-info p {
+  display: inline-block;
+  margin-left: 15px;
+}
+
+.game-bracket-info h1 {
+  text-transform: uppercase;
+  text-decoration: underline;
+}
+
+
+
+
+
+

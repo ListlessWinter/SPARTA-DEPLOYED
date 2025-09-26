@@ -1,0 +1,265 @@
+/* Container */
+.login-container {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem;
+    position: relative;
+    overflow: hidden;
+    border-radius: 25px;
+    outline-offset: -2px;
+  }
+
+  /* Box */
+  .login-box {
+    background-color: white;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    outline: 2px #CE892C solid;
+    border-radius: 1rem;
+    width: 100%;
+    max-width: 700px;
+    padding: 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    font-family: Poppins, sans-serif;
+  }
+
+  .login-left {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 50%;
+    padding: 20px;
+  }
+
+  .login-right {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 50%;
+  }
+
+  .login-image {
+    width: 60%;
+    max-width: 400px;
+    height: auto;
+    object-fit: contain;
+  }
+
+  /* Role toggle buttons */
+  .role-buttons {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 250px;
+    height: 45px;
+    background: #CE892C;
+    border-radius: 33px;
+    margin-bottom: 1rem;
+    margin: 0 auto 1rem auto;
+    text-align: center;
+    position: relative;
+  }
+
+  /* Arrow styling */
+  .role-button .arrow {
+    margin-left: 8px;
+    font-size: 0.8rem;
+    transition: transform 0.3s ease;
+    display: inline-block;
+  }
+
+  .role-button .arrow.open {
+    transform: rotate(180deg);
+  }
+
+  .admin-role-options {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    margin-top: 0.4rem;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+    min-width: 180px;
+    z-index: 10;
+  }
+
+  .admin-role-options button {
+    padding: 0.6rem 1rem;
+    border: none;
+    background: transparent;
+    text-align: left;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: background 0.2s ease;
+  }
+
+  .admin-role-options button:hover {
+    background: #CE892C;
+  }
+
+  .role-button {
+    padding: 0.5rem 1rem;
+    margin: 0 25px 0 25px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+
+  .role-button.admin {
+    border-radius: 9999px 0 0 9999px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+  }
+
+  .role-button.player {
+    border-radius: 0 9999px 9999px 0;
+  }
+
+  .role-button.active {
+    background-color: #063D73;
+    border-radius: 25px;
+    color: white;
+  }
+
+  .admin-role-options.open {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.admin-role-options.closed {
+  opacity: 0;
+  transform: translateY(-10px);
+  pointer-events: none;
+}
+
+  /* Form inputs */
+  .login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 16px;
+    row-gap: 15px;
+
+  }
+
+  .login-form .label-login {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #374151;
+  }
+
+  .login-form input {
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #d1d5db;
+    border-radius: 0.375rem;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  }
+
+  .login-form input:focus {
+    outline: none;
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.3);
+  }
+
+.login-form input[type="email"],
+.login-form input[type="password"] {
+  width: 250px;
+  max-width: 100%;
+}
+
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+.label-login {
+    position: absolute;
+    left: 8px;
+    top: 8px;
+    padding: 0px 5px;
+    font-size: 12px;
+    background: white;
+    transition: transform 0.3s ease, color 0.3s ease;
+    pointer-events: none;
+  }
+
+  input:focus + .label-login,
+  input:not(:placeholder-shown) + .label-login {
+    transform: translateY(-18px);
+    font-size: 10px;
+    color: #2563eb;
+    font-size: 11px;
+    background: white;
+  }
+
+  input:focus {
+    border-color: #0051ff;
+  }
+
+  /* Submit button */
+  .login-button {
+    background-color: #2563eb;
+    background-color: #1e40af;
+    color: white;
+    max-width: fit-content;
+    font-weight: bold;
+    margin: 0 auto;
+    padding: 0.5rem;
+    border-radius: 0.375rem;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+
+
+  .login-button:hover {
+    background-color: #1e40af;
+    background-color: #CE892C;
+  }
+
+
+  .modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+.modal {
+  /* background: #fff; */
+  border-radius: 12px;
+  padding: 2rem;
+  width: 90%;
+  max-width: 420px;
+  text-align: center;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+  font-family: 'Poppins', sans-serif;
+}
+
+.modal button {
+  margin-top: 1rem;
+  padding: 0.6rem 1rem;
+  border: none;
+  border-radius: 8px;
+  background: #CE892C;
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.modal button:hover { background: #1e40af; }

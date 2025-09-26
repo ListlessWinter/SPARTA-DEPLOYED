@@ -1,0 +1,120 @@
+.sidemenu {
+  width: 200px;
+  height: 100vh;
+  background-color: #1A2A49;
+  position: fixed;
+  left: 0;
+  top: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.sidemenu-logo {
+  text-align: left;
+  padding-top: 10px;
+  padding-left: 10px;;
+}
+
+.logo-img {
+  width: 100px;
+  height: auto;
+}
+
+.sidemenu-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 0 20px; 
+  flex-grow: 1;
+  border-top: 2px solid white;
+}
+
+.sidemenu-list li {
+  margin: 15px 0px;
+}
+
+.sidemenu-list a {
+  color: white;
+  display: inline-flex;
+  align-items: center;
+  padding: 5px 15px;
+  font-size: 17px;
+  gap: 5px;
+  font-family: Poppins, sans-serif;
+  text-decoration: none;
+  transition: 0.3s;
+  border-radius: 15px;
+}
+
+.sidemenu-list a:hover {
+  background-color: #CE892C;
+  color: white;
+}
+
+.sidemenu-list .active {
+  background: #CE892C;
+  border-radius: 15px;
+  width: fit-content;
+}
+
+.bottom-info {
+  border-top: 1px solid white;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+
+}
+
+.bottom-info h2 {
+  font-family:Arial, Helvetica, sans-serif;
+  font-size: 20px;
+  text-align: center;
+  color: white;
+  border: 2px solid white;
+  padding: 5px 20px;
+  border-radius: 5px;
+  background-color: #063d73;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  flex-direction: column;
+  gap: 10px;
+  font-size: 12px;
+  font-family: Monteserrat, Sans-Serif;
+  color: white;
+
+}
+
+.user-name {
+  font-size: 14px;
+  font-family: Poppins, sans-serif;
+  white-space: nowrap;
+}
+
+/* Actual button */ 
+.s-logout-button {
+  margin-top: 20px;
+  border: none; 
+  padding: 5px 10px; 
+  border-radius: 5px; 
+  background-color: #dc3545; /* red tone for danger/logout */ 
+  color: #fff; 
+  font-size: 15px; 
+  cursor: pointer; 
+  transition: background 
+  0.2s ease, transform 0.1s ease; }
+  
+  /* Hover effect */ 
+  .s-logout-button button:hover {
+    background-color: #CE892C;
+  } 
+  
+  /* Pressed state */ 
+  .s-logout-button button:active {
+    transform: scale(0.97);
+  }
