@@ -55,7 +55,7 @@ const PlayerGame = () => {
     const fetchGames = async () => {
       try {
         const response = await fetch(
-          `http://localhost:5000/api/games?institution=${encodeURIComponent(
+          `https://sparta-deployed.onrender.com/api/games?institution=${encodeURIComponent(
             userInstitution
           )}&event=${encodeURIComponent(decodedName)}`
         );
@@ -82,7 +82,7 @@ const PlayerGame = () => {
     const fetchTeams = async () => {
       try {
         const res = await fetch(
-          `http://localhost:5000/api/teams?institution=${encodeURIComponent(
+          `https://sparta-deployed.onrender.com/api/teams?institution=${encodeURIComponent(
             userInstitution
           )}&event=${encodeURIComponent(decodedName)}`
         );
@@ -99,7 +99,7 @@ const PlayerGame = () => {
     const fetchEventRequirements = async () => {
       try {
         const res = await fetch(
-          `http://localhost:5000/api/event?eventName=${encodeURIComponent(decodedName)}&institution=${encodeURIComponent(userInstitution)}`
+          `https://sparta-deployed.onrender.com/api/event?eventName=${encodeURIComponent(decodedName)}&institution=${encodeURIComponent(userInstitution)}`
         );
         const data = await res.json();
         setEventRequirements(data.requirements || []); // Ensure it's always an array
@@ -132,7 +132,7 @@ const PlayerGame = () => {
 
     try {
       const res = await fetch(
-        `http://localhost:5000/api/players/${user._id}/register-game`,
+        `https://sparta-deployed.onrender.com/api/players/${user._id}/register-game`,
         {
           method: "PUT",
           body: formData,

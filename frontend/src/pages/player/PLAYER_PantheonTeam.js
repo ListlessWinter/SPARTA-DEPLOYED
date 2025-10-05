@@ -22,7 +22,7 @@ const PlayerPantheonTeam = () => {
         const fetchPlayers = async () => {
             try {
                 const res = await fetch(
-                    `http://localhost:5000/api/players?institution=${encodeURIComponent(userInstitution)}&eventName=${encodeURIComponent(decodedEvent)}&team=${encodeURIComponent(decodedTeam)}`);
+                    `https://sparta-deployed.onrender.com/api/players?institution=${encodeURIComponent(userInstitution)}&eventName=${encodeURIComponent(decodedEvent)}&team=${encodeURIComponent(decodedTeam)}`);
 
                 const data = await res.json();
                 setPlayers(data);
@@ -39,7 +39,7 @@ const PlayerPantheonTeam = () => {
         const fetchTeamDetails = async () => {
             try {
                 const res = await fetch(
-                    `http://localhost:5000/api/team?institution=${encodeURIComponent(userInstitution)}&event=${encodeURIComponent(decodedEvent)}&teamName=${encodeURIComponent(decodedTeam)}`);
+                    `https://sparta-deployed.onrender.com/api/team?institution=${encodeURIComponent(userInstitution)}&event=${encodeURIComponent(decodedEvent)}&teamName=${encodeURIComponent(decodedTeam)}`);
 
                 const data = await res.json();
                 setTeamColor(data.teamColor || "#808080");
@@ -56,7 +56,7 @@ const PlayerPantheonTeam = () => {
         const fetchTeamRankings = async () => {
           try {
             const res = await fetch(
-              `http://localhost:5000/api/teams/scores?institution=${encodeURIComponent(
+              `https://sparta-deployed.onrender.com/api/teams/scores?institution=${encodeURIComponent(
                 userInstitution
               )}&event=${encodeURIComponent(decodedEvent)}`
             );

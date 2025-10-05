@@ -12,7 +12,7 @@ const AllEvent = () => {
 
   useEffect(() => {
     const fetchEvents = async () => {
-      const response = await fetch(`http://localhost:5000/api/events?institution=${userInstitution}`);
+      const response = await fetch(`https://sparta-deployed.onrender.com/api/events?institution=${userInstitution}`);
       const data = await response.json();
       setEvents(data);
     };

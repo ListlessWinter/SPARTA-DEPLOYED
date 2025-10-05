@@ -10,7 +10,7 @@ export default function LandingPage() {
     useEffect(() => {
         const fetchInstitutions = async () => {
             try {
-                const res = await fetch(`http://localhost:5000/api/institutions`);
+                const res = await fetch(`https://sparta-deployed.onrender.com/api/institutions`);
                 const data = await res.json();
                 setInstitutions(data);
             } catch (err) {

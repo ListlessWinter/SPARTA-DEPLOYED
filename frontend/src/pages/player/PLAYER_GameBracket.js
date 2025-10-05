@@ -17,7 +17,7 @@ const PlayerGameBracket = () => {
   useEffect(() => {
     const fetchGame = async () => {
       try {
-        const res = await fetch(`http://localhost:5000/api/games/${gameId}`);
+        const res = await fetch(`https://sparta-deployed.onrender.com/api/games/${gameId}`);
         const data = await res.json();
         setGame(data);
       } catch (err) {

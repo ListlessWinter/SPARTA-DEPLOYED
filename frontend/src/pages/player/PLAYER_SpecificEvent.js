@@ -22,7 +22,7 @@ const PlayerSpecificEvent = () => {
     const fetchEventDetails = async () => {
       try {
         const response = await fetch(
-          `http://localhost:5000/api/specific-event?eventName=${encodeURIComponent(decodedName)}`
+          `https://sparta-deployed.onrender.com/api/specific-event?eventName=${encodeURIComponent(decodedName)}`
         );
         const data = await response.json();
         setEventDetails(data);
@@ -38,7 +38,7 @@ const PlayerSpecificEvent = () => {
     const fetchPlayer = async () => {
       try {
         if (!user?._id) return;
-        const response = await fetch(`http://localhost:5000/api/players/${user._id}`);
+        const response = await fetch(`https://sparta-deployed.onrender.com/api/players/${user._id}`);
         const data = await response.json();
         setPlayer(data);
       } catch (error) {

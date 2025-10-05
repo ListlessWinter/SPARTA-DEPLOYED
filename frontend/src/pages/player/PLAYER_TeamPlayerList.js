@@ -22,7 +22,7 @@ useEffect(() => {
   const fetchPlayers = async () => {
     try {
       const res = await fetch(
-        `http://localhost:5000/api/players?institution=${encodeURIComponent(
+        `https://sparta-deployed.onrender.com/api/players?institution=${encodeURIComponent(
           userInstitution
         )}&eventName=${encodeURIComponent(
           decodedEvent
@@ -45,7 +45,7 @@ useEffect(() => {
     const fetchTeamDetails = async () => {
       try {
         const res = await fetch(
-          `http://localhost:5000/api/team?institution=${encodeURIComponent(
+          `https://sparta-deployed.onrender.com/api/team?institution=${encodeURIComponent(
             userInstitution
           )}&event=${encodeURIComponent(decodedEvent)}&teamName=${encodeURIComponent(decodedTeam)}`
         );
@@ -63,7 +63,7 @@ useEffect(() => {
     const fetchTeamRankings = async () => {
       try {
         const res = await fetch(
-          `http://localhost:5000/api/teams/scores?institution=${encodeURIComponent(
+          `https://sparta-deployed.onrender.com/api/teams/scores?institution=${encodeURIComponent(
             userInstitution
           )}&event=${encodeURIComponent(decodedEvent)}`
         );

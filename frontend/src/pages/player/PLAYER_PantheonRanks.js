@@ -21,7 +21,7 @@ const PlayerPantheonRanks = () => {
     const fetchTeams = async () => {
       try {
         const response = await fetch(
-          `http://localhost:5000/api/teams/scores?institution=${encodeURIComponent(
+          `https://sparta-deployed.onrender.com/api/teams/scores?institution=${encodeURIComponent(
             userInstitution
           )}&event=${encodeURIComponent(decodedEvent)}`
         );
@@ -43,7 +43,7 @@ const PlayerPantheonRanks = () => {
     const fetchTeamDetails = async () => {
       try {
         const res = await fetch(
-          `http://localhost:5000/api/team?institution=${encodeURIComponent(
+          `https://sparta-deployed.onrender.com/api/team?institution=${encodeURIComponent(
             userInstitution
           )}&event=${encodeURIComponent(
             decodedEvent

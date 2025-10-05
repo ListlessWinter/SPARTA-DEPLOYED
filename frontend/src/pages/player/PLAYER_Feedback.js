@@ -15,7 +15,7 @@ const PlayerFeedback = () => {
   useEffect(() => {
     const fetchFeedbacks = async () => {
       try {
-        const res = await fetch(`http://localhost:5000/api/feedback/${decodedEvent}`);
+        const res = await fetch(`https://sparta-deployed.onrender.com/api/feedback/${decodedEvent}`);
         const data = await res.json();
         setFeedbacks(data);
       } catch (err) {
@@ -27,7 +27,7 @@ const PlayerFeedback = () => {
 
   const handlePost = async () => {
     try {
-      const res = await fetch("http://localhost:5000/api/feedback", {
+      const res = await fetch("https://sparta-deployed.onrender.com/api/feedback", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
