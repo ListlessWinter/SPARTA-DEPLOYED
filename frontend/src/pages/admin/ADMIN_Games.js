@@ -5,6 +5,7 @@ import { GiBasketballBall, GiSoccerBall, GiTennisRacket, GiChessKnight, GiTennis
 import { MdSportsVolleyball, MdSportsKabaddi } from "react-icons/md";
 import { BiSolidBaseball, BiBaseball } from "react-icons/bi";
 import { FaCircleQuestion } from "react-icons/fa6";
+import { IoMdClose } from "react-icons/io";
 import '../../styles/ADMIN_Games.css';
 
 const Game = () => {
@@ -41,7 +42,7 @@ const Game = () => {
     const fetchGames = async () => {
       try {
         const response = await fetch(
-          `https://sparta-deployed.onrender.com/api/games?institution=${encodeURIComponent(userInstitution)}&event=${encodeURIComponent(decodedName)}`
+          `http://localhost:5000/api/games?institution=${encodeURIComponent(userInstitution)}&event=${encodeURIComponent(decodedName)}`
         );
         const data = await response.json();
 
@@ -68,8 +69,38 @@ const Game = () => {
     navigate(`/admin/event/${encodeURIComponent(decodedName)}/addgame`);
   };
 
+  const handleDeleteGame = async (gameId) => {
+    if (!window.confirm("Are you sure you want to delete this game?")) return;
+    try {
+      const res = await fetch(`http://localhost:5000/api/games/${gameId}`, {
+        method: "DELETE",
+      });
+  
+      if (res.ok) {
+        alert("Game deleted successfully");
+        // Refresh games
+        const updatedGames = { ...gamesByType };
+        for (const key in updatedGames) {
+          updatedGames[key] = updatedGames[key].filter(game => game._id !== gameId);
+          if (updatedGames[key].length === 0) {
+            delete updatedGames[key];
+          }
+        }
+        setGamesByType(updatedGames);
+      } else {
+
+        // alert("Failed to delete game");
+      }
+    } catch (error) {
+      console.error("Error deleting game:", error);
+    }
+  };
+  
+
   return (
     <MainLayout>
+    <>
+
       <div className="game-header">
         <h2>All Games for {eventName}</h2>
       </div>
@@ -91,8 +122,8 @@ const Game = () => {
 
         {filteredGames.length === 0 ? (
           <div className="no-games-found">
-            <FaCircleQuestion size={48} />
-            <p style={{ textAlign: "center", width: "100%" }}>No games found.</p>
+            <FaCircleQuestion size={40} />
+            <p style={{ textAlign: "center", width: "100%" }}>No games found.<br />Please click the " + Add Game " button to create a new game.</p>
           </div>
         ) : (
           filteredGames.map(([combinedType, games]) => {
@@ -100,13 +131,24 @@ const Game = () => {
             const icon = gameIcons[gameType] || gameIcons.Default;
           
             return (
-            
-              <div className="game-button-container">
+            <div style={{margin: "1rem"}}>
+              <div style={{width: "100%", display: "flex", justifyContent: "flex-end"}}>
+                  {(user.role === "admin" || user.role === "co-organizer") && (
+                  <button className="delete-game-btn" onClick={() => handleDeleteGame(games[0]._id)}>
+                    <IoMdClose />
+                  </button>
+                  )}
+              </div>
 
+              <div className="game-button-container" key={combinedType}>
+              
                 <button
                   className="game-button"
-                  key={combinedType}
-                  onClick={() => navigate(`/admin/event/${encodeURIComponent(decodedName)}/game/${games[0]._id}`)}
+                  onClick={() =>
+                    navigate(
+                      `/admin/event/${encodeURIComponent(decodedName)}/game/${games[0]._id}`
+                    )
+                  }
                   style={{ display: "flex", alignItems: "center", gap: "8px" }}
                 >
                   {icon && React.createElement(icon, { size: 50 })}
@@ -114,10 +156,12 @@ const Game = () => {
                 </button>
 
               </div>
+            </div>
             );
           })
         )}
       </div>
+    </>
     </MainLayout>
   );
 };

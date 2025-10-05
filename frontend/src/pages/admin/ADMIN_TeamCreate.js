@@ -16,6 +16,9 @@ const CreateTeam = () => {
   const [search, setSearch] = useState("");
   const [showDropdown, setShowDropdown] = useState(false);
 
+  const [modalMessage, setModalMessage] = useState("");
+  const [showModal, setShowModal] = useState(false);
+
   const decodedEventName = decodeURIComponent(eventName);
 
   const handleCreate = async (e) => {
@@ -41,7 +44,7 @@ const CreateTeam = () => {
         formData.append("teamIcon", teamIcon); // ✅ add file
       }
 
-      const response = await fetch("https://sparta-deployed.onrender.com/api/team", {
+      const response = await fetch("http://localhost:5000/api/team", {
         method: "POST",
         body: formData, // ✅ send formData instead of JSON
       });
@@ -50,13 +53,19 @@ const CreateTeam = () => {
 
       if (response.ok) {
         alert("Team created!");
-        navigate(-1);
+        setModalMessage("Team created successfully!");
+        setShowModal(true);
+        setTimeout(() => {
+          setShowModal(false);
+          navigate(-1);
+        }, 4000); // Auto-close after 4s
       } else {
         alert(`${data.message}`);
       }
     } catch (error) {
       console.error("Error creating team:", error);
-      alert("Failed to create team.");
+      setModalMessage("Failed to create team.");
+      setShowModal(true);
     }
   };
 
@@ -67,7 +76,7 @@ const CreateTeam = () => {
 
       try {
         const res = await fetch(
-          `https://sparta-deployed.onrender.com/api/coordinators?institution=${institution}&event=${decodedEventName}`
+          `http://localhost:5000/api/coordinators?institution=${institution}&event=${decodedEventName}`
         );
         const data = await res.json();
         setCoordinators(Array.isArray(data) ? data : []);
@@ -96,22 +105,23 @@ const CreateTeam = () => {
       !selectedCoordinators.some((sel) => sel._id === c._id)
   );
 
-  const handleCancel = () => navigate (-1);
+  const handleCancel = () => navigate(-1);
 
   return (
     <MainLayout>
-      <div className="team-create-maindiv">
-        <div className="team-form-header">
-          <h2>Team Creation Form</h2>
-        </div>
+      <>
+        <div className="team-create-maindiv">
+          <div className="team-form-header">
+            <h2>Team Creation Form</h2>
+          </div>
 
-        <div className="team-form-container">
+          <div className="team-form-container">
 
-          <form className="team-form" onSubmit={handleCreate}>
+            <form className="team-form" onSubmit={handleCreate}>
 
-          <div style={{display:"flex", flexDirection:"row", gap:"50px"}}>
-              <div style={{display:"flex", flexDirection:"column", width:"250px", margin:"5px", padding:"5px"}}>
-                <div className="input-group">
+              <div style={{ display: "flex", flexDirection: "row", gap: "50px" }}>
+                <div style={{ display: "flex", flexDirection: "column", width: "250px", margin: "5px", padding: "5px" }}>
+                  <div className="input-group">
                     <input
                       type="text"
                       value={teamName}
@@ -119,10 +129,10 @@ const CreateTeam = () => {
                       required
                       placeholder=" "
                     />
-                  <label>Team Name</label>
-                </div>
+                    <label>Team Name</label>
+                  </div>
 
-                <div className="input-group">
+                  <div className="input-group">
                     <input
                       type="text"
                       value={teamManager}
@@ -130,10 +140,10 @@ const CreateTeam = () => {
                       required
                       placeholder=" "
                     />
-                  <label>Team Manager</label>
-                </div>
+                    <label>Team Manager</label>
+                  </div>
 
-                <div className="input-group">
+                  <div className="input-group">
                     <input
                       type="email"
                       value={managerEmail}
@@ -141,94 +151,105 @@ const CreateTeam = () => {
                       required
                       placeholder=" "
                     />
-                  <label>Manager Email</label>
+                    <label>Manager Email</label>
+                  </div>
                 </div>
-              </div>
 
-              <div style={{display:"flex", flexDirection:"column", width:"250px", margin:"5px", padding:"5px"}}>
-                <div>
-                  <label className="color-picker">
-                    Team Color:
-                    <input
-                      type="color"
-                      value={teamColor}
-                      onChange={(e) => setTeamColor(e.target.value)}
-                      required
-                    />
-                  </label>
-                </div>
+                <div style={{ display: "flex", flexDirection: "column", width: "250px", margin: "5px", padding: "5px" }}>
+                  <div>
+                    <label className="color-picker">
+                      Team Color:
+                      <input
+                        type="color"
+                        value={teamColor}
+                        onChange={(e) => setTeamColor(e.target.value)}
+                        required
+                      />
+                    </label>
+                  </div>
                   <h6> or you may upload the team logo</h6>
-                <div className="file-upload">
+                  <div className="file-upload">
 
-                  <span className="file-name">
-                     {teamIcon ? teamIcon.name : "No File Chosen"}
-                  </span>
-
-                  <label className="upload-btn">Choose File</label>
+                    <span className="file-name">
+                      {teamIcon ? teamIcon.name : "No File Chosen"}
+                    </span>
+                    <label htmlFor="teamIconInput" className="upload-btn">Choose File</label>
                     <input
-                      style={{width:"250px"}}
+                      id="teamIconInput"
+                      style={{ width: "250px", display: "none" }}  // hide input if you want button-style UI
                       type="file"
                       accept="image/*"
                       onChange={(e) => setTeamIcon(e.target.files[0])}
                     />
-                  
+
+
+                  </div>
                 </div>
               </div>
-            </div>
-            {/* Coordinators */}
-            <div style={{width:"90%", margin:"10px auto", paddingTop:"20px", borderTop:"1px solid #ccc"}}>
-              <label>Assign Sub-Organizer/s</label>
-              <div className="multi-select">
-                <input
-                  style={{width:"250px"}}
-                  type="text"
-                  placeholder="Enter Name or Select"
-                  value={search}
-                  onFocus={() => setShowDropdown(true)}   // show on click/focus
-                  onBlur={() => setTimeout(() => setShowDropdown(false), 150)}
-                  onChange={(e) => setSearch(e.target.value)}
-                />
+              {/* Coordinators */}
+              <div style={{ width: "90%", margin: "10px auto", paddingTop: "20px", borderTop: "1px solid #ccc" }}>
+                <label>Assign Sub-Organizer/s</label>
+                <div className="multi-select">
+                  <input
+                    style={{ width: "250px" }}
+                    type="text"
+                    placeholder="Enter Name or Select"
+                    value={search}
+                    onFocus={() => setShowDropdown(true)}   // show on click/focus
+                    onBlur={() => setTimeout(() => setShowDropdown(false), 150)}
+                    onChange={(e) => setSearch(e.target.value)}
+                  />
 
-                {showDropdown &&
-                  (filteredCoordinators.length > 0 || (!search && coordinators.length > 0)) && (
-                    <ul className="dropdown">
-                      {(search ? filteredCoordinators : coordinators.filter(
-                        (c) => !selectedCoordinators.some((sel) => sel._id === c._id)
-                      )).map((c) => (
-                        <li
-                          key={c._id}
-                          onClick={() => handleSelectCoordinator(c)}
-                        >
-                          {c.name} ({c.role})
-                        </li>
-                      ))}
-                    </ul>
-                  )}
+                  {showDropdown &&
+                    (filteredCoordinators.length > 0 || (!search && coordinators.length > 0)) && (
+                      <ul className="dropdown">
+                        {(search ? filteredCoordinators : coordinators.filter(
+                          (c) => !selectedCoordinators.some((sel) => sel._id === c._id)
+                        )).map((c) => (
+                          <li
+                            key={c._id}
+                            onClick={() => handleSelectCoordinator(c)}
+                          >
+                            {c.name} ({c.role})
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                </div>
+
+                <div className="selected-tags">
+                  {selectedCoordinators.map((c) => (
+                    <span key={c._id} className="tag">
+                      {c.name}
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveCoordinator(c._id)}
+                      >
+                        ×
+                      </button>
+                    </span>
+                  ))}
+                </div>
               </div>
 
-              <div className="selected-tags">
-                {selectedCoordinators.map((c) => (
-                  <span key={c._id} className="tag">
-                    {c.name}
-                    <button
-                      type="button"
-                      onClick={() => handleRemoveCoordinator(c._id)}
-                    >
-                      ×
-                    </button>
-                  </span>
-                ))}
+              <div className="lower-buttons">
+                <button type="submit">Create Team</button>
+                <button type="button" onClick={handleCancel}>Cancel</button>
               </div>
-            </div>
 
-          <div className="lower-buttons">
-            <button type="submit">Create Team</button>
-              <button type="button" onClick={handleCancel}>Cancel</button>
+            </form>
           </div>
-            
-          </form>
         </div>
-      </div>
+
+        {showModal && (
+          <div className="modal-backdrop">
+            <div className="team-modal">
+              <p>{modalMessage}</p>
+              <button onClick={() => setShowModal(false)}>Close</button>
+            </div>
+          </div>
+        )}
+      </>
     </MainLayout>
   );
 };

@@ -15,6 +15,8 @@ const TeamPlayers = () => {
 
   const [players, setPlayers] = useState([]);
   const [teamColor, setTeamColor] = useState("#808080");
+  const [teamRank, setTeamRank] = useState(null);
+
 
   const handleViewButton = (playerId) => {
     navigate(`/admin/event/${encodeURIComponent(decodedEvent)}/team/${encodeURIComponent(teamName)}/player/${playerId}/profile`);
@@ -29,7 +31,7 @@ const TeamPlayers = () => {
     const fetchPlayers = async () => {
       try {
         const res = await fetch(
-          `https://sparta-deployed.onrender.com/api/players?institution=${encodeURIComponent(
+          `http://localhost:5000/api/players?institution=${encodeURIComponent(
             userInstitution
           )}&eventName=${encodeURIComponent(
             decodedEvent
@@ -50,7 +52,7 @@ const TeamPlayers = () => {
     const fetchTeamDetails = async () => {
       try {
         const res = await fetch(
-          `https://sparta-deployed.onrender.com/api/team?institution=${encodeURIComponent(
+          `http://localhost:5000/api/team?institution=${encodeURIComponent(
             userInstitution
           )}&event=${encodeURIComponent(decodedEvent)}&teamName=${encodeURIComponent(decodedTeam)}`
         );
@@ -63,6 +65,51 @@ const TeamPlayers = () => {
 
     fetchTeamDetails();
   }, [userInstitution, decodedEvent, decodedTeam]);
+
+
+  // Fetch team scores then turn it in to rank
+  useEffect(() => {
+    const fetchTeamRankings = async () => {
+      try {
+        const res = await fetch(
+          `http://localhost:5000/api/teams/scores?institution=${encodeURIComponent(
+            userInstitution
+          )}&event=${encodeURIComponent(decodedEvent)}`
+        );
+        const data = await res.json();
+
+        // Sort descending by totalScore / grandTotal
+        const sortedTeams = data.sort(
+          (a, b) => (b.grandTotal || b.totalScore || 0) - (a.grandTotal || a.totalScore || 0)
+        );
+
+        // Find this team’s index
+        const rankIndex = sortedTeams.findIndex(
+          (t) => t.teamName === decodedTeam
+        );
+
+        if (rankIndex !== -1) {
+          setTeamRank(rankIndex + 1);
+        } else {
+          setTeamRank(null);
+        }
+      } catch (error) {
+        console.error("Error fetching team rankings:", error);
+      }
+    };
+
+    if (userInstitution && decodedEvent && decodedTeam) {
+      fetchTeamRankings();
+    }
+  }, [userInstitution, decodedEvent, decodedTeam]);
+
+  function getOrdinal(n) {
+    const s = ["th", "st", "nd", "rd"];
+    const v = n % 100;
+    return n + (s[(v - 20) % 10] || s[v] || s[0]);
+  }
+
+
 
   return (
     <MainLayout>
@@ -79,8 +126,10 @@ const TeamPlayers = () => {
           </div>
 
           <div className='team-ranking-event'>
-            <h3 style={{ textDecoration: "underline" }}> {decodedEvent} RANK </h3>
+            <h3 style={{ textDecoration: "underline" }}>{decodedEvent} RANK</h3>
+            <h1>{teamRank ? getOrdinal(teamRank) : "N/A"}</h1>
           </div>
+
         </div>
 
         <div className='team-pending-players'>
@@ -110,7 +159,7 @@ const TeamPlayers = () => {
                     <tr key={player._id}>
                       <td>{player.playerName}</td>
                       <td>{player.course || "N/A"}</td>
-                      <td>{player.game}</td>
+                      <td>{Array.isArray(player.game) ? player.game.join(", ") : player.game || "N/A"}</td>
                       <td>{player.eventName}</td>
                       <td>
                         <button onClick={() => handleViewButton(player._id)}> View Profile </button>

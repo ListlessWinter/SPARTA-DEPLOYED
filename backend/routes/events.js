@@ -19,6 +19,7 @@ router.post('/event', async (req, res) => {
     description, 
     eventColor, 
     location, 
+    requirements,
     coordinators = []
   } = req.body;
 
@@ -33,6 +34,7 @@ router.post('/event', async (req, res) => {
       description, 
       eventColor,
       location,
+      requirements,
       //For editing
       coordinators: coordinators.map(c => ({
         name: c.name,
@@ -42,6 +44,7 @@ router.post('/event', async (req, res) => {
     });
     await event.save();
 
+    // CO-ORGANIZER INVITATION
     const coordinatorInvites = [];
     for (let coord of coordinators) {
       if (coord.email) {
@@ -68,8 +71,38 @@ router.post('/event', async (req, res) => {
           from: `"SPARTA Admin" <${process.env.SMTP_USER}>`,
           to: coord.email,
           subject: `Invitation to ${eventName}`,
-          html: `<h3>You are invited as ${coord.role || "co-organizer"} for ${eventName} in ${institution}</h3>
-                 <p>Your Access Key: <b>${accessKey}</b></p>`,
+          html: `
+          <div style="font-family: Arial, sans-serif; color: #222;">
+            <h2 style="color: #1A2A49;">Invitation to ${eventName}</h2>
+            <p>Dear ${coord.name || "Coordinator"},</p>
+            <p>
+              You have been invited as a <b>${coord.role || "co-organizer"}</b> for the event <b>${eventName}</b> at <b>${institution}</b>.
+            </p>
+            <h3 style="margin-bottom: 0;">Event Details:</h3>
+            <ul style="margin-top: 4px;">
+              <li><b>Date:</b> ${eventStartDate ? new Date(eventStartDate).toLocaleDateString() : "TBA"}</li>
+              <li><b>End Date:</b> ${eventEndDate ? new Date(eventEndDate).toLocaleDateString() : "TBA"}</li>
+              <li><b>Venue:</b> ${institution}</li>
+            </ul>
+            <p>
+              <b>Your Access Key:</b> <span style="font-size: 1.1em; color: #CE892C;">${accessKey}</span>
+            </p>
+            <p>
+              As part of the organizing team, you will help coordinate logistics, facilitate activities, and ensure the smooth execution of the event. A preparatory meeting will be scheduled soon to align roles, responsibilities, and timelines.
+            </p>
+            <p>
+              Please confirm your participation by replying to this email no later than ${eventStartDate ? new Date(eventStartDate).toLocaleDateString() : "TBA"}. If you have any questions or suggestions, feel free to reach out.
+            </p>
+            <p>
+              We look forward to working with you to make <b>${eventName}</b> a memorable and meaningful experience for our community.
+            </p>
+            <p style="margin-top: 32px;">
+              Warm regards,<br>
+              <b>${userName || "Event Organizer"}</b><br>
+              Lead Organizer, ${eventName}
+            </p>
+          </div>
+         `,
         });
 
         coordinatorInvites.push({ email: coord.email, accessKey });
@@ -100,20 +133,31 @@ router.get('/events', async (req, res) => {
   }
 });
 
-// GET all active events by Institution
-/*router.get('/active-events', async (req, res) => {
+// get single event info
+router.get('/specific-event', async (req, res) => {
   try {
-    const { institution } = req.query;
-    const today = new Date();
-    const events = await Event.find({ institution, eventEndDate: {$gte:today} });
-    
-    res.json(events);
+    const { eventName } = req.query;
+    const event = await Event.findOne({ eventName });
+    if (!event) return res.status(404).json({ message: 'Event not found' });
+    res.json(event);
   } catch (err) {
-    res.status(500).json({ message: 'Failed to fetch events', error: err.message });
+    res.status(500).json({ message: 'Server error' });
   }
-});*/
+});
 
-// GET all active events by Institution 
+// Seym as the upper one, but I added Instituion in the query(for player game page)
+router.get('/event', async (req, res) => {
+  try {
+    const { eventName, institution } = req.query;
+    const event = await Event.findOne({ eventName, institution });
+    if (!event) return res.status(404).json({ message: 'Event not found' });
+    res.json(event);
+  } catch (err) {
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+
 // GET all active events by Institution 
 router.get("/active-events", async (req, res) => {
   try {
@@ -171,17 +215,7 @@ router.get('/past-events', async (req, res) => {
   }
 });
 
-// GET single event
-router.get('/event', async (req, res) => {
-  try {
-    const { eventName } = req.query;
-    const event = await Event.findOne({ eventName });
-    if (!event) return res.status(404).json({ message: 'Event not found' });
-    res.json(event);
-  } catch (err) {
-    res.status(500).json({ message: 'Server error' });
-  }
-});
+
 
 /*
 // UPDATE event
@@ -207,15 +241,18 @@ router.put('/event/:id', async (req, res) => {
     const updatedEvent = await Event.findByIdAndUpdate(
       id,
       { 
-        ...eventData, 
-        coordinators: coordinators.map(c => ({
-          name: c.name,
-          email: c.email,
-          role: c.role || "co-organizer"
-        })) 
+        ...eventData,
+        coordinators: Array.isArray(coordinators)
+          ? coordinators.map(c => ({
+              name: c.name,
+              email: c.email,
+              role: c.role || "co-organizer"
+            }))
+          : []
       }, 
       { new: true }
     );
+    
 
     if (!updatedEvent) return res.status(404).json({ message: "Event not found" });
 
@@ -245,19 +282,49 @@ router.put('/event/:id', async (req, res) => {
           });
           await newCoord.save();
 
-          // Send email
+          // Send email CO-ORGANIZER INVITATION FOR EDITING OF EVENTS
           const transporter = nodemailer.createTransport({
             service: "gmail",
             auth: { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS },
           });
 
-          await transporter.sendMail({
-            from: `"SPARTA Admin" <${process.env.SMTP_USER}>`,
-            to: coord.email,
-            subject: `Invitation to ${updatedEvent.eventName}`,
-            html: `<h3>You are invited as ${coord.role || "co-organizer"} for ${updatedEvent.eventName} in ${updatedEvent.institution}</h3>
-                   <p>Your Access Key: <b>${accessKey}</b></p>`,
-          });
+        await transporter.sendMail({
+          from: `"SPARTA ADMIN" <${process.env.SMTP_USER}>`,
+          to: coord.email,
+          subject: `Invitation to ${updatedEvent.eventName}`,
+          html: `
+          <div style="font-family: Arial, sans-serif; color: #222;">
+            <h2 style="color: #1A2A49;">Invitation to ${updatedEvent.eventName}</h2>
+            <p>Dear ${coord.name || "Coordinator"},</p>
+            <p>
+              You have been invited as a <b>${coord.role || "co-organizer"}</b> for the event <b>${updatedEvent.eventName}</b> at <b>${updatedEvent.institution}</b>.
+            </p>
+            <h3 style="margin-bottom: 0;">Event Details:</h3>
+            <ul style="margin-top: 4px;">
+              <li><b>Date:</b> ${updatedEvent.eventStartDate ? new Date(updatedEvent.eventStartDate).toLocaleDateString() : "TBA"}</li>
+              <li><b>End Date:</b> ${updatedEvent.eventEndDate ? new Date(updatedEvent.eventEndDate).toLocaleDateString() : "TBA"}</li>
+              <li><b>Venue:</b> ${updatedEvent.institution}</li>
+            </ul>
+            <p>
+              <b>Your Access Key:</b> <span style="font-size: 1.1em; color: #CE892C;">${accessKey}</span>
+            </p>
+            <p>
+              As part of the organizing team, you will help coordinate logistics, facilitate activities, and ensure the smooth execution of the event. A preparatory meeting will be scheduled soon to align roles, responsibilities, and timelines.
+            </p>
+            <p>
+              Please confirm your participation by replying to this email no later than ${updatedEvent.eventStartDate ? new Date(updatedEvent.eventStartDate).toLocaleDateString() : "TBA"}. If you have any questions or suggestions, feel free to reach out.
+            </p>
+            <p>
+              We look forward to working with you to make <b>${updatedEvent.eventName}</b> a memorable and meaningful experience for our community.
+            </p>
+            <p style="margin-top: 32px;">
+              Warm regards,<br>
+              <b>${updatedEvent?.userName || "Event Organizer"}</b><br>
+              Lead Organizer, ${updatedEvent.eventName}
+            </p>
+          </div>
+         `,
+        });
 
           coordinatorInvites.push({ email: coord.email, accessKey });
         }

@@ -2,6 +2,7 @@ import MainLayout from "../../components/MainLayout";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { MoreVertical } from "lucide-react";
+import { MdEventNote } from "react-icons/md";
 import "../../styles/ADMIN_Event.css";
 
 const Event = () => {
@@ -10,18 +11,15 @@ const Event = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [menuOpen, setMenuOpen] = useState(null);
   const [editEvent, setEditEvent] = useState(null);
-  const [, setNewSubOrganizer] = useState(""); // for adding
+  const [, setNewSubOrganizer] = useState(""); // for adding coordinator
   const user = JSON.parse(localStorage.getItem("auth"));
   const userInstitution = user?.institution;
 
-  useEffect(() => {
-    document.title = "SPARTA | Events";
-  }, []);
-
+ // Fetch events
   useEffect(() => {
     const fetchEvents = async () => {
       const response = await fetch(
-        `https://sparta-deployed.onrender.com/api/active-events?institution=${userInstitution}&email=${user.email}&role=${user.role}`);
+        `http://localhost:5000/api/active-events?institution=${userInstitution}&email=${user.email}&role=${user.role}`);
       const data = await response.json();
       setEvents(data);
     }; 
@@ -39,7 +37,7 @@ const Event = () => {
   const handleDelete = async (id) => {
     if (!window.confirm("Are you sure you want to delete this event?")) return;
     try {
-      await fetch(`https://sparta-deployed.onrender.com/api/event/${id}`, { method: "DELETE" });
+      await fetch(`http://localhost:5000/api/event/${id}`, { method: "DELETE" });
       setEvents(events.filter((e) => e._id !== id));
     } catch (err) {
       console.error("Delete failed:", err);
@@ -49,7 +47,7 @@ const Event = () => {
   const handleEditSave = async () => {
     try {
       const res = await fetch(
-        `https://sparta-deployed.onrender.com/api/event/${editEvent._id}`,
+        `http://localhost:5000/api/event/${editEvent._id}`,
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
@@ -86,11 +84,16 @@ const Event = () => {
         </button>
         )}
       </div>
-
-      <div className="event-list">
+      
+      {events.length === 0 ? (
+        <div className="no-events">
+          <MdEventNote size={"50"}/>
+          <p>No on-going events found. {user.role === "admin" && "Click 'New Event' to create one."}</p>
+        </div>
+      ) : (
+        <div className="event-list">
         {filteredEvents.map((event) => (
           <div key={event._id} className="event-item">
-
             <div className="event-color" style={{ background: event.eventColor || "#A96B24" }}         
             >
               {/* Menu button */}
@@ -122,6 +125,9 @@ const Event = () => {
           </div>
         ))}
       </div>
+      )}
+
+      
       {/* Edit Modal */}
       {editEvent && (
         <div className="modal-event-overlay">

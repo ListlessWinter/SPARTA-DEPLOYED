@@ -14,7 +14,7 @@ const TeamPlayerApproval = () => {
   const fetchPlayers = useCallback(async () => {
     try {
       const res = await fetch(
-        `https://sparta-deployed.onrender.com/api/players/team-pending?institution=${institution}&eventName=${encodeURIComponent(eventName)}&team=${encodeURIComponent(teamName)}`
+        `http://localhost:5000/api/players/team-pending?institution=${institution}&eventName=${encodeURIComponent(eventName)}&team=${encodeURIComponent(teamName)}`
       );
       const data = await res.json();
       setPlayers(data);
@@ -30,7 +30,7 @@ const TeamPlayerApproval = () => {
   // Approve player
   const handleApprove = async (id) => {
     try {
-      const res = await fetch(`https://sparta-deployed.onrender.com/api/players/team-approve/${id}`, {
+      const res = await fetch(`http://localhost:5000/api/players/team-approve/${id}`, {
         method: "PUT",
       });
       if (res.ok) {
@@ -46,8 +46,8 @@ const TeamPlayerApproval = () => {
   const handleDecline = async (id) => {
     if (!window.confirm("Are you sure you want to decline this player?")) return;
     try {
-      const res = await fetch(`https://sparta-deployed.onrender.com/api/players/${id}`, {
-        method: "DELETE",
+      const res = await fetch(`http://localhost:5000/api/players/team-decline/${id}`, {
+        method: "PUT",
       });
       if (res.ok) {
         alert("Player declined!");
@@ -91,7 +91,7 @@ const TeamPlayerApproval = () => {
                           <li key={idx} style={{textTransform: "uppercase"}}>
                             {req.name}:{" "}
                             <a
-                              href={`https://sparta-deployed.onrender.com${req.filePath}`}
+                              href={`http://localhost:5000${req.filePath}`}
                               target="_blank"
                               rel="noopener noreferrer"
                               style={{ color: "#007bff", textDecoration: "underline", textTransform: "capitalize" }}

@@ -10,10 +10,6 @@ const PlayerUserProfile = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [activeTab, setActiveTab] = useState("player");
 
-    useEffect(() => {
-      document.title = "SPARTA | User Profile";
-    }, []);
-
   useEffect(() => {
     const fetchProfile = async () => {
       try {
@@ -53,7 +49,7 @@ const PlayerUserProfile = () => {
 
   return (
     <PlayerMainLayout>
- <div className="player-profile-container">
+  <div className="player-profile-container">
 
     <div className="profile-view">
       {/* Left card */}
@@ -69,12 +65,12 @@ const PlayerUserProfile = () => {
           <p>{player.institution}</p>
         </div>
 
-      <div className="profile-details">
-        {[
+        <div className="profile-details">
+         {[
           { label: "Team", value: player.team || "N/A", name: "team", editable: false },
-          { label: "Sport", value: player.game || "N/A", name: "sport" },
+          { label: "Sport", value: Array.isArray(player.game) ? player.game.join(", ") : player.game || "N/A", name: "sport" },
           { label: "Jersey Number", value: player.jerseyNumber || "N/A", name: "jerseyNumber", editable: true },
-        ].map((field, idx) => (
+         ].map((field, idx) => (
           <div className="profile-field" key={idx}>
             <span className="profile-label">{field.label}</span>
             {isEditing && field.editable ? (
@@ -112,6 +108,7 @@ const PlayerUserProfile = () => {
               { label: "Birth Date", value: player.birthDate ? player.birthDate.substring(0,10) : "N/A", name: "birthDate", type: "date" },
               { label: "Age", value: player.age || "N/A", name: "age", type: "number" },
               { label: "Sex", value: player.sex || "N/A", name: "sex", type: "select" },
+              { label: "Course", value: player.course || "N/A", name: "course", editable: true },
               { label: "Contact", value: player.contactNumber || "N/A", name: "contactNumber" },
               { label: "Address", value: player.permanentAddress || "N/A", name: "permanentAddress", className: "address-field" },
               { label: "Weight", value: player.weight ? `${player.weight} kg` : "N/A", name: "weight", type: "number" },
@@ -119,7 +116,7 @@ const PlayerUserProfile = () => {
             ].map((field, idx) => (
               <div className={`profile-field ${field.className || ""}`} key={idx}>
                 <span className="profile-label">{field.label}</span>
-                {isEditing ? (
+                {isEditing && field.name !== "sex" ? (
                   field.type === "select" ? (
                   <select name={field.name} value={player[field.name] || ""} onChange={handleChange} className="profile-input">
                     <option value="">Select Sex</option>
@@ -145,31 +142,40 @@ const PlayerUserProfile = () => {
                 )}
 
         {activeTab === "documents" && (
-            <div className="documents-section">
-              <h3>Submitted Documents and Requirements</h3>
-              {player.requirements ? (
-                <ul className="requirements-list">
-                  <li>
-                    ID Card:{" "}
-                    <span>{player.requirements.idCard ? "✅ Submitted" : "❌ Missing"}</span>
-                  </li>
-                  <li>
-                    Waiver:{" "}
-                    <span>{player.requirements.waiver ? "✅ Submitted" : "❌ Missing"}</span>
-                  </li>
-                  <li>
-                    Medical Certificate:{" "}
-                    <span>
-                      {player.requirements.medicalCertificate
-                        ? "✅ Submitted"
-                        : "❌ Missing"}
-                    </span>
-                  </li>
-                </ul>
-              ) : (
-                <p>No requirements submitted yet.</p>
-              )}
-            </div>
+         <div className="documents-section">
+                    
+         {player.uploadedRequirements && player.uploadedRequirements.length > 0 ? (
+           <div className="table-container">
+             <table className="documents-table">
+               <thead>
+                 <tr>
+                   <th className="requirement-column">REQUIREMENTS</th>
+                   <th className="file-column">FILE</th>
+                 </tr>
+               </thead>
+               <tbody>
+                 {player.uploadedRequirements.map((req, idx) => (
+                   <tr key={idx} className="document-row">
+                     <td className="requirement-name">{req.name}</td>
+                     <td className="file-link">
+                       <a
+                         href={`http://localhost:5000${req.filePath}`}
+                         target="_blank"
+                         rel="noopener noreferrer"
+                         className="document-link"
+                       >
+                         View Document
+                       </a>
+                     </td>
+                   </tr>
+                 ))}
+               </tbody>
+             </table>
+           </div>
+         ) : (
+           <p>No requirements submitted yet.</p>
+         )}
+       </div>
           )}
               </div>
         </div>

@@ -4,7 +4,6 @@ const Admin = require('../models/Admin');
 const Coordinator = require('../models/Coordinator')
 const Player = require('../models/Player');
 const Institution = require('../models/Institution');
-const dns = require('dns');
 
 const router = express.Router();
 
@@ -16,21 +15,6 @@ const getModelByRole = (role) => {
   return null;
 };
 
-
-
-function checkDomainMX(email) {
-  const domain = email.split('@')[1];
-  return new Promise((resolve, reject) => {
-    dns.resolveMx(domain, (err, addresses) => {
-      if (err || addresses.length === 0) {
-        return resolve(false); // invalid domain
-      }
-      resolve(true); // domain can receive mail
-    });
-  });
-}
-
-
 // REGISTER
 router.post('/auth/register/:role', async (req, res) => {
   const { role } = req.params;
@@ -39,18 +23,9 @@ router.post('/auth/register/:role', async (req, res) => {
   if (!Model) return res.status(400).json({ message: 'Invalid role' });
 
   try {
-
-    // Check if email domain if legit
-    const domainValid = await checkDomainMX(email);
-    if (!domainValid) {
-      return res.status(400).json({ message: 'Invalid email domain. This email cannot receive mail.' });
-    }
-
-    //prevents email duplication
     const existing = await Model.findOne({ email });
     if (existing) return res.status(409).json({ message: 'Email already in use' });
 
-    // hash password
     const hashed = await bcrypt.hash(password, 10);
     const user = new Model({ email, password: hashed, institution, ...(role === 'player' && { eventName }) });
     await user.save();

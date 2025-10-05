@@ -23,7 +23,7 @@ const PantheonRanks = () => {
     const fetchTeams = async () => {
       try {
         const response = await fetch(
-          `https://sparta-deployed.onrender.com/api/teams/scores?institution=${encodeURIComponent(
+          `http://localhost:5000/api/teams/scores?institution=${encodeURIComponent(
             userInstitution
           )}&event=${encodeURIComponent(decodedEvent)}`
         );
@@ -45,7 +45,7 @@ const PantheonRanks = () => {
     const fetchTeamDetails = async () => {
       try {
         const res = await fetch(
-          `https://sparta-deployed.onrender.com/api/team?institution=${encodeURIComponent(
+          `http://localhost:5000/api/team?institution=${encodeURIComponent(
             userInstitution
           )}&event=${encodeURIComponent(
             decodedEvent
@@ -81,9 +81,9 @@ const PantheonRanks = () => {
 
 
     return (
-        <MainLayout>
- <div className="live-scores-header">
-        <h1>Live Scores for {decodedEvent}</h1>
+      <MainLayout>
+      <div className="live-scores-header">
+        <h1>RANKING FOR {decodedEvent}</h1>
       </div>
       
       <div className="live-scores-main-div">

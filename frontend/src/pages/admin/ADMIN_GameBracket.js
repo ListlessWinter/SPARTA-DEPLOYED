@@ -21,12 +21,12 @@ const GameBracket = () => {
     const localISO = new Date(d - tzOffset).toISOString().slice(0, 16);
     return localISO;
   };
-  
+
 
   useEffect(() => {
     const fetchGame = async () => {
       try {
-        const res = await fetch(`https://sparta-deployed.onrender.com/api/games/${gameId}`);
+        const res = await fetch(`http://localhost:5000/api/games/${gameId}`);
         const data = await res.json();
         setGame(data);
       } catch (err) {
@@ -119,10 +119,12 @@ const GameBracket = () => {
               finalizeWinner: m.finalizeWinner || false,
             }));
 
-          // Skip incomplete first round matches in LB
-          if (r === 1 && skipIncompleteFirstRound) {
-            seeds = seeds.filter((s) => s.teams.every((t) => t.name !== "TBD"));
+          // Keep LB Round 1 even if it's empty — only skip rendering if there are truly no matches
+          if (skipIncompleteFirstRound && r === 1) {
+            // If the round has zero matches, skip rendering it entirely
+            if (seeds.length === 0) continue;
           }
+
 
           if (seeds.length) bracketRounds.push({ title: `Round ${r}`, seeds });
         }
@@ -131,49 +133,71 @@ const GameBracket = () => {
       };
 
       const wbRounds = makeBracketRounds(wbMatches);
-      const lbRounds = makeBracketRounds(lbMatches, true); // first LB round only fully known matches
+
+      // Get raw LB rounds
+      const rawLBRounds = makeBracketRounds(lbMatches, false);
+
+      // Renumber LB rounds so they're sequential (start at 1)
+      const lbRounds = rawLBRounds.map((round, idx) => ({
+        ...round,
+        title: `Round ${idx + 1}`,
+      }));
 
       rounds.push({ title: "WB", rounds: wbRounds });
       rounds.push({ title: "LB", rounds: lbRounds });
 
-      if (gfMatches.length > 0) {
-        const grandFinal = gfMatches[0];
-        rounds.push({
-          title: "Grand Final",
-          seeds: [
-            {
-              id: grandFinal._id,
-              date: grandFinal.date || new Date(),
-              teams: grandFinal.teams.map((t) => ({
-                name: t.name,
-                score: t.score ?? null,
-                winner: grandFinal.finalizeWinner && t.name === grandFinal.winner,
-              })),
-              finalizeWinner: grandFinal.finalizeWinner || false,
-            },
-          ],
-        });
 
-        if (grandFinal.finalizeWinner && grandFinal.winner) {
+      // ✅ Only show Grand Final when both WB Final & LB Final are decided
+      if (gfMatches.length > 0) {
+        const gf = gfMatches[0];
+
+        const wbFinalDone = game.matches.some(
+          (m) => m.bracket === "WB" && m.finalizeWinner && m.round === Math.max(...wbRounds.map(r => parseInt(r.title.split(" ")[1])))
+        );
+
+        const lbFinalDone = game.matches.some(
+          (m) => m.bracket === "LB" && m.finalizeWinner && m.round === Math.max(...lbRounds.map(r => parseInt(r.title.split(" ")[1])))
+        );
+
+        // ✅ Render GF only when WB and LB are both done
+        if (wbFinalDone && lbFinalDone) {
           rounds.push({
-            title: "Champion",
+            title: "Grand Final",
             seeds: [
               {
-                id: "champion",
-                date: grandFinal.date || new Date(),
-                teams: [
-                  {
-                    name: grandFinal.winner,
-                    score:
-                      grandFinal.teams.find((t) => t.name === grandFinal.winner)
-                        ?.score ?? null,
-                    winner: true,
-                  },
-                ],
-                finalizeWinner: true,
+                id: gf._id,
+                date: gf.date || new Date(),
+                teams: gf.teams.map((t) => ({
+                  name: t.name,
+                  score: t.score ?? null,
+                  winner: gf.finalizeWinner && t.name === gf.winner,
+                })),
+                finalizeWinner: gf.finalizeWinner || false,
               },
             ],
           });
+
+          // ✅ Show Champion only AFTER GF is finalized
+          if (gf.finalizeWinner && gf.winner) {
+            rounds.push({
+              title: "Champion",
+              seeds: [
+                {
+                  id: "champion",
+                  date: gf.date || new Date(),
+                  teams: [
+                    {
+                      name: gf.winner,
+                      score:
+                        gf.teams.find((t) => t.name === gf.winner)?.score ?? null,
+                      winner: true,
+                    },
+                  ],
+                  finalizeWinner: true,
+                },
+              ],
+            });
+          }
         }
       }
     }
@@ -232,57 +256,6 @@ const GameBracket = () => {
         });
       }
     }
-
-    if (game.bracketType === "Swiss") {
-      const swissMatches = game.matches.filter((m) => m.bracket === "Swiss");
-      const maxRound = Math.max(...swissMatches.map((m) => m.round));
-
-      for (let r = 1; r <= maxRound; r++) {
-        const seeds = swissMatches
-          .filter((m) => m.round === r)
-          .map((m) => ({
-            id: m._id,
-            date: game.startDate,
-            teams: m.teams.map((t) => ({
-              name: t?.name || "TBD",
-              score: t?.score ?? null,
-              winner: m.finalizeWinner && t?.name === m.winner,
-            })),
-            finalizeWinner: m.finalizeWinner || false,
-          }));
-        rounds.push({ title: `Round ${r}`, seeds });
-      }
-
-      // Optional standings
-      const allMatchesDone = swissMatches.every((m) => m.finalizeWinner);
-      if (allMatchesDone) {
-        const winCount = {};
-        swissMatches.forEach((m) => {
-          if (m.finalizeWinner && m.winner) {
-            winCount[m.winner] = (winCount[m.winner] || 0) + 1;
-          }
-        });
-
-        const sorted = Object.entries(winCount).sort((a, b) => b[1] - a[1]);
-        rounds.push({
-          title: "Swiss Standings",
-          seeds: sorted.map(([team, wins], idx) => ({
-            id: `swiss-${idx}`,
-            date: game.endDate,
-            teams: [
-              {
-                name: team,
-                score: `Wins: ${wins}`,
-                winner: idx === 0, // leader marked as winner
-              },
-            ],
-            finalizeWinner: true,
-          })),
-        });
-      }
-    }
-
-
     return rounds;
   };
 
@@ -297,7 +270,7 @@ const GameBracket = () => {
 
     try {
       await fetch(
-        `https://sparta-deployed.onrender.com/api/games/${gameId}/matches/${selectedMatch.id}`,
+        `http://localhost:5000/api/games/${gameId}/matches/${selectedMatch.id}`,
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
@@ -317,7 +290,7 @@ const GameBracket = () => {
 
     try {
       await fetch(
-        `https://sparta-deployed.onrender.com/api/games/${gameId}/matches/${selectedMatch.id}`,
+        `http://localhost:5000/api/games/${gameId}/matches/${selectedMatch.id}`,
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
@@ -395,7 +368,6 @@ const GameBracket = () => {
               Schedule
             </button>
 
-
             <button
               onClick={(e) => {
                 e.stopPropagation();
@@ -411,45 +383,42 @@ const GameBracket = () => {
     </Seed>
   );
 
-
-  const roundsData = makeRoundsFromMatches();
-
   const saveSchedule = async () => {
     if (!selectedMatch) return;
-  
+
     try {
       let formattedDate = null;
       if (selectedMatch.date) {
-        formattedDate = new Date(selectedMatch.date); 
+        formattedDate = new Date(selectedMatch.date);
       }
-  
+
       const scheduleData = {
         date: formattedDate,
         location: selectedMatch.location || null,
       };
-  
+
       await fetch(
-        `https://sparta-deployed.onrender.com/api/games/${gameId}/matches/${selectedMatch.id}/schedule`,
+        `http://localhost:5000/api/games/${gameId}/matches/${selectedMatch.id}/schedule`,
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(scheduleData),
         }
       );
-  
+
       // refresh game after saving
-      const res = await fetch(`https://sparta-deployed.onrender.com/api/games/${gameId}`);
+      const res = await fetch(`http://localhost:5000/api/games/${gameId}`);
       const updatedGame = await res.json();
       setGame(updatedGame);
-  
+
       setSelectedMatch(null);
     } catch (err) {
       console.error("Error updating schedule:", err);
       alert("Failed to update schedule. Please try again.");
     }
   };
-  
 
+  const roundsData = makeRoundsFromMatches();
 
   return (
     <MainLayout>
@@ -458,35 +427,44 @@ const GameBracket = () => {
         <p><b>Event:</b> {decodedEvent}</p>
         <p><b>Schedule:</b> {new Date(game.startDate).toLocaleString()} - {new Date(game.endDate).toLocaleString()}</p>
         <p><b>Bracket Type:</b> {game.bracketType}</p>
+        {game.videoLink && (
+          <p>
+            <a href={game.videoLink} target="_blank" rel="noopener noreferrer">
+              Watch Video
+            </a>
+          </p>
+        )}
 
-        <div className="rules-section">
-          {game.rules ? (
-            game.rules.endsWith(".pdf") || game.rules.startsWith("/uploads/") ? (
-              <>
-                <button onClick={() => setShowRulesModal(true)}>
-                  View Rules
-                </button>
-              </>
+        <div style={{ display: "flex", flexDirection: "row", gap: "5px", flexWrap: "wrap", alignItems: "center", justifyContent: "center", width: "100%", margin: "0 auto" }}>
+          <div className="rules-section">
+            {game.rules ? (
+              <button onClick={() => setShowRulesModal(true)}>View Rules</button>
             ) : (
-              <>
-                <button onClick={() => setShowRulesModal(true)}>
-                  View Rules
-                </button>
-              </>
-            )
-          ) : (
-            <p>No rules provided.</p>
-          )}
+              <p>No rules provided.</p>
+            )}
+          </div>
+
+
+          <div className="video-section">
+            <button
+              onClick={() =>
+                setSelectedMatch({
+                  type: "video",
+                  videoLink: game.videoLink || "",
+                })
+              }
+            >
+              Add Video Link
+            </button>
+          </div>
         </div>
-
       </div>
-
       {showRulesModal && (
         <div className="modal-overlay">
           <div className="modal rules-modal">
             <h2>Game Rules</h2>
 
-            {game.rules.endsWith(".pdf") || game.rules.startsWith("/uploads/") ? (
+            {game.rules.endsWith(".pdf") ? (
               <iframe
                 src={game.rules}
                 title="Rules PDF"
@@ -495,7 +473,7 @@ const GameBracket = () => {
                 style={{ border: "none" }}
               />
             ) : (
-              <p>{game.rules}</p>
+              <p style={{ whiteSpace: "pre-wrap" }}>{game.rules}</p>
             )}
 
             <button onClick={() => setShowRulesModal(false)}>Close</button>
@@ -577,7 +555,7 @@ const GameBracket = () => {
               <>
                 <h3>Rules PDF</h3>
                 <iframe
-                  src={`https://sparta-deployed.onrender.com${game.rules}`}
+                  src={`http://localhost:5000${game.rules}`}
                   title="Rules PDF"
                   className="w-full h-[80vh] rounded-md"
                 />
@@ -587,43 +565,53 @@ const GameBracket = () => {
               </>
             ) : selectedMatch.type === "schedule" ? (
               <>
-                <h3>Schedule Match</h3>
-                <label>Date:</label>
-                <input
-  type="datetime-local"
-  value={selectedMatch.date || ""}
-  onChange={(e) => setSelectedMatch({ ...selectedMatch, date: e.target.value })}
-/>
+                <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+                  <h3>Schedule Match</h3>
+                  <div style={{ display: "flex", flexDirection: "row", gap: "30px" }}>
+                    <label>Date : </label>
+                    <input
+                      type="datetime-local"
+                      style={{ width: "150px" }}
+                      value={selectedMatch.date || ""}
+                      onChange={(e) => setSelectedMatch({ ...selectedMatch, date: e.target.value })}
+                    />
+                  </div>
 
+                  <div style={{ display: "flex", flexDirection: "row", gap: "5px" }}>
+                    <label>Location : </label>
+                    <input
+                      type="text"
+                      style={{ width: "150px" }}
+                      value={selectedMatch.location || ""}
+                      onChange={(e) => setSelectedMatch({ ...selectedMatch, location: e.target.value })}
+                    />
+                  </div>
 
-                <label>Location:</label>
-                <input
-                  type="text"
-                  value={selectedMatch.location || ""}
-                  onChange={(e) => setSelectedMatch({ ...selectedMatch, location: e.target.value })}
-                />
+                  <div className="modal-actions">
+                    <button type="button" onClick={saveSchedule}>
+                      Save Schedule
+                    </button>
 
-                <div className="modal-actions">
-                  <button type="button" onClick={saveSchedule}>
-                    Save Schedule
-                  </button>
-
-                  <button type="button" onClick={() => setSelectedMatch(null)}>Cancel</button>
+                    <button type="button" onClick={() => setSelectedMatch(null)}>Cancel</button>
+                  </div>
                 </div>
               </>
-            ) : selectedMatch.type === "scores" ? (   // explicitly check
+            ) : selectedMatch.type === "scores" ? (
               <>
                 <h3>Update Match Scores</h3>
                 {selectedMatch.teams.map((team, idx) => (
                   <div key={idx} className="score-input">
-                    <label>
+                    <label style={{ marginLeft: "10px" }}>
                       {team.name} Score:
-                      <input
-                        type="number"
-                        value={tempScores[idx]}
-                        onChange={(e) => handleTempScoreChange(idx, Number(e.target.value))}
-                      />
                     </label>
+
+                    <input
+                      type="number"
+                      style={{ width: "50px", marginRight: "10px" }}
+                      value={tempScores[idx]}
+                      onChange={(e) => handleTempScoreChange(idx, Number(e.target.value))}
+                    />
+
                   </div>
                 ))}
                 <div className="modal-actions">
@@ -631,7 +619,47 @@ const GameBracket = () => {
                   <button type="button" onClick={() => setSelectedMatch(null)}>Close</button>
                 </div>
               </>
-            ) : null}
+            ) : selectedMatch.type === "video" && (
+              <>
+                <h3>Add Video Link</h3>
+                <input
+                  type="text"
+                  placeholder="Enter video URL"
+                  value={selectedMatch.videoLink || ""}
+                  onChange={(e) =>
+                    setSelectedMatch({ ...selectedMatch, videoLink: e.target.value })
+                  }
+                />
+                <div className="modal-actions">
+                  <button
+                    type="button"
+                    onClick={async () => {
+                      try {
+                        await fetch(`http://localhost:5000/api/${gameId}/video`, {
+                          method: "PUT",
+                          headers: { "Content-Type": "application/json" },
+                          body: JSON.stringify({ videoLink: selectedMatch.videoLink }),
+                        });
+
+                        // Refresh game after saving
+                        const res = await fetch(`http://localhost:5000/api/games/${gameId}`);
+                        const updated = await res.json();
+                        setGame(updated);
+
+                        setSelectedMatch(null);
+                      } catch (err) {
+                        console.error("Error saving video link:", err);
+                        alert("Failed to save video link.");
+                      }
+                    }}
+                  >
+                    Save
+                  </button>
+                  <button onClick={() => setSelectedMatch(null)}>Cancel</button>
+                </div>
+              </>
+            )
+            }
           </div>
         </div>
       )}

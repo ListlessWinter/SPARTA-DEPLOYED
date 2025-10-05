@@ -13,7 +13,8 @@ const playerSchema = new mongoose.Schema({
   //Game Registration
   playerName: { type: String, trim: true },
   team: { type: String, trim: true },
-  game: { type: [String], trim: true },
+  sex: { type: String, enum: ["Male", "Female", "Other"] },
+  game: { type: [String], default: [] },
   teamApproval: { type: Boolean, default:false },
   uploadedRequirements: [
     {
@@ -26,11 +27,11 @@ const playerSchema = new mongoose.Schema({
   jerseyNumber: { type: String },
   contactNumber: { type: String },
   permanentAddress: { type: String },
+  course: {type: String},
   birthDate: { type: Date },
   age: { type: Number },
   weight: { type: Number },
-  height: { type: Number },
-  sex: { type: String, enum: ["Male", "Female", "Other"] }
+  height: { type: Number }
 }, { timestamps: true });
 
 module.exports = mongoose.model('Player', playerSchema);

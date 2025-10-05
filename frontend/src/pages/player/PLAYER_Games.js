@@ -1,5 +1,5 @@
 import PlayerMainLayout from "../../components/P_MainLayout";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import { GiBasketballBall, GiSoccerBall, GiTennisRacket, GiChessKnight, GiTennisBall } from "react-icons/gi";
 import { MdSportsVolleyball, MdSportsKabaddi } from "react-icons/md";
@@ -13,6 +13,7 @@ const PlayerGame = () => {
   const userInstitution = user?.institution;
   const { eventName } = useParams();
   const decodedName = decodeURIComponent(eventName);
+  const navigate = useNavigate();
 
   const [gamesByType, setGamesByType] = useState({});
   const [searchQuery, setSearchQuery] = useState("");
@@ -20,12 +21,16 @@ const PlayerGame = () => {
 
   const [teams, setTeams] = useState([]);
   const [games, setGames] = useState([]);
-  const [requirements, setRequirements] = useState([]);
   const [requirementFiles, setRequirementFiles] = useState({});
 
+
+  //Game Register
   const [playerName, setPlayerName] = useState("");
   const [team, setTeam] = useState("");
-  const [game, setGame] = useState("");
+  const [gender, setGender] = useState("");
+  const [gamesSelected, setGamesSelected] = useState([]);
+  const [eventRequirements, setEventRequirements] = useState([]);
+
 
   const filteredGames = Object.entries(gamesByType).filter(
     ([combinedType]) =>
@@ -90,6 +95,23 @@ const PlayerGame = () => {
     fetchTeams();
   }, [userInstitution, decodedName]);
 
+  useEffect(() => {
+    const fetchEventRequirements = async () => {
+      try {
+        const res = await fetch(
+          `http://localhost:5000/api/event?eventName=${encodeURIComponent(decodedName)}&institution=${encodeURIComponent(userInstitution)}`
+        );
+        const data = await res.json();
+        setEventRequirements(data.requirements || []); // Ensure it's always an array
+      } catch (err) {
+        console.error("Error fetching event requirements:", err);
+      }
+    };
+
+    fetchEventRequirements();
+  }, [decodedName, userInstitution]);
+
+
   // Handle submit
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -97,7 +119,11 @@ const PlayerGame = () => {
     const formData = new FormData();
     formData.append("playerName", playerName);
     formData.append("team", team);
-    formData.append("game", game);
+    formData.append("sex", gender);
+    gamesSelected.forEach((g) => {
+      formData.append("game", g);
+    });
+
 
     // Append each requirement’s file
     Object.entries(requirementFiles).forEach(([req, file]) => {
@@ -159,10 +185,10 @@ const PlayerGame = () => {
             const gameType = games[0]?.gameType || "Default";
             const icon = gameIcons[gameType] || gameIcons.Default;
             return (
-              <div className="game-button-container" key={combinedType}>
+              <div className="game-button-container" key={combinedType} style={{ margin: "1rem" }}>
                 <button
                   className="game-button"
-                  onClick={() => console.log(`Clicked game: ${combinedType}`)}
+                  onClick={() => navigate(`/event/${encodeURIComponent(decodedName)}/game/${games[0]._id}`)}
                   style={{ display: "flex", alignItems: "center", gap: "8px" }}
                 >
                   {icon && React.createElement(icon, { size: 50 })}
@@ -194,7 +220,7 @@ const PlayerGame = () => {
                 <label className="form-label">Player Name:</label>
                 <input
                   type="text"
-                  value={playerName}
+                  value={playerName || user?.playerName || ""}
                   onChange={(e) => setPlayerName(e.target.value)}
                   required
                   className="form-input"
@@ -204,7 +230,7 @@ const PlayerGame = () => {
               <div className="form-group">
                 <label className="form-label">Team:</label>
                 <select
-                  value={team}
+                  value={team || user?.team || ""}
                   onChange={(e) => setTeam(e.target.value)}
                   required
                   className="form-input"
@@ -219,34 +245,65 @@ const PlayerGame = () => {
               </div>
 
               <div className="form-group">
-                <label className="form-label">Game:</label>
+                <label className="form-label">Gender:</label>
                 <select
-                  value={game}
+                  value={gender}
                   onChange={(e) => {
-                    setGame(e.target.value);
-                    const selectedGame = games.find((g) => g._id === e.target.value);
-                    setRequirements(selectedGame ? selectedGame.requirements : []);
+                    setGender(e.target.value);
+                    setGamesSelected([]); // Reset game list when gender changes
                   }}
                   required
                   className="form-input"
                 >
-                  <option value="">Select Game</option>
-                  {games.map((g) => (
-                    <option key={g._id} value={g._id}>
-                      {g.category} {g.gameType}
-                    </option>
-                  ))}
+                  <option value="">Select Gender</option>
+                  <option value="Male">Male</option>
+                  <option value="Female">Female</option>
                 </select>
+              </div>
+
+              <div className="form-group">
+                <label className="form-label">Games:</label>
+                {games
+                  .filter((g) => {
+                    if (!gender) return false;
+                    const gType = g.category?.toLowerCase();
+                    if (gender === "Male") {
+                      return gType === "men" || gType === "mixed";
+                    }
+                    if (gender === "Female") {
+                      return gType === "women" || gType === "mixed";
+                    }
+                    return false;
+                  })
+                  .map((g) => (
+                    <label key={g._id} className="checkbox-label">
+                      <input
+                        type="checkbox"
+                        value={g._id}
+                        checked={gamesSelected.includes(g._id)}
+                        onChange={(e) => {
+                          if (e.target.checked) {
+                            setGamesSelected((prev) => [...prev, g._id]); // add
+                          } else {
+                            setGamesSelected((prev) => prev.filter((id) => id !== g._id)); // remove
+                          }
+                        }}
+                        className="checkbox-input"
+                      />
+                      <span className="checkbox-custom"></span> {/* bullet style */}
+                      {g.category} {g.gameType}
+                    </label>
+                  ))}
               </div>
 
               <h3 className="requirements-title" style={{ textAlign: "left" }}>
                 Requirements:
               </h3>
 
-              {requirements.length === 0 ? (
+              {eventRequirements.length === 0 ? (
                 <p style={{ fontStyle: "italic" }}>No requirements for this game.</p>
               ) : (
-                requirements.map((req, index) => (
+                eventRequirements.map((req, index) => (
                   <div key={index}>
                     {/* Requirement label (outside the uploader box) */}
                     <label htmlFor={`rulesFile_${index}`} className="req-label">
@@ -255,25 +312,17 @@ const PlayerGame = () => {
 
                     {/* Uploader box */}
                     <div className="req-group">
-                      <div className="req-filename">
-                        {requirementFiles[req] ? requirementFiles[req].name : "No file chosen"}
-                      </div>
 
                       <input
                         id={`rulesFile_${index}`}
                         type="file"
                         className="req-input"
-                        onChange={(e) =>
-                          setRequirementFiles((prev) => ({
-                            ...prev,
-                            [req]: e.target.files[0],
-                          }))
+                        accept=".pdf,.jpg,.jpeg,.png"
+                        onChange={(e) => setRequirementFiles((prev) => ({ ...prev, [req]: e.target.files[0],}))
                         }
                         required
                       />
-                      <label htmlFor={`rulesFile_${index}`} className="req-button">
-                        Upload File
-                      </label>
+
                     </div>
                   </div>
                 ))

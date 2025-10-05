@@ -29,11 +29,17 @@ import PlayerUserProfile from "./pages/player/PLAYER_PlayerUserProfile";
 import PlayerEvent from "./pages/player/PLAYER_Event";
 import PlayerSpecificEvent from "./pages/player/PLAYER_SpecificEvent";
 import PlayerGame from "./pages/player/PLAYER_Games";
+import PlayerGameBracket from "./pages/player/PLAYER_GameBracket";
 import PlayerFeedback from "./pages/player/PLAYER_Feedback";
 import PlayerTeamPlayers from "./pages/player/PLAYER_TeamPlayerList";
 import PlayerLiveScores from "./pages/player/PLAYER_LiveScores"; 
 import PlayerPantheon from "./pages/player/PLAYER_Pantheon";
 import PlayerPantheonRanks from "./pages/player/PLAYER_PantheonRanks";
+import PlayerPantheonTeam from "./pages/player/PLAYER_PantheonTeam";
+
+//SPECTATOR
+import LandingPage from "./pages/spectator/SPECTATOR_Landing";
+import AllEvent from "./pages/spectator/SPECTATOR_Events";
 
 
 export default function App() {
@@ -69,10 +75,15 @@ export default function App() {
         <Route path="/event/:eventName" element={<PlayerSpecificEvent />} />
         <Route path="/event/:eventName/team/:teamName/players" element={<BlockRoute> <PlayerTeamPlayers /> </BlockRoute>} />
         <Route path="/event/:eventName/game" element={<BlockRoute> <PlayerGame /> </BlockRoute>} />
+        <Route path="/event/:eventName/game/:game" element={<BlockRoute> <PlayerGameBracket /> </BlockRoute>} />
         <Route path="/event/:eventName/feedback" element={<BlockRoute> <PlayerFeedback /> </BlockRoute>} />
         <Route path="/event/:eventName/liveScores" element={<BlockRoute> <PlayerLiveScores /> </BlockRoute>} />
         <Route path="/pantheon" element={<BlockRoute> <PlayerPantheon /> </BlockRoute>} />
-        <Route path="/player/pantheon/:eventName/:teamName/players" element={<BlockRoute> <PlayerPantheonRanks /> </BlockRoute>} />
+        <Route path="/pantheon/:eventName/ranking" element={<BlockRoute> <PlayerPantheonRanks /> </BlockRoute>} />
+        <Route path="/pantheon/:eventName/:teamName/players" element={<BlockRoute> <PlayerPantheonTeam /> </BlockRoute>} />
+        {/*Spectator*/}
+        <Route path="/institution" element={ <LandingPage />} />
+        <Route path="/:institution" element={ <AllEvent />} />
       </Routes>
     </Router>
   );
