@@ -19,7 +19,7 @@ const Dashboard = () => {
 
     const fetchGames = async () => {
       try {
-        let url = `http://localhost:5000/api/games?institution=${encodeURIComponent(user?.institution)}`;
+        let url = `https://sparta-deployed.onrender.com/api/games?institution=${encodeURIComponent(user?.institution)}`;
 
         if (user?.role === "co-organizer" || user?.role === "sub-organizer") {
           url += `&eventName=${encodeURIComponent(user?.eventName)}`;
