@@ -26,7 +26,7 @@ const GameBracket = () => {
   useEffect(() => {
     const fetchGame = async () => {
       try {
-        const res = await fetch(`http://localhost:5000/api/games/${gameId}`);
+        const res = await fetch(`https://sparta-deployed.onrender.com/api/games/${gameId}`);
         const data = await res.json();
         setGame(data);
       } catch (err) {
@@ -147,7 +147,7 @@ const GameBracket = () => {
       rounds.push({ title: "LB", rounds: lbRounds });
 
 
-      // ✅ Only show Grand Final when both WB Final & LB Final are decided
+      //  Only show Grand Final when both WB Final & LB Final are decided
       if (gfMatches.length > 0) {
         const gf = gfMatches[0];
 
@@ -159,7 +159,7 @@ const GameBracket = () => {
           (m) => m.bracket === "LB" && m.finalizeWinner && m.round === Math.max(...lbRounds.map(r => parseInt(r.title.split(" ")[1])))
         );
 
-        // ✅ Render GF only when WB and LB are both done
+        //  Render GF only when WB and LB are both done
         if (wbFinalDone && lbFinalDone) {
           rounds.push({
             title: "Grand Final",
@@ -177,7 +177,7 @@ const GameBracket = () => {
             ],
           });
 
-          // ✅ Show Champion only AFTER GF is finalized
+          // Show Champion only AFTER GF is finalized
           if (gf.finalizeWinner && gf.winner) {
             rounds.push({
               title: "Champion",
@@ -270,7 +270,7 @@ const GameBracket = () => {
 
     try {
       await fetch(
-        `http://localhost:5000/api/games/${gameId}/matches/${selectedMatch.id}`,
+        `https://sparta-deployed.onrender.com/api/games/${gameId}/matches/${selectedMatch.id}`,
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
@@ -290,7 +290,7 @@ const GameBracket = () => {
 
     try {
       await fetch(
-        `http://localhost:5000/api/games/${gameId}/matches/${selectedMatch.id}`,
+        `https://sparta-deployed.onrender.com/api/games/${gameId}/matches/${selectedMatch.id}`,
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
@@ -398,7 +398,7 @@ const GameBracket = () => {
       };
 
       await fetch(
-        `http://localhost:5000/api/games/${gameId}/matches/${selectedMatch.id}/schedule`,
+        `https://sparta-deployed.onrender.com/api/games/${gameId}/matches/${selectedMatch.id}/schedule`,
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
@@ -407,7 +407,7 @@ const GameBracket = () => {
       );
 
       // refresh game after saving
-      const res = await fetch(`http://localhost:5000/api/games/${gameId}`);
+      const res = await fetch(`https://sparta-deployed.onrender.com/api/games/${gameId}`);
       const updatedGame = await res.json();
       setGame(updatedGame);
 
@@ -635,14 +635,14 @@ const GameBracket = () => {
                     type="button"
                     onClick={async () => {
                       try {
-                        await fetch(`http://localhost:5000/api/${gameId}/video`, {
+                        await fetch(`https://sparta-deployed.onrender.com/api/${gameId}/video`, {
                           method: "PUT",
                           headers: { "Content-Type": "application/json" },
                           body: JSON.stringify({ videoLink: selectedMatch.videoLink }),
                         });
 
                         // Refresh game after saving
-                        const res = await fetch(`http://localhost:5000/api/games/${gameId}`);
+                        const res = await fetch(`https://sparta-deployed.onrender.com/api/games/${gameId}`);
                         const updated = await res.json();
                         setGame(updated);
 

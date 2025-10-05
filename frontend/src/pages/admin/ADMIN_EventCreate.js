@@ -29,7 +29,7 @@ const CreateEvent = () => {
     const user = JSON.parse(localStorage.getItem("auth"));
 
     try {
-      const response = await fetch("http://localhost:5000/api/event", {
+      const response = await fetch("https://sparta-deployed.onrender.com/api/event", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
