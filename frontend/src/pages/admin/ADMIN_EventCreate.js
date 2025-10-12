@@ -1,5 +1,5 @@
 import MainLayout from "../../components/MainLayout";
-import React, { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import '../../styles/ADMIN_EventCreate.css';
 

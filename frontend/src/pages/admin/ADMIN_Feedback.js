@@ -1,5 +1,5 @@
 import MainLayout from "../../components/MainLayout";
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import '../../styles/ADMIN_Feedback.css';
 import { VscSearchStop } from "react-icons/vsc";
