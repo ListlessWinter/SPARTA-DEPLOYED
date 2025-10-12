@@ -15,6 +15,10 @@ const SideMenu = () => {
     navigate('/');
   };
 
+  useEffect(() => {
+    document.title = "SPARTA | Dashboard";
+  }, []);
+
   const user = JSON.parse(localStorage.getItem("auth"));
 
    return (
