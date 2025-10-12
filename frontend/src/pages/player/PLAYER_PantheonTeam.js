@@ -19,7 +19,7 @@ const PlayerPantheonTeam = () => {
     useEffect(() => {
         const fetchPlayers = async () => {
             try {
-                const res = await fetch(`http://localhost:5000/api/players?institution=${encodeURIComponent(user?.institution)}&eventName=${encodeURIComponent(decodedEvent)}&team=${encodeURIComponent(decodedTeam)}`);
+                const res = await fetch(`https://sparta-deployed.onrender.com/api/players?institution=${encodeURIComponent(user?.institution)}&eventName=${encodeURIComponent(decodedEvent)}&team=${encodeURIComponent(decodedTeam)}`);
                 const data = await res.json();
                 setPlayers(data);
             } catch (err) {
@@ -33,7 +33,7 @@ const PlayerPantheonTeam = () => {
     useEffect(() => {
         const fetchTeamDetails = async () => {
             try {
-                const res = await fetch(`http://localhost:5000/api/team?institution=${encodeURIComponent(user?.institution)}&event=${encodeURIComponent(decodedEvent)}&teamName=${encodeURIComponent(decodedTeam)}`);
+                const res = await fetch(`https://sparta-deployed.onrender.com/api/team?institution=${encodeURIComponent(user?.institution)}&event=${encodeURIComponent(decodedEvent)}&teamName=${encodeURIComponent(decodedTeam)}`);
                 const data = await res.json();
                 setTeamColor(data.teamColor || "#808080");
             } catch (err) {
@@ -48,7 +48,7 @@ const PlayerPantheonTeam = () => {
     useEffect(() => {
         const fetchTeamRankings = async () => {
           try {
-            const res = await fetch(`http://localhost:5000/api/teams/scores?institution=${encodeURIComponent(user?.institution)}&event=${encodeURIComponent(decodedEvent)}`);
+            const res = await fetch(`https://sparta-deployed.onrender.com/api/teams/scores?institution=${encodeURIComponent(user?.institution)}&event=${encodeURIComponent(decodedEvent)}`);
             const data = await res.json();
       
             // Sort descending by totalScore / grandTotal
@@ -82,8 +82,6 @@ const PlayerPantheonTeam = () => {
         return n + (s[(v - 20) % 10] || s[v] || s[0]);
       }
       
-      
-
     return (
         <PlayerMainLayout>
             <div className="team-players-container">

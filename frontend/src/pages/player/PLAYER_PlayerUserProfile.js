@@ -13,7 +13,7 @@ const PlayerUserProfile = () => {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const res = await fetch(`http://localhost:5000/api/players/${userId}`);
+        const res = await fetch(`https://sparta-deployed.onrender.com/api/players/${userId}`);
         const data = await res.json();
         setPlayer(data);
       } catch (err) {
@@ -30,7 +30,7 @@ const PlayerUserProfile = () => {
   // Edit 
   const handleSave = async () => {
     try {
-      const res = await fetch(`http://localhost:5000/api/players/${userId}/profile`, {
+      const res = await fetch(`https://sparta-deployed.onrender.com/api/players/${userId}/profile`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(player),
