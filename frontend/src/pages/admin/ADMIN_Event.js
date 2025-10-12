@@ -14,6 +14,10 @@ const Event = () => {
   const [, setNewSubOrganizer] = useState(""); 
   const user = JSON.parse(localStorage.getItem("auth"));
 
+  useEffect(() => {
+    document.title = "SPARTA | Event";
+  }, []);
+
   // Fetch events
   useEffect(() => {
     const fetchEvents = async () => {
