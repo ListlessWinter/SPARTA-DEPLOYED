@@ -12,7 +12,7 @@ const AllEvent = () => {
 
   useEffect(() => {
     const fetchEvents = async () => {
-      const response = await fetch(`https://sparta-deployed.onrender.com/api/events?institution=${userInstitution}`);
+      const response = await fetch(`http://localhost:5000/api/events?institution=${userInstitution}`);
       const data = await response.json();
       setEvents(data);
     };
@@ -20,7 +20,7 @@ const AllEvent = () => {
   }, [userInstitution]);
   
   const handleEventClick = (event) => {
-    navigate(`/event/${encodeURIComponent(event.eventName)}`);
+    navigate(`/spectator/${encodeURIComponent(userInstitution)}/${encodeURIComponent(event.eventName)}`);
   };
 
   // Filter events based on search query
@@ -46,7 +46,7 @@ const AllEvent = () => {
 
       <h2 className="page-title">Current Events in {userInstitution}</h2>
 
-      <div className="event-main-header">
+      <div className="spectator-main-header">
         <input
           type="text"
           className="event-search-bar"
@@ -62,7 +62,7 @@ const AllEvent = () => {
             <p className="no-events-message"> There are no on-going events at {userInstitution}</p>
           </div>
         ) : (
-          <div className="event-list">
+          <div className="spectator-event-list">
             {filteredEvents.map((event) => (
               <div className='event-item' key={event._id}>
                 <div className="event-color" style={{ background: event.eventColor ? event.eventColor : '#A96B24'}} onClick={() => handleEventClick(event)}>

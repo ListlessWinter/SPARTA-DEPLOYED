@@ -6,9 +6,7 @@ const Team = require("../models/Team");
 const multer = require("multer");
 const supabase = require("./supabaseClient");
 const path = require("path");
-const fs = require("fs");;
-
-const upload = multer({ dest: "temp/" })
+const upload = multer({ storage: multer.memoryStorage() });
 
 const router = express.Router();
 
@@ -21,22 +19,6 @@ function shuffleArray(array) {
   }
   return arr;
 };
-
-/* 
-// storage for file uploads
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, "uploads/rules");
-  },
-  filename: (req, file, cb) => {
-    cb(null, Date.now() + path.extname(file.originalname));
-  },
-});
-
-const upload = multer({ storage });
-*/
-
-
 
 // CREATE Game
 router.post("/games", upload.single("rulesFile"), async (req, res) => {
@@ -59,32 +41,20 @@ router.post("/games", upload.single("rulesFile"), async (req, res) => {
     const parsedCoordinators = JSON.parse(coordinators || "[]");
 
     // Check if Text or Uploaded Rules
-
-    /*let finalRules = null;
-    if (req.file) {
-      finalRules = `/uploads/rules/${req.file.filename}`; // file 
-    } else if (rules) {
-      finalRules = rules; // plain text
-    }*/
-
     let finalRules = null;
 
     if (req.file) {
       try {
         const fileExt = path.extname(req.file.originalname);
         const fileName = `rules-${Date.now()}${fileExt}`;
-        const fileBuffer = fs.readFileSync(req.file.path);
 
         const { data, error } = await supabase.storage
           .from("rules")
-          .upload(fileName, fileBuffer, {
+          .upload(fileName, req.file.buffer, {
             cacheControl: "3600",
             upsert: false,
             contentType: req.file.mimetype,
           });
-
-        // Delete temp file
-        fs.unlinkSync(req.file.path);
 
         if (error) {
           console.error("Supabase upload error:", error);
@@ -128,7 +98,6 @@ router.post("/games", upload.single("rulesFile"), async (req, res) => {
       return res.status(400).json({ message: "Rules (file or text) are required" });
     }
     
-
     const matches = [];
     const totalRounds = Math.ceil(Math.log2(parsedTeams.length));
     const shuffledTeams = shuffleArray(parsedTeams);
@@ -356,7 +325,8 @@ router.get('/games', async (req, res) => {
       return res.status(400).json({ message: 'Institution is required' });
     }
 
-    const query = { institution, ...(eventName && { eventName: eventName }) };
+    const query = { institution };
+    if (eventName) query.eventName = eventName;
     const games = await Game.find(query);
     res.json(games);
   } catch (err) {

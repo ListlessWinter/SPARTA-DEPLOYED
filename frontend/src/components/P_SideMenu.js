@@ -3,21 +3,26 @@ import { AiOutlineFire } from "react-icons/ai";
 import { GiGreekTemple } from "react-icons/gi";
 import { FaUserCircle } from "react-icons/fa";
 import { Link, useNavigate, useLocation } from "react-router-dom"; 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import "../styles/SideMenu.css";
 
 
 const PlayerSideMenu = () => {
-
-    useEffect(() => {
-    document.title = "SPARTA | Dashboard";
-  }, []);
-
   const navigate = useNavigate();
   const location = useLocation();
+  const [user, setUser] = useState(JSON.parse(localStorage.getItem("auth")));
 
-  const user = JSON.parse(localStorage.getItem("auth"));
-
+  // To Update the local data of users
+  useEffect(() => {
+    const fetchUser = async () => {
+      const res = await fetch(`http://localhost:5000/api/players/${user._id}`);
+      const UpdateUser = await res.json();
+      setUser(UpdateUser);
+      localStorage.setItem("auth", JSON.stringify(UpdateUser));
+    };
+    fetchUser();
+  }, [user]);
+  
   const handleLogout = () => {
     localStorage.removeItem("auth");
     navigate("/");
@@ -36,7 +41,7 @@ const PlayerSideMenu = () => {
         </li>
 
         <li className={location.pathname.includes("/profile") ? "active" : ""}>
-          <Link to={`/${user._id}/profile`}> <FaUserCircle /> User Profile </Link>
+          <Link to={`/${user?._id}/profile`}> <FaUserCircle /> User Profile </Link>
         </li>
 
         <li className={location.pathname === "/event" ? "active" : ""}>

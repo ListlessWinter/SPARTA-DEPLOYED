@@ -4,17 +4,15 @@ import { useParams } from "react-router-dom";
 import "../../styles/PlayerProfile.css";
 
 const PlayerProfile = () => {
-  //const user = JSON.parse(localStorage.getItem("auth"));
   const { playerId } = useParams();
   const [player, setPlayer] = useState({});
   const [activeTab, setActiveTab] = useState("player");
-  //const [selectedDocument, setSelectedDocument] = useState(null);
-  //const [isModalOpen, setIsModalOpen] = useState(false);
 
+  // Fetch Player details
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const res = await fetch(`https://sparta-deployed.onrender.com/api/players/${playerId}`);
+        const res = await fetch(`http://localhost:5000/api/players/${playerId}`);
         const data = await res.json();
         setPlayer(data);
       } catch (err) {

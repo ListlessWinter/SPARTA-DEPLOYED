@@ -8,7 +8,21 @@
   min-height: calc(100vh - 100px);
 }
 
-/* Calendar Container */
+@media (min-width: 1920px) {
+  .dashboard-container {
+    max-width: 1720px;
+    grid-template-columns: 2fr 1fr;
+    gap: 25px;
+    padding: 20px;
+  }
+
+  .calendar-container{
+    height: fit-content;
+    width: 1000px;
+  }
+
+}
+
 .calendar-container {
   background: white;
   border-radius: 16px;
@@ -18,7 +32,6 @@
   border: 2px solid #2c4474;
 }
 
-/* Modern Calendar Styling */
 .custom-calendar {
   border: none !important;
   background: transparent;
@@ -27,7 +40,7 @@
   margin: 0 !important;
 }
 
-/* Navigation */
+/* Navigation <<<IMPORTANT>>> */
 .react-calendar__navigation {
   display: flex;
   margin-bottom: 20px;
@@ -57,7 +70,6 @@
   color: #1a2a49;
 }
 
-/* Weekdays */
 .react-calendar__month-view__weekdays {
   margin-bottom: 10px;
 }
@@ -75,7 +87,6 @@
   text-decoration: none;
 }
 
-/* Tiles */
 .react-calendar__tile {
   border: none;
   background: none;
@@ -108,7 +119,6 @@
   font-weight: 600;
 }
 
-/* Event Markers */
 .event-marker {
   background: #ce892c;
   color: white;
@@ -128,15 +138,16 @@
   font-weight: 700;
 }
 
-/* Upcoming Events */
 .upcoming-events {
   background: white;
   border-radius: 16px;
-  padding: 24px;
+  padding: 20px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-  height: fit-content;
   border: 2px solid #a56806;
   font-family: Poppins, sans-serif;
+  height: fit-content;
+  width: 25vw;
+
 }
 
 .upcoming-events h3 {
@@ -181,44 +192,30 @@
   font-size: 13px;
 }
 
-/* Responsive Design */
-@media (max-width: 968px) {
-  .dashboard-container {
-    grid-template-columns: 1fr;
-    gap: 20px;
-    padding: 15px;
-  }
-  
-  .calendar-container {
-    padding: 20px;
-  }
-  
-  .react-calendar__tile {
-    padding: 10px 6px;
-    min-height: 50px;
-    font-size: 13px;
-  }
+.upcoming-event:hover {
+  background: #fff7ed;
+  transform: translateX(4px);
 }
 
-@media (max-width: 480px) {
-  .dashboard-container {
-    padding: 10px;
-  }
-  
-  .calendar-container,
-  .upcoming-events {
-    padding: 16px;
-    border-radius: 12px;
-  }
-  
-  .react-calendar__tile {
-    padding: 8px 4px;
-    min-height: 45px;
-    font-size: 12px;
-  }
+.upcoming-event strong {
+  color: #1a2a49;
+  display: block;
+  margin-bottom: 4px;
+  font-size: 14px;
 }
 
-/* Modal Styles */
+.upcoming-event time {
+  color: #6b7280;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.upcoming-event .location {
+  color: #6b7280;
+  font-size: 12px;
+  margin-top: 4px;
+}
+
 .event-modal-overlay {
   position: fixed;
   top: 0;
@@ -289,40 +286,6 @@
   text-transform: uppercase;
 }
 
-.upcoming-event {
-  background: #f8f9fa;
-  border-left: 4px solid #ce892c;
-  padding: 16px;
-  border-radius: 8px;
-  transition: all 0.2s ease;
-  text-transform: uppercase;
-  font-family: Montserrat, sans-serif;
-}
-
-.upcoming-event:hover {
-  background: #fff7ed;
-  transform: translateX(4px);
-}
-
-.upcoming-event strong {
-  color: #1a2a49;
-  display: block;
-  margin-bottom: 4px;
-  font-size: 14px;
-}
-
-.upcoming-event time {
-  color: #6b7280;
-  font-size: 12px;
-  font-weight: 600;
-}
-
-.upcoming-event .location {
-  color: #6b7280;
-  font-size: 12px;
-  margin-top: 4px;
-}
-
 /* Multi-day event highlighting */
 .react-calendar__tile--has-event {
   background: linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%);
@@ -339,7 +302,6 @@
   border-color: #fb923c;
 }
 
-/* Enhanced event indicator */
 .event-indicator {
   display: flex;
   justify-content: center;
@@ -378,7 +340,6 @@
   border-bottom-right-radius: 12px;
 }
 
-/* No events message */
 .no-events {
   text-align: center;
   color: #6b7280;

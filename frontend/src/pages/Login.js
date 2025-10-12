@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../styles/Login.css';
 
@@ -16,10 +16,6 @@ export default function LoginPage() {
 
   const navigate = useNavigate();
 
-    useEffect(() => {
-      document.title = "SPARTA | Login";
-    }, []);
-
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -27,7 +23,7 @@ export default function LoginPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // base payload
+    // Payload
     const payload = {
       email: formData.email,
     };
@@ -43,7 +39,7 @@ export default function LoginPage() {
     }
 
     try {
-      const response = await fetch(`https://sparta-deployed.onrender.com/api/auth/login/${role}`, {
+      const response = await fetch(`http://localhost:5000/api/auth/login/${role}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
@@ -214,7 +210,7 @@ export default function LoginPage() {
                   type="button"
                   className="switch-button"
                   style={{ marginTop: '0px' }}
-                  onClick={() => navigate('/institution')}
+                  onClick={() => navigate('/spectator/institution')}
                 >
                   Spectator
                 </button>

@@ -12,22 +12,20 @@ const Teams = () => {
   const navigate = useNavigate();
   const [teams, setTeams] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
-  const [menuOpen, setMenuOpen] = useState(null); // track which menu is open
-  const [editTeam, setEditTeam] = useState(null); // for modal
+  const [menuOpen, setMenuOpen] = useState(null); 
+  const [editTeam, setEditTeam] = useState(null); 
 
   const user = JSON.parse(localStorage.getItem("auth"));
-  const userInstitution = user?.institution;
 
   const [coordinators, setCoordinators] = useState([]);
   const [search, setSearch] = useState("");
   const [showDropdown, setShowDropdown] = useState(false);
 
+  // Fetch Coords
   useEffect(() => {
     const fetchCoordinators = async () => {
       try {
-        const res = await fetch(
-          `https://sparta-deployed.onrender.com/api/coordinators?institution=${userInstitution}&event=${decodedName}`
-        );
+        const res = await fetch(`http://localhost:5000/api/coordinators?institution=${user?.institution}&event=${decodedName}`);
         const data = await res.json();
         setCoordinators(Array.isArray(data) ? data : []);
       } catch (err) {
@@ -35,7 +33,7 @@ const Teams = () => {
       }
     };
     fetchCoordinators();
-  }, [userInstitution, decodedName]);
+  }, [user?.institution, decodedName]);
 
 
   const filteredTeams = teams.filter((team) =>
@@ -48,14 +46,11 @@ const Teams = () => {
       !editTeam?.coordinators?.some((sel) => sel._id === c._id)
   );
 
+  // Fetch teams
   useEffect(() => {
     const fetchTeams = async () => {
       try {
-        const response = await fetch(
-          `https://sparta-deployed.onrender.com/api/teams?institution=${encodeURIComponent(
-            userInstitution
-          )}&event=${encodeURIComponent(decodedName)}`
-        );
+        const response = await fetch(`http://localhost:5000/api/teams?institution=${encodeURIComponent(user?.institution)}&event=${encodeURIComponent(decodedName)}`);
         const data = await response.json();
         setTeams(data);
       } catch (error) {
@@ -63,33 +58,33 @@ const Teams = () => {
       }
     };
 
-    if (userInstitution && decodedName) {
+    if (user?.institution && decodedName) {
       fetchTeams();
     }
-  }, [userInstitution, decodedName]);
+  }, [user?.institution, decodedName]);
 
+  // Create team button nav
   const handleAddTeam = () => {
     navigate(`/admin/event/${encodeURIComponent(decodedName)}/addteam`);
   };
 
+  // Selected Team button nav
   const handleSelectTeam = (teamName) => {
-    navigate(
-      `/admin/event/${encodeURIComponent(
-        decodedName
-      )}/team/${encodeURIComponent(teamName)}/players`
-    );
+    navigate(`/admin/event/${encodeURIComponent(decodedName)}/team/${encodeURIComponent(teamName)}/players`);
   };
 
+  // Delete team
   const handleDelete = async (id) => {
     if (!window.confirm("Are you sure you want to delete this team?")) return;
     try {
-      await fetch(`https://sparta-deployed.onrender.comapi/team/${id}`, { method: "DELETE" });
+      await fetch(`http://localhost:5000/api/team/${id}`, { method: "DELETE" });
       setTeams(teams.filter((t) => t._id !== id));
     } catch (err) {
       console.error("Delete failed:", err);
     }
   };
 
+  // Edit team deatails
   const handleEditSave = async () => {
     try {
       const formData = new FormData();
@@ -103,7 +98,7 @@ const Teams = () => {
         formData.append("teamIcon", editTeam.newIcon);
       }
   
-      const res = await fetch(`https://sparta-deployed.onrender.com/api/team/${editTeam._id}`, {
+      const res = await fetch(`http://localhost:5000/api/team/${editTeam._id}`, {
         method: "PUT",
         body: formData,
       });
@@ -111,8 +106,7 @@ const Teams = () => {
       if (!res.ok) {
         throw new Error("Failed to update team");
       }
-  
-      const { team: updatedTeam } = await res.json(); // ✅ FIX
+      const { team: updatedTeam } = await res.json(); 
       setTeams(teams.map((t) => (t._id === updatedTeam._id ? updatedTeam : t)));
       setEditTeam(null);
     } catch (err) {
@@ -120,82 +114,82 @@ const Teams = () => {
     }
   };
   
-
-
   return (
     <MainLayout>
-      <div className="teams-header-row">
-        <h3>TEAMS FOR {decodedName}</h3>
+      <div className="teams-main-container">
+        <div className="teams-header-row">
+          <h3>TEAMS FOR {decodedName}</h3>
 
-        <input
-          type="text"
-          className="team-search-bar"
-          placeholder="Search teams..."
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          style={{ marginRight: "16px" }}
-        />
-        {(user.role === "admin" || user.role === "co-organizer") && (
-        <button className="new-team-btn" onClick={handleAddTeam}>
-          + New Team
-        </button>
-        )}
-      </div>
+          <input
+            type="text"
+            className="team-search-bar"
+            placeholder="Search teams..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            style={{ marginRight: "16px" }}
+          />
+          {(user.role === "admin" || user.role === "co-organizer") && (
+          <button className="new-team-btn" onClick={handleAddTeam}>
+            + New Team
+          </button>
+          )}
+        </div>
 
-      <div className="teams-event">
-        {filteredTeams.length === 0 ? (
-          <div className="no-teams-found">
-            <VscSearchStop size={48} />
-            <p>No teams found.</p>
-          </div>
-        ) : (
-          <ul className="team-list">
-            {filteredTeams.map((team) => (
-              <li key={team._id} className="team-item">
-                <div className="team-card">
-                  <button
-                    className="team-btn"
-                    onClick={() => handleSelectTeam(team.teamName)}
-                    style={{
-                      backgroundColor: team.teamColor || "#A96B24",
-                      backgroundImage: team.teamIcon
-                        ? `url(${team.teamIcon})`
-                        : "none",
-                      backgroundSize: "cover",
-                      backgroundPosition: "center",
-                      color: "#fff",
-                    }}
-                  >
-                    <span className="team-name-overlay">{team.teamName}</span>
-                  </button>
+        <div className="teams-event">
+          {filteredTeams.length === 0 ? (
+            <div className="no-teams-found">
+              <VscSearchStop size={48} />
+              <p>No teams found.</p>
+            </div>
+          ) : (
+            <ul className="team-list">
+              {filteredTeams.map((team) => (
+                <li key={team._id} className="team-item">
+                  <div className="team-card">
+                    <button
+                      className="team-btn"
+                      onClick={() => handleSelectTeam(team.teamName)}
+                      style={{
+                        backgroundColor: team.teamColor || "#A96B24",
+                        backgroundImage: team.teamIcon
+                          ? `url(${team.teamIcon})`
+                          : "none",
+                        backgroundSize: "cover",
+                        backgroundPosition: "center",
+                        color: "#fff",
+                      }}
+                    >
+                      <span className="team-name-overlay">{team.teamName}</span>
+                    </button>
 
-                  {/* Menu button */}
-                  <div
-                    className="menu-container"
-                    onClick={(e) => e.stopPropagation()} // prevent opening players page
-                  >
-                    <MoreVertical
-                      className="menu-icon"
-                      onClick={() =>
-                        setMenuOpen(menuOpen === team._id ? null : team._id)
-                      }
-                    />
-                    {menuOpen === team._id && (
-                      <div className="menu-dropdown">
-                        <button onClick={() => setEditTeam(team)}>Edit</button>
-                        <button onClick={() => handleDelete(team._id)}>
-                          Delete
-                        </button>
-                      </div>
-                    )}
+                    {/* Menu button */}
+                    <div
+                      className="menu-container"
+                      onClick={(e) => e.stopPropagation()} // prevent opening players page
+                    >
+                      <MoreVertical
+                        className="menu-icon"
+                        onClick={() =>
+                          setMenuOpen(menuOpen === team._id ? null : team._id)
+                        }
+                      />
+                      {menuOpen === team._id && (
+                        <div className="menu-dropdown">
+                          <button onClick={() => setEditTeam(team)}>Edit</button>
+                          <button onClick={() => handleDelete(team._id)}>
+                            Delete
+                          </button>
+                        </div>
+                      )}
+                    </div>
                   </div>
-                </div>
-              </li>
-            ))}
-          </ul>
-        )}
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
       </div>
-
+      
       {/* Edit Modal */}
       {editTeam && (
         <div className="modal-overlay">

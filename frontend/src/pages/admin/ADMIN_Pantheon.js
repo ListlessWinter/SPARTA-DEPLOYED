@@ -15,31 +15,35 @@ const Pantheon = () => {
   // Fetch events
   useEffect(() => {
     const fetchEvents = async () => {
-      const response = await fetch(`https://sparta-deployed.onrender.com/api/past-events?institution=${userInstitution}`);
+      const response = await fetch(`http://localhost:5000/api/past-events?institution=${userInstitution}`);
       const data = await response.json();
       setEvents(data);
     };
     fetchEvents();
   }, [userInstitution]);
 
+
+  // Event button nav
   const handleClickEvent = (event) => {
     navigate(`/admin/pantheon/${encodeURIComponent(event.eventName)}/ranking`);
   };
 
+  // Delete event
   const handleDelete = async (id) => {
     if (!window.confirm("Are you sure you want to delete this event?")) return;
     try {
-      await fetch(`https://sparta-deployed.onrender.com/api/event/${id}`, { method: "DELETE" });
+      await fetch(`http://localhost:5000/api/event/${id}`, { method: "DELETE" });
       setEvents(events.filter((e) => e._id !== id));
     } catch (err) {
       console.error("Delete failed:", err);
     }
   };
 
+  // Edit event
   const handleEditSave = async () => {
     try {
       const res = await fetch(
-        `https://sparta-deployed.onrender.com/api/event/${editEvent._id}`,
+        `http://localhost:5000/api/event/${editEvent._id}`,
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
@@ -56,9 +60,7 @@ const Pantheon = () => {
   };
 
   return (
-
     <MainLayout>
-
       <div className="event-list">
        
       {events.map((event) => (
@@ -287,7 +289,6 @@ const Pantheon = () => {
         </div>
       )}
     </MainLayout>
-
   )
 };
 

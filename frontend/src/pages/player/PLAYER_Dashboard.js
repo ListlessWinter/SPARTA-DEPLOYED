@@ -15,17 +15,16 @@ const PlayerDashboard = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [multiDayEvents, setMultiDayEvents] = useState([]);
   
+    // Fetch game schedules
     useEffect(() => {
-      document.title = "SPARTA | Dashboard";
-  
       const fetchGames = async () => {
         try {
-          const res = await axios.get(`https://sparta-deployed.onrender.com/api/games?institution=${encodeURIComponent(user?.institution)}&eventName=${encodeURIComponent(user?.eventName)}`);
+          const res = await axios.get(`http://localhost:5000/api/games?institution=${encodeURIComponent(user?.institution)}&eventName=${encodeURIComponent(user?.eventName)}`);
           const matches = [];
           const multiDay = [];
   
           res.data.forEach(game => {
-            // Check if this game spans multiple days
+            // Check if this game is multiple days
             const gameDates = game.matches
               .filter(match => match.date)
               .map(match => new Date(match.date).toDateString());

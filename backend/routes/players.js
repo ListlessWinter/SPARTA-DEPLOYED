@@ -8,19 +8,8 @@ const mongoose = require("mongoose");
 const router = express.Router();
 
 const multer = require("multer");
-const path = require("path");
-
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, "uploads/requirements/");
-  },
-  filename: (req, file, cb) => {
-    cb(null, Date.now() + "-" + file.originalname);
-  },
-});
-
-const upload = multer({ storage });
-
+const supabase = require("./supabaseClient");
+const upload = multer({ storage: multer.memoryStorage() });
 
 // GET pending players to enter the insitution
 router.get("/players/pending", async (req, res) => {
@@ -67,10 +56,10 @@ router.put("/players/approve/:id", async (req, res) => {
           html: 
           `
           <div style="font-family: Arial, sans-serif; color: #222;">
-          <p>Dear ${updatedPlayer.name},</p>
+          <p>Greetings!</p>
 
           <p>
-          We are excited to inform you that your request to register in the ${updatedPlayer.eventName} at ${updatedPlayer.institution}have been <b>APPROVED</b>.
+          I hope this email finds you well! We are excited to inform you that your request to register in the <b>${updatedPlayer.eventName}</b> at <b>${updatedPlayer.institution}</b>  has been <b>APPROVED</b>.
           </p>
 
           <p>Congratulations! And we are looking forward for your active participation in the event.</p>
@@ -113,7 +102,7 @@ router.delete("/players/:id", async (req, res) => {
 
           <p>Greetings!<br/>We hope this email finds you well.</p>
 
-          <p>Your request to register for the ${updatedPlayer.eventName} at ${updatedPlayer.institution} has been <b>DECLINED</b>. <br />
+          <p>Your request to register for the ${updatedPlayer.eventName} at ${updatedPlayer.institution} has unfortunately been <b>DECLINED</b>. <br />
           There might have been an issue with your institution or event requirements.</p>
 
           <p>If this has been a mistake, please approach or contact your event organizer for assistance.</p>
@@ -149,7 +138,7 @@ router.put("/players/team-approve/:id", async (req, res) => {
           html: `
           
           <div style="font-family: Arial, sans-serif; color: #222;">
-          <p>Dear ${updatedPlayer.name},</p>
+          <p>Greetings! <br /> We hope this email finds you well!</p>
 
           <p>
           We are excited to inform you that your request to register in the ${updatedPlayer.game} under ${updatedPlayer.team} has been <b>APPROVED</b>.
@@ -181,7 +170,7 @@ router.put("/players/team-decline/:id", async (req, res) => {
       req.params.id,
       { 
         team: "",
-        game: "",
+        game: [],
         teamApproval: false,
         uploadedRequirements: [],
        },
@@ -201,13 +190,14 @@ router.put("/players/team-decline/:id", async (req, res) => {
         subject: `UPDATE on your request made on SPARTA`,
         html: `
           <div style="font-family: Arial, sans-serif; color: #222;">
-          <p>Dear ${declinedPlayer.name},</p>
+          <p>Greetings! <br /> We hope this email finds you well!</p>
 
           <p>
-          We hope this message finds you well. We regret to inform you that your request to register in your chosen sport game has been <b>DECLINED</b>.
+          We regret to inform you that your request to register in your chosen sport game has been <b>DECLINED</b>.
           </p>
 
-          <p>We understand that this news may be disappointing, and however we encourage you to explore other sport games to represent our team.</p>
+          <p>We understand that this news may be disappointing, and however we encourage you to explore other sport games to represent our team. Please don't
+          hesitate to contact our organizers and team managers for further assistance.</p>
 
           <p style="margin-top: 24px;">
           
@@ -226,80 +216,90 @@ router.put("/players/team-decline/:id", async (req, res) => {
   }
 });
 
-/*
-// REGISTER game for player
-router.put("/players/:id/register-game", async (req, res) => {
-  const { playerName, team, game } = req.body;
-  const updatedPlayer = await Player.findByIdAndUpdate(req.params.id, { playerName, team, game }, { new: true });
-  if (!updatedPlayer) return res.status(404).json({ message: "Player not found" });
-  res.json({ message: "Game registered", player: updatedPlayer });
-});
-*/
-
 // REGISTER game for player
 router.put("/players/:id/register-game", upload.any(), async (req, res) => {
-    try {
-      const { playerName, team, sex } = req.body;
-      let games = req.body.game;
+  try {
+    const { playerName, team, sex } = req.body;
+    let games = req.body.game;
 
-      // Make sure that games is always an array
-      if (!games) {
-        return res.status(400).json({ message: "No game selected" });
-      }
-      if (!Array.isArray(games)) games = [games];
-
-      // Check if the gameid is in the mongodb 
-      const validGameIds = games.filter((id) =>
-        mongoose.Types.ObjectId.isValid(id)
-      );
-      if (!validGameIds.length) {
-        return res.status(400).json({ message: "Invalid game ID(s)" });
-      }
-
-      // Get the OG game documents
-      const gameDocs = await Game.find({ _id: { $in: validGameIds } });
-      if (!gameDocs.length) {
-        return res.status(404).json({ message: "Games not found" });
-      }
-
-      // Collect uploaded requirement files
-      const uploadedRequirements = (req.files || []).map((file) => {
-        const match = file.fieldname.match(/requirements\[(.+)\]/);
-        const reqName = match ? match[1] : file.fieldname;
-        return {
-          name: reqName,
-          filePath: `/uploads/requirements/${file.filename}`,
-        };
-      });
-
-      // Update the player
-      const updatedPlayer = await Player.findByIdAndUpdate(
-        req.params.id,
-        {
-          $set: { playerName, team, sex },
-          $push: {
-            game: {
-              $each: gameDocs.map((g) => `${g.category} ${g.gameType}`),
-            },
-            uploadedRequirements: { $each: uploadedRequirements },
-          },
-        },
-        { new: true }
-      );
-
-      if (!updatedPlayer) {
-        return res.status(404).json({ message: "Player not found" });
-      }
-
-      res.json({ message: "Game(s) registered", player: updatedPlayer });
-    } catch (err) {
-      console.error("Error registering player:", err);
-      res.status(500).json({ message: "Failed to register player" });
+    // Ensure games is always an array
+    if (!games) {
+      return res.status(400).json({ message: "No game selected" });
     }
+    if (!Array.isArray(games)) games = [games];
+
+    // Validate game IDs
+    const validGameIds = games.filter((id) =>
+      mongoose.Types.ObjectId.isValid(id)
+    );
+    if (!validGameIds.length) {
+      return res.status(400).json({ message: "Invalid game ID(s)" });
+    }
+
+    // Find the game docs
+    const gameDocs = await Game.find({ _id: { $in: validGameIds } });
+    if (!gameDocs.length) {
+      return res.status(404).json({ message: "Games not found" });
+    }
+
+    // Upload each requirement file to Supabase
+    const uploadedRequirements = [];
+
+    for (const file of req.files || []) {
+      const match = file.fieldname.match(/requirements\[(.+)\]/);
+      const reqName = match ? match[1] : file.fieldname;
+
+      const uniqueFileName = `req-${Date.now()}-${file.originalname}`;
+
+      const { data, error } = await supabase.storage
+        .from("requirements") // bucket or da storage name
+        .upload(uniqueFileName, file.buffer, {
+          cacheControl: "3600",
+          upsert: false,
+          contentType: file.mimetype,
+        });
+
+      if (error) {
+        console.error("Supabase upload failed:", error);
+        return res.status(500).json({ message: "Failed to upload requirement file" });
+      }
+
+      // Get public URL
+      const { data: publicData } = supabase.storage
+        .from("requirements")
+        .getPublicUrl(uniqueFileName);
+
+      uploadedRequirements.push({
+        name: reqName,
+        filePath: publicData.publicUrl, // store public URL
+      });
+    }
+
+    // Update the player
+    const updatedPlayer = await Player.findByIdAndUpdate(
+      req.params.id,
+      {
+        $set: { playerName, team, sex, teamApproval: false },
+        $push: {
+          game: {
+            $each: gameDocs.map((g) => `${g.category} ${g.gameType}`),
+          },
+          uploadedRequirements: { $each: uploadedRequirements },
+        },
+          },
+      { new: true }
+    );
+
+    if (!updatedPlayer) {
+      return res.status(404).json({ message: "Player not found" });
+    }
+
+    res.json({ message: "Game(s) registered", player: updatedPlayer });
+  } catch (err) {
+    console.error("Error registering player:", err);
+    res.status(500).json({ message: "Failed to register player" });
   }
-);
-
-
+});
 
 // GET players by team
 router.get("/players", async (req, res) => {

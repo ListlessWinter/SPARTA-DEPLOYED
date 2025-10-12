@@ -10,7 +10,6 @@ import "../../styles/ADMIN_Games.css";
 
 const PlayerGame = () => {
   const user = JSON.parse(localStorage.getItem("auth"));
-  const userInstitution = user?.institution;
   const { eventName } = useParams();
   const decodedName = decodeURIComponent(eventName);
   const navigate = useNavigate();
@@ -18,11 +17,11 @@ const PlayerGame = () => {
   const [gamesByType, setGamesByType] = useState({});
   const [searchQuery, setSearchQuery] = useState("");
   const [modalOpen, setModalOpen] = useState(false);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
 
   const [teams, setTeams] = useState([]);
   const [games, setGames] = useState([]);
   const [requirementFiles, setRequirementFiles] = useState({});
-
 
   //Game Register
   const [playerName, setPlayerName] = useState("");
@@ -30,6 +29,13 @@ const PlayerGame = () => {
   const [gender, setGender] = useState("");
   const [gamesSelected, setGamesSelected] = useState([]);
   const [eventRequirements, setEventRequirements] = useState([]);
+
+  // For default data when it have one, this for registering
+  useEffect(() => {
+    setPlayerName(user?.playerName || "");
+    setTeam(user?.team || "");
+    setGender(user?.sex || "");
+  }, [user?.playerName, user?.team, user?.sex]);
 
 
   const filteredGames = Object.entries(gamesByType).filter(
@@ -50,17 +56,12 @@ const PlayerGame = () => {
     Chess: GiChessKnight,
   };
 
-  // Fetch grouped games
+  // Fetch Games
   useEffect(() => {
     const fetchGames = async () => {
       try {
-        const response = await fetch(
-          `https://sparta-deployed.onrender.com/api/games?institution=${encodeURIComponent(
-            userInstitution
-          )}&event=${encodeURIComponent(decodedName)}`
-        );
+        const response = await fetch(`http://localhost:5000/api/games?institution=${encodeURIComponent(user?.institution)}&eventName=${encodeURIComponent(decodedName)}`);
         const data = await response.json();
-
         const grouped = {};
         data.forEach((game) => {
           const key = `${game.category} ${game.gameType}`;
@@ -75,17 +76,13 @@ const PlayerGame = () => {
       }
     };
     fetchGames();
-  }, [userInstitution, decodedName]);
+  }, [user?.institution, decodedName]);
 
   // Fetch teams
   useEffect(() => {
     const fetchTeams = async () => {
       try {
-        const res = await fetch(
-          `https://sparta-deployed.onrender.com/api/teams?institution=${encodeURIComponent(
-            userInstitution
-          )}&event=${encodeURIComponent(decodedName)}`
-        );
+        const res = await fetch(`http://localhost:5000/api/teams?institution=${encodeURIComponent(user?.institution)}&event=${encodeURIComponent(decodedName)}`);
         const data = await res.json();
         setTeams(data);
       } catch (err) {
@@ -93,24 +90,21 @@ const PlayerGame = () => {
       }
     };
     fetchTeams();
-  }, [userInstitution, decodedName]);
+  }, [user?.institution, decodedName]);
 
+  // Fetch Reqiorements
   useEffect(() => {
     const fetchEventRequirements = async () => {
       try {
-        const res = await fetch(
-          `https://sparta-deployed.onrender.com/api/event?eventName=${encodeURIComponent(decodedName)}&institution=${encodeURIComponent(userInstitution)}`
-        );
+        const res = await fetch(`http://localhost:5000/api/event?eventName=${encodeURIComponent(decodedName)}&institution=${encodeURIComponent(user?.institution)}`);
         const data = await res.json();
-        setEventRequirements(data.requirements || []); // Ensure it's always an array
+        setEventRequirements(data.requirements || []);
       } catch (err) {
         console.error("Error fetching event requirements:", err);
       }
     };
-
     fetchEventRequirements();
-  }, [decodedName, userInstitution]);
-
+  }, [decodedName, user?.institution]);
 
   // Handle submit
   const handleSubmit = async (e) => {
@@ -124,7 +118,6 @@ const PlayerGame = () => {
       formData.append("game", g);
     });
 
-
     // Append each requirement’s file
     Object.entries(requirementFiles).forEach(([req, file]) => {
       formData.append(`requirements[${req}]`, file);
@@ -132,7 +125,7 @@ const PlayerGame = () => {
 
     try {
       const res = await fetch(
-        `https://sparta-deployed.onrender.com/api/players/${user._id}/register-game`,
+        `http://localhost:5000/api/players/${user._id}/register-game`,
         {
           method: "PUT",
           body: formData,
@@ -141,8 +134,8 @@ const PlayerGame = () => {
 
       const data = await res.json();
       if (res.ok) {
-        alert("Successfully registered for the game!");
-        setModalOpen(false);
+          setShowSuccessModal(true);
+          setModalOpen(false);
       } else {
         alert(data.message || "Registration failed");
       }
@@ -332,6 +325,22 @@ const PlayerGame = () => {
                 Register for Game
               </button>
             </form>
+          </div>
+        </div>
+      )}
+
+      {showSuccessModal && (
+        <div className="game-register-overlay">
+          <div className="game-register-content">
+            <h2 style={{ color: "#1A2A49" }}>REGISTRATION SUCCESSFUL!</h2>
+            <p style={{ margin: "18px 0" }}>You have successfully registered for the game. <br/ > Please check your email for updates regarding your registration.</p>
+            <button
+              className="game-register-button"
+              style={{ marginTop: "12px" }}
+              onClick={() => setShowSuccessModal(false)}
+            >
+              CLOSE
+            </button>
           </div>
         </div>
       )}
