@@ -39,7 +39,7 @@ const Game = () => {
     const fetchGames = async () => {
       try {
         const response = await fetch(
-          `http://localhost:5000/api/games?institution=${encodeURIComponent(userInstitution)}&eventName=${encodeURIComponent(decodedName)}`
+          `https://sparta-deployed.onrender.com/api/games?institution=${encodeURIComponent(userInstitution)}&eventName=${encodeURIComponent(decodedName)}`
         );
         const data = await response.json();
 
@@ -70,7 +70,7 @@ const Game = () => {
   const handleDeleteGame = async (gameId) => {
     if (!window.confirm("Are you sure you want to delete this game?")) return;
     try {
-      const res = await fetch(`http://localhost:5000/api/games/${gameId}`, {
+      const res = await fetch(`https://sparta-deployed.onrender.com/api/games/${gameId}`, {
         method: "DELETE",
       });
   

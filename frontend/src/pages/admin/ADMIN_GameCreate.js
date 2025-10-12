@@ -33,7 +33,7 @@ const CreateGame = () => {
   useEffect(() => {
     const fetchTeams = async () => {
       try {
-        const response = await fetch(`http://localhost:5000/api/teams?institution=${encodeURIComponent(user?.institution)}&event=${encodeURIComponent(decodedEventName)}`);
+        const response = await fetch(`https://sparta-deployed.onrender.com/api/teams?institution=${encodeURIComponent(user?.institution)}&event=${encodeURIComponent(decodedEventName)}`);
         const data = await response.json();
         setAvailableTeams(data);
       } catch (error) {
@@ -84,7 +84,7 @@ const CreateGame = () => {
       }
       formData.append("rulesText", rulesText); 
       
-      const response = await fetch("http://localhost:5000/api/games", {
+      const response = await fetch("https://sparta-deployed.onrender.com/api/games", {
         method: "POST",
         body: formData,
       });
@@ -112,7 +112,7 @@ const CreateGame = () => {
   useEffect(() => {
     const fetchCoordinators = async () => {
       try {
-        const res = await fetch(`http://localhost:5000/api/coordinators?institution=${user?.institution}&event=${decodedEventName}`);
+        const res = await fetch(`https://sparta-deployed.onrender.com/api/coordinators?institution=${user?.institution}&event=${decodedEventName}`);
         const data = await res.json();
         setCoordinators(Array.isArray(data) ? data : []);
       } catch (err) {
