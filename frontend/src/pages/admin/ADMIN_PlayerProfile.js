@@ -12,7 +12,7 @@ const PlayerProfile = () => {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const res = await fetch(`http://localhost:5000/api/players/${playerId}`);
+        const res = await fetch(`https://sparta-deployed.onrender.com/api/players/${playerId}`);
         const data = await res.json();
         setPlayer(data);
       } catch (err) {

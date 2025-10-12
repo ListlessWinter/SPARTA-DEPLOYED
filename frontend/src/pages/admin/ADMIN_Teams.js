@@ -25,7 +25,7 @@ const Teams = () => {
   useEffect(() => {
     const fetchCoordinators = async () => {
       try {
-        const res = await fetch(`http://localhost:5000/api/coordinators?institution=${user?.institution}&event=${decodedName}`);
+        const res = await fetch(`https://sparta-deployed.onrender.com/api/coordinators?institution=${user?.institution}&event=${decodedName}`);
         const data = await res.json();
         setCoordinators(Array.isArray(data) ? data : []);
       } catch (err) {
@@ -50,7 +50,7 @@ const Teams = () => {
   useEffect(() => {
     const fetchTeams = async () => {
       try {
-        const response = await fetch(`http://localhost:5000/api/teams?institution=${encodeURIComponent(user?.institution)}&event=${encodeURIComponent(decodedName)}`);
+        const response = await fetch(`https://sparta-deployed.onrender.com/api/teams?institution=${encodeURIComponent(user?.institution)}&event=${encodeURIComponent(decodedName)}`);
         const data = await response.json();
         setTeams(data);
       } catch (error) {
@@ -77,7 +77,7 @@ const Teams = () => {
   const handleDelete = async (id) => {
     if (!window.confirm("Are you sure you want to delete this team?")) return;
     try {
-      await fetch(`http://localhost:5000/api/team/${id}`, { method: "DELETE" });
+      await fetch(`https://sparta-deployed.onrender.com/api/team/${id}`, { method: "DELETE" });
       setTeams(teams.filter((t) => t._id !== id));
     } catch (err) {
       console.error("Delete failed:", err);
@@ -98,7 +98,7 @@ const Teams = () => {
         formData.append("teamIcon", editTeam.newIcon);
       }
   
-      const res = await fetch(`http://localhost:5000/api/team/${editTeam._id}`, {
+      const res = await fetch(`https://sparta-deployed.onrender.com/api/team/${editTeam._id}`, {
         method: "PUT",
         body: formData,
       });
