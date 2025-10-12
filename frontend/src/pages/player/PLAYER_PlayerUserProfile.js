@@ -62,7 +62,18 @@ const PlayerUserProfile = () => {
             alt="Profile"
             onError={(e) => { e.target.src = "default-pic.png"; }}
           />
-          <p><b>{player.playerName || "N/A"}</b></p>
+{isEditing ? (
+    <input
+      type="text"
+      name="playerName"
+      value={player.playerName || ""}
+      onChange={handleChange}
+      className="profile-input"
+      placeholder="Enter Name"
+    />
+  ) : (
+    <p><b>{player.playerName || "N/A"}</b></p>
+  )}
           <p>{player.institution}</p>
         </div>
 
