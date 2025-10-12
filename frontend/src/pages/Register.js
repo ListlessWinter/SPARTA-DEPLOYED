@@ -36,15 +36,21 @@ export default function RegisterPage() {
   }, []);
 
   useEffect(() => {
-    if (role === 'player' && formData.institution) {
-      fetch(
-        `https://sparta-deployed.onrender.com/api/events?institution=${encodeURIComponent(formData.institution)}`
-      )
-        .then((res) => res.json())
-        .then((data) => setEvents(data))
-        .catch((err) => console.error('Failed to load events:', err));
-    }
+    const fetchEvents = async () => {
+      if (role === 'player' && formData.institution) {
+        try {
+          const response = await fetch(`https://sparta-deployed.onrender.com/api/events?institution=${encodeURIComponent(formData.institution)}`);
+          const data = await response.json();
+          setEvents(data);
+        } catch (err) {
+          console.error('Failed to load events:', err);
+        }
+      }
+    };
+  
+    fetchEvents();
   }, [formData.institution, role]);
+  
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
