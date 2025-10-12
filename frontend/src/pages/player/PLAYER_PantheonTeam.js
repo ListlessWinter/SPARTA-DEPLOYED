@@ -15,6 +15,10 @@ const PlayerPantheonTeam = () => {
     const [teamColor, setTeamColor] = useState("#808080");
     const [teamRank, setTeamRank] = useState(null);
 
+    useEffect(() => {
+        document.title = "SPARTA | Pantheon Team";
+      }, []);
+
     // Fetch players
     useEffect(() => {
         const fetchPlayers = async () => {

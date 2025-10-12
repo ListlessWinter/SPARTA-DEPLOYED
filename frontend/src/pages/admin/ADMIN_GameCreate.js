@@ -29,6 +29,10 @@ const CreateGame = () => {
 
   const user = JSON.parse(localStorage.getItem("auth"));
 
+  useEffect(() => {
+    document.title = "SPARTA | Game Create";
+  }, []);
+
   // Fetch teams
   useEffect(() => {
     const fetchTeams = async () => {

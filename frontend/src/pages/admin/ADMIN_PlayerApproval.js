@@ -12,6 +12,10 @@ const Approval = () => {
   const [showToast, setShowToast] = useState({ show: false, message: "", type: "" });
   const [declineConfirm, setDeclineConfirm] = useState({ show: false, playerId: null });
 
+  useEffect(() => {
+    document.title = "SPARTA | Player Approval";
+  }, []);
+
   // Fetch pending players
   useEffect(() => {
     const fetchPlayers = async () => {

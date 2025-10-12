@@ -25,6 +25,10 @@ const TeamPlayers = () => {
     navigate(`/admin/event/${encodeURIComponent(decodedEvent)}/team/${encodeURIComponent(teamName)}/pending`);
   }
 
+  useEffect(() => {
+    document.title = "SPARTA | Team Players";
+  }, []);
+
   // Fetch players
   useEffect(() => {
     const fetchPlayers = async () => {

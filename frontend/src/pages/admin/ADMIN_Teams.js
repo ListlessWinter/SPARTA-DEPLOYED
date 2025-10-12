@@ -21,6 +21,10 @@ const Teams = () => {
   const [search, setSearch] = useState("");
   const [showDropdown, setShowDropdown] = useState(false);
 
+  useEffect(() => {
+    document.title = "SPARTA | Teams";
+  }, []);
+
   // Fetch Coords
   useEffect(() => {
     const fetchCoordinators = async () => {

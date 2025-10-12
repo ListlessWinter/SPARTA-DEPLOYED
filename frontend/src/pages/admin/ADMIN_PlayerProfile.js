@@ -8,6 +8,10 @@ const PlayerProfile = () => {
   const [player, setPlayer] = useState({});
   const [activeTab, setActiveTab] = useState("player");
 
+  useEffect(() => {
+    document.title = "SPARTA | Player Profile";
+  }, []);
+
   // Fetch Player details
   useEffect(() => {
     const fetchProfile = async () => {

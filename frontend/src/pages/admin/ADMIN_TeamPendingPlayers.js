@@ -12,6 +12,10 @@ const TeamPlayerApproval = () => {
   const { eventName, teamName } = useParams();
   const user = JSON.parse(localStorage.getItem("auth"));
 
+  useEffect(() => {
+    document.title = "SPARTA | Team Pending Players";
+  }, []);
+
   // Fetch pending players
   const fetchPlayers = useCallback(async () => {
     try {

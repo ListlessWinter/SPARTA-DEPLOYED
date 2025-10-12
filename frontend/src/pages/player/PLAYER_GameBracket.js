@@ -14,6 +14,10 @@ const PlayerGameBracket = () => {
 
   const [showRulesModal, setShowRulesModal] = useState(false); 
 
+  useEffect(() => {
+    document.title = "SPARTA | Game";
+  }, []);
+
   // Fetch Game details
   useEffect(() => {
     const fetchGame = async () => {

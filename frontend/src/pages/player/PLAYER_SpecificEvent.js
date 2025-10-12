@@ -17,6 +17,10 @@ const PlayerSpecificEvent = () => {
 
   const user = JSON.parse(localStorage.getItem("auth"));
 
+  useEffect(() => {
+    document.title = "SPARTA | " + decodedName;
+  }, []);
+
   // Fetch Event details
   useEffect(() => {
     const fetchEventDetails = async () => {

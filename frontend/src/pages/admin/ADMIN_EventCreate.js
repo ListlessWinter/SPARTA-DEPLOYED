@@ -25,6 +25,10 @@ const CreateEvent = () => {
 
   const user = JSON.parse(localStorage.getItem("auth"));
 
+  useEffect(() => {
+    document.title = "SPARTA | Event Create";
+  }, []);
+
   // Handle form submission
   const handleCreate = async (e) => {
     e.preventDefault();

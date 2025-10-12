@@ -22,6 +22,10 @@ const GameBracket = () => {
     return localISO;
   };
 
+  useEffect(() => {
+    document.title = "SPARTA | Game";
+  }, []);
+
   // Fetch Game details
   useEffect(() => {
     const fetchGame = async () => {

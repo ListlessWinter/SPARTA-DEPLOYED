@@ -7,6 +7,10 @@ const PlayerPantheon = () => {
   const [events, setEvents] = useState([]);
   const user = JSON.parse(localStorage.getItem('auth'));
 
+  useEffect(() => {
+    document.title = "SPARTA | Pantheon";
+  }, []);
+
   // Fetch Events
   useEffect(() => {
     const fetchEvents = async () => {

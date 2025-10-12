@@ -30,6 +30,8 @@ const PlayerGame = () => {
   const [gamesSelected, setGamesSelected] = useState([]);
   const [eventRequirements, setEventRequirements] = useState([]);
 
+  useEffect(() => {document.title = "SPARTA | " + decodedName + " Games";}, []);
+
   // For default data when it have one, this for registering
   useEffect(() => {
     setPlayerName(user?.playerName || "");

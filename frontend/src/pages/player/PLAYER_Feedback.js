@@ -23,6 +23,10 @@ const PlayerFeedback = () => {
     setTimeout(() => setShowToast({ show: false, message: "", type: "" }), 6000);
   };
 
+  useEffect(() => {
+    document.title = "SPARTA | Feedback";
+  }, []);
+
   // Fetch player data
   useEffect(() => {
     const fetchUser = async () => {

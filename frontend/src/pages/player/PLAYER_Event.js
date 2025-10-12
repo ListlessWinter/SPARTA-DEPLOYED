@@ -10,6 +10,10 @@ const PlayerEvent = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const user = JSON.parse(localStorage.getItem('auth'));
 
+  useEffect(() => {
+    document.title = "SPARTA | Events";
+  }, []);
+
   //Fetch Events
   useEffect(() => {
     const fetchEvents = async () => {

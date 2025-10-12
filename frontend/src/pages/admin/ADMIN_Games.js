@@ -34,6 +34,10 @@ const Game = () => {
     Chess: GiChessKnight,
   };
 
+  useEffect(() => {
+    document.title = "SPARTA | " + decodedName + " Games";
+  }, []);
+
   // Fetch Games
   useEffect(() => {
     const fetchGames = async () => {

@@ -15,6 +15,10 @@ const SpecificEvent = () => {
 
     const [event, setEventDetails] = useState(null);
 
+    useEffect(() => {
+      document.title = "SPARTA | " + decodedName;
+    }, []);
+
     // Fetch Event details
     useEffect(() => {
     const fetchEventDetails = async () => {

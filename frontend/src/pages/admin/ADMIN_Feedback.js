@@ -10,6 +10,10 @@ const Feedback = () => {
 
   const [feedbacks, setFeedbacks] = useState([]);
 
+  useEffect(() => {
+    document.title = "SPARTA | Feedback";
+  }, []);
+
   // Fetch Feedbacks
   useEffect(() => {
     const fetchFeedbacks = async () => {

@@ -15,6 +15,10 @@ const PlayerDashboard = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [multiDayEvents, setMultiDayEvents] = useState([]);
   
+    useEffect(() => {
+      document.title = "SPARTA | Dashboard";
+    }, []);
+
     // Fetch game schedules
     useEffect(() => {
       const fetchGames = async () => {

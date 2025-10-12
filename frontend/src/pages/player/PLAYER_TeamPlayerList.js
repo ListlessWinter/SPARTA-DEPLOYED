@@ -15,6 +15,10 @@ const PlayerTeamPlayers = () => {
 
   const [players, setPlayers] = useState([]);
 
+  useEffect(() => {
+    document.title = "SPARTA | Team Players";
+  }, []);
+
   // Fetch players
 useEffect(() => {
   const fetchPlayers = async () => {

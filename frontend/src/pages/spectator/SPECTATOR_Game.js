@@ -4,9 +4,13 @@ import { GiBasketballBall, GiSoccerBall, GiTennisRacket, GiChessKnight, GiTennis
 import { MdSportsVolleyball, MdSportsKabaddi } from "react-icons/md";
 import { BiSolidBaseball, BiBaseball } from "react-icons/bi";
 import { FaCircleQuestion } from "react-icons/fa6";
+import '../../styles/ADMIN_SpecificEvents.css';
 import '../../styles/ADMIN_Games.css';
 
 const SpectatorGame = () => {
+
+  useEffect(() => {document.title = "SPARTA | " + decodedName + " Games";},[]);
+
   const navigate = useNavigate();
   const [gamesByType, setGamesByType] = useState({});
   
@@ -35,9 +39,7 @@ const SpectatorGame = () => {
   useEffect(() => {
     const fetchGames = async () => {
       try {
-        const response = await fetch(
-          `http://localhost:5000/api/games?institution=${encodeURIComponent(decodedInstitution)}&eventName=${encodeURIComponent(decodedName)}`
-        );
+        const response = await fetch(`https://sparta-deployed.onrender.com/api/games?institution=${encodeURIComponent(decodedInstitution)}&eventName=${encodeURIComponent(decodedName)}`);
         const data = await response.json();
 
         const grouped = {};
@@ -58,9 +60,20 @@ const SpectatorGame = () => {
     fetchGames();
   }, [decodedInstitution, decodedName]);
 
-
   return (
     <>
+      <div className="spectator-header">
+        <div className="header-text">
+          SPARTA SPECTATOR LIVE VIEWING
+        </div>
+      </div>
+
+      <div className="logo-div">
+        <div className="logo-container">
+          <img src="/SPARTA_Logo.png" alt="SPARTA Logo" className="spectator-logo" />
+        </div>
+      </div>
+
       <div className="game-header">
         <h2>All Games for {eventName}</h2>
       </div>

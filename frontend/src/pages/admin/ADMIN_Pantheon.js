@@ -12,6 +12,10 @@ const Pantheon = () => {
   const user = JSON.parse(localStorage.getItem('auth'));
   const userInstitution = user?.institution;
  
+  useEffect(() => {
+    document.title = "SPARTA | Pantheon";
+  }, []);
+
   // Fetch events
   useEffect(() => {
     const fetchEvents = async () => {

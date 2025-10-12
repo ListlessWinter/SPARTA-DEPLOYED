@@ -12,6 +12,9 @@ const PlayerPantheonRanks = () => {
  
   const user = JSON.parse(localStorage.getItem("auth"));
   
+  useEffect(() => {
+    document.title = "SPARTA | Pantehon Ranking";
+  }, []);
 
   // Fetch teams with scores
   useEffect(() => {

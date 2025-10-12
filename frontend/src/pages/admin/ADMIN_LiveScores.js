@@ -12,6 +12,10 @@ const LiveScores = () => {
 
   const user = JSON.parse(localStorage.getItem("auth"));
 
+  useEffect(() => {
+    document.title = "SPARTA | Live Score";
+  }, []);
+
   // Fetch teams with scores
   useEffect(() => {
     const fetchTeams = async () => {

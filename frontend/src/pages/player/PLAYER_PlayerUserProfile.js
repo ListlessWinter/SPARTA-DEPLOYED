@@ -9,6 +9,10 @@ const PlayerUserProfile = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [activeTab, setActiveTab] = useState("player");
 
+  useEffect(() => {
+    document.title = "SPARTA | Player Profile";
+  }, []);
+
   // Fetch user dertails
   useEffect(() => {
     const fetchProfile = async () => {

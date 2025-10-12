@@ -21,6 +21,10 @@ const CreateTeam = () => {
 
   const decodedEventName = decodeURIComponent(eventName);
 
+  useEffect(() => {
+    document.title = "SPARTA | Team Create";
+  }, []);
+
   // Team Creation
   const handleCreate = async (e) => {
     e.preventDefault();
