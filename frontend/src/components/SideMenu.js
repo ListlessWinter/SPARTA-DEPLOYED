@@ -4,6 +4,7 @@ import { FaUserCheck } from "react-icons/fa";
 import { GiGreekTemple } from "react-icons/gi";
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import '../styles/SideMenu.css';
+import { useEffect } from "react";
 
 const SideMenu = () => {
 
