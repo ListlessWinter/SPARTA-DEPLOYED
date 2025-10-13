@@ -88,7 +88,7 @@ const SpectatorGame = () => {
         />
       </div>
 
-      <div className="game-main-div">
+      <div className="spectator-game-main-div">
 
         {filteredGames.length === 0 ? (
           <div className="no-games-found">
