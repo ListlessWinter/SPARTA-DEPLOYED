@@ -19,7 +19,7 @@ const Approval = () => {
   useEffect(() => {
     const fetchPlayers = async () => {
       try {
-        const res = await fetch(`http://localhost:5000/api/players/pending?institution=${user?.institution}`);
+        const res = await fetch(`https://sparta-deployed.onrender.com/api/players/pending?institution=${user?.institution}`);
         const data = await res.json();
         setPlayers(data);
       } catch (err) {
@@ -42,7 +42,7 @@ const Approval = () => {
   // Approve player
   const handleApprove = async (id) => {
     try {
-      const res = await fetch(`http://localhost:5000/api/players/approve/${id}`, {
+      const res = await fetch(`https://sparta-deployed.onrender.com/api/players/approve/${id}`, {
         method: "PUT",
       });
       if (res.ok) {
@@ -72,7 +72,7 @@ const Approval = () => {
     closeDeclineConfirm();
 
     try {
-      const res = await fetch(`http://localhost:5000/api/players/${id}`, {
+      const res = await fetch(`https://sparta-deployed.onrender.com/api/players/${id}`, {
         method: "DELETE",
       });
       if (res.ok) {
