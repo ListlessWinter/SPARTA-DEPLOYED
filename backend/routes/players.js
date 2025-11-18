@@ -1,9 +1,7 @@
 const express = require("express");
-const nodemailer = require("nodemailer")
 const Player = require("../models/Player");
 const Game = require("../models/Game");
 const mongoose = require("mongoose");
-
 
 const router = express.Router();
 
@@ -11,9 +9,13 @@ const multer = require("multer");
 const supabase = require("./supabaseClient");
 const upload = multer({ storage: multer.memoryStorage() });
 
+// For sending emailz
+const sgMail = require('@sendgrid/mail');
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+
 // GET pending players to enter the insitution
 router.get("/players/pending", async (req, res) => {
-  const { institution } = req.query; 
+  const { institution } = req.query;
   try {
     const players = await Player.find({ approved: false, institution });
     res.json(players);
@@ -24,7 +26,7 @@ router.get("/players/pending", async (req, res) => {
 
 // GET pending players that are regesting for a team
 router.get("/players/team-pending", async (req, res) => {
-  const { institution, eventName, team } = req.query; 
+  const { institution, eventName, team } = req.query;
   try {
     const players = await Player.find({ approved: true, institution, eventName, team, teamApproval: false });
     res.json(players);
@@ -43,18 +45,12 @@ router.put("/players/approve/:id", async (req, res) => {
     );
     if (!updatedPlayer) return res.status(404).json({ message: "Player not found" });
 
-        //Email invite
-        const transporter = nodemailer.createTransport({
-          service: "gmail",
-          auth: { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS },
-        });
-    
-        await transporter.sendMail({
-          from: `"${updatedPlayer.eventName}" <${process.env.SMTP_USER}>`,
-          to: updatedPlayer.email,
-          subject: `Approval to join the ${updatedPlayer.eventName} at ${updatedPlayer.institution}`,
-          html: 
-          `
+    const msg = {
+      to: updatedPlayer.email,
+      from: `"${updatedPlayer.eventName}" <${process.env.SMTP_USER}>`,
+      subject: `Approval to join the ${updatedPlayer.eventName} at ${updatedPlayer.institution}`,
+      html:
+        `
           <div style="font-family: Arial, sans-serif; color: #222;">
           <p>Greetings!</p>
 
@@ -73,7 +69,9 @@ router.put("/players/approve/:id", async (req, res) => {
           </p>
 
           </div>`,
-        });
+    };
+
+    await sgMail.send(msg);
 
     res.json({ message: "Player approved", player: updatedPlayer });
   } catch (err) {
@@ -87,17 +85,11 @@ router.delete("/players/:id", async (req, res) => {
     const deleted = await Player.findByIdAndDelete(req.params.id);
     if (!deleted) return res.status(404).json({ message: "Player not found" });
 
-    // Email invite
-        const transporter = nodemailer.createTransport({
-          service: "gmail",
-          auth: { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS },
-        });
-    
-        await transporter.sendMail({
-          from: `"SPARTA TEAM" <${process.env.SMTP_USER}>`,
-          to: updatedPlayer.email,
-          subject: `Request to join event at ${updatedPlayer.institution}`,
-          html: `
+    const msg = {
+      from: `"SPARTA TEAM" <${process.env.SMTP_USER}>`,
+      to: updatedPlayer.email,
+      subject: `Request to join event at ${updatedPlayer.institution}`,
+      html: `
           <div style="font-family: Arial, sans-serif; color: #222;">
 
           <p>Greetings!<br/>We hope this email finds you well.</p>
@@ -108,7 +100,9 @@ router.delete("/players/:id", async (req, res) => {
           <p>If this has been a mistake, please approach or contact your event organizer for assistance.</p>
 
           </div>`,
-        });
+    };
+
+    await sgMail.send(msg);
 
     res.json({ message: "Player deleted" });
   } catch (err) {
@@ -125,17 +119,12 @@ router.put("/players/team-approve/:id", async (req, res) => {
       { new: true }
     );
     if (!updatedPlayer) return res.status(404).json({ message: "Player not found" });
-        //Email invite
-        const transporter = nodemailer.createTransport({
-          service: "gmail",
-          auth: { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS },
-        });
-    
-        await transporter.sendMail({
-          from: `"${updatedPlayer.team}" <${process.env.SMTP_USER}>`,
-          to: updatedPlayer.email,
-          subject: `Approval to join the Sport Event under ${updatedPlayer.team}`,
-          html: `
+
+    const msg = {
+      from: `"${updatedPlayer.team}" <${process.env.SMTP_USER}>`,
+      to: updatedPlayer.email,
+      subject: `Approval to join the Sport Event under ${updatedPlayer.team}`,
+      html: `
           
           <div style="font-family: Arial, sans-serif; color: #222;">
           <p>Greetings! <br /> We hope this email finds you well!</p>
@@ -155,7 +144,9 @@ router.put("/players/team-approve/:id", async (req, res) => {
           </p>
 
           </div>`,
-        });
+    };
+
+    await sgMail.send(msg);
 
     res.json({ message: "Player approved by team", player: updatedPlayer });
   } catch (err) {
@@ -168,27 +159,21 @@ router.put("/players/team-decline/:id", async (req, res) => {
   try {
     const declinedPlayer = await Player.findByIdAndUpdate(
       req.params.id,
-      { 
+      {
         team: "",
         game: [],
         teamApproval: false,
         uploadedRequirements: [],
-       },
+      },
       { new: true }
     );
     if (!declinedPlayer) return res.status(404).json({ message: "Player not found" });
 
-      // Email invite
-      const transporter = nodemailer.createTransport({
-        service: "gmail",
-        auth: { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS },
-      });
-  
-      await transporter.sendMail({
-        from: `"SPARTA ADMIN" <${process.env.SMTP_USER}>`,
-        to: declinedPlayer.email,
-        subject: `UPDATE on your request made on SPARTA`,
-        html: `
+    const msg = {
+      from: `"SPARTA ADMIN" <${process.env.SMTP_USER}>`,
+      to: declinedPlayer.email,
+      subject: `UPDATE on your request made on SPARTA`,
+      html: `
           <div style="font-family: Arial, sans-serif; color: #222;">
           <p>Greetings! <br /> We hope this email finds you well!</p>
 
@@ -208,7 +193,9 @@ router.put("/players/team-decline/:id", async (req, res) => {
           </p>
 
           </div>`,
-      });
+    };
+
+    await sgMail.send(msg);
 
     res.json({ message: "Player declined by team", player: declinedPlayer });
   } catch (err) {
@@ -286,7 +273,7 @@ router.put("/players/:id/register-game", upload.any(), async (req, res) => {
           },
           uploadedRequirements: { $each: uploadedRequirements },
         },
-          },
+      },
       { new: true }
     );
 
