@@ -19,6 +19,7 @@ const getModelByRole = (role) => {
 // Sending email
 const multer = require('multer');
 const sgMail = require('@sendgrid/mail');
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 const upload = multer({ storage: multer.memoryStorage() });
 
 // REGISTER
