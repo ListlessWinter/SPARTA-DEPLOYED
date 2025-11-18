@@ -1,15 +1,10 @@
 const cron = require("node-cron");
-const nodemailer = require("nodemailer");
 const Game = require("../models/Game");
 const Player = require("../models/Player");
 
-const transporter = nodemailer.createTransport({
-  service: "gmail",
-  auth: {
-    user: process.env.SMTP_USER,
-    pass: process.env.SMTP_PASS,
-  },
-});
+// For sending emailz
+const sgMail = require('@sendgrid/mail');
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 const checkAndSendMatchNotifications = async () => {
   console.log("Running scheduled job: Checking for upcoming matches...");
@@ -80,7 +75,7 @@ const checkAndSendMatchNotifications = async () => {
         const emailList = playersToNotify.map(p => p.email);
 
         // Send the email
-        const mailOptions = {
+        const msg = {
           from: `"${eventName} Alerts" <${process.env.SMTP_USER}>`,
           to: emailList.join(", "), // Send to all players 
           subject: `Upcoming Match Reminder: ${teamNames[0]} vs ${teamNames[1]}`,
@@ -108,7 +103,7 @@ const checkAndSendMatchNotifications = async () => {
           `,
         };
 
-        await transporter.sendMail(mailOptions);
+        await sgMail.send(msg);
         console.log(`Notification sent for match ${match._id}`);
 
         match.notificationSent = true;
