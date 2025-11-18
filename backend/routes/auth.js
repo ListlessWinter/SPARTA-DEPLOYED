@@ -122,7 +122,7 @@ router.post('/send-request', upload.single('attachment'), async (req, res) => {
       to: process.env.SMTP_USER, // The admin's email (where you receive the request)
       
       // IMPORTANT: This 'from' email MUST be the one you verified in SendGrid
-      from: process.env.SMTP_USER, // e.g., the same as SMTP_USER
+      from: process.env.SENDGRID_VERIFIED_SENDER, // e.g., the same as SMTP_USER
       
       replyTo: email, // The user's email
       subject: 'New Institution Request from SPARTA Service Page',
