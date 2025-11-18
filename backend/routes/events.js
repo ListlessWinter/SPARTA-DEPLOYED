@@ -1,37 +1,40 @@
 const express = require('express');
-const nodemailer = require("nodemailer");
 const crypto = require("crypto");
 const Event = require('../models/Event');
 const Coordinator = require("../models/Coordinator");
 const Player = require("../models/Player");
 
+// For sending emailz
+const sgMail = require('@sendgrid/mail');
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+
 const router = express.Router();
 
 // CREATE Event
 router.post('/event', async (req, res) => {
-  const { 
-    userName, 
-    email, 
-    institution, 
-    eventName, 
-    eventStartDate, 
-    eventEndDate, 
-    description, 
-    eventColor, 
-    location, 
+  const {
+    userName,
+    email,
+    institution,
+    eventName,
+    eventStartDate,
+    eventEndDate,
+    description,
+    eventColor,
+    location,
     requirements,
     coordinators = []
   } = req.body;
 
   try {
-    const event = new Event({ 
-      userName, 
-      email, 
-      institution, 
-      eventName, 
-      eventStartDate, 
-      eventEndDate, 
-      description, 
+    const event = new Event({
+      userName,
+      email,
+      institution,
+      eventName,
+      eventStartDate,
+      eventEndDate,
+      description,
       eventColor,
       location,
       requirements,
@@ -62,12 +65,7 @@ router.post('/event', async (req, res) => {
         await coordinator.save();
 
         // Send email invite
-        const transporter = nodemailer.createTransport({
-          service: "gmail",
-          auth: { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS },
-        });
-
-        await transporter.sendMail({
+        const msg = {
           from: `"SPARTA Admin" <${process.env.SMTP_USER}>`,
           to: coord.email,
           subject: `Invitation to ${eventName}`,
@@ -103,16 +101,16 @@ router.post('/event', async (req, res) => {
             </p>
           </div>
          `,
-        });
-
+        };
+        await sgMail.send(msg);
         coordinatorInvites.push({ email: coord.email, accessKey });
       }
     }
 
-    res.status(201).json({ 
-      message: "Event created successfully", 
-      event, 
-      coordinators: coordinatorInvites 
+    res.status(201).json({
+      message: "Event created successfully",
+      event,
+      coordinators: coordinatorInvites
     });
   } catch (err) {
     res.status(500).json({ message: 'Event creation failed', error: err.message });
@@ -125,7 +123,7 @@ router.get('/events', async (req, res) => {
   try {
     const { institution } = req.query;
     const today = new Date();
-    const events = await Event.find({ institution, eventEndDate: {$gte:today} });
+    const events = await Event.find({ institution, eventEndDate: { $gte: today } });
 
     res.json(events);
   } catch (err) {
@@ -174,7 +172,7 @@ router.get("/active-events", async (req, res) => {
       });
     } else if (role === "co-organizer" || role === "sub-organizer") {
       // Coordinators only see event they are assigned to
-      const coords = await Coordinator.find({ email, institution});
+      const coords = await Coordinator.find({ email, institution });
       const eventName = coords.map(c => c.eventName);
 
       events = await Event.find({
@@ -185,14 +183,14 @@ router.get("/active-events", async (req, res) => {
     } else if (role === "player") {
       // Players only see the event they registered to
       const player = await Player.findOne({ email, institution });
-    
+
       events = await Event.find({
         institution,
         eventEndDate: { $gte: today },
         eventName: player.eventName
       });
     }
-    
+
     console.log("Events fetched:", events);
     res.json(events);
   } catch (err) {
@@ -207,29 +205,14 @@ router.get('/past-events', async (req, res) => {
   try {
     const { institution } = req.query;
     const today = new Date();
-    const events = await Event.find({ institution, eventEndDate: {$lt:today} });
-    
+    const events = await Event.find({ institution, eventEndDate: { $lt: today } });
+
     res.json(events);
   } catch (err) {
     res.status(500).json({ message: 'Failed to fetch events', error: err.message });
   }
 });
 
-
-
-/*
-// UPDATE event
-router.put('/event/:id', async (req, res) => {
-  try {
-    const { id } = req.params;
-    const updatedEvent = await Event.findByIdAndUpdate(id, req.body, { new: true });
-    if (!updatedEvent) return res.status(404).json({ message: "Event not found" });
-    res.json(updatedEvent);
-  } catch (err) {
-    res.status(500).json({ message: "Failed to update event", error: err.message });
-  }
-});
-*/
 
 // UPDATE event
 router.put('/event/:id', async (req, res) => {
@@ -240,19 +223,19 @@ router.put('/event/:id', async (req, res) => {
     // Update Event 
     const updatedEvent = await Event.findByIdAndUpdate(
       id,
-      { 
+      {
         ...eventData,
         coordinators: Array.isArray(coordinators)
           ? coordinators.map(c => ({
-              name: c.name,
-              email: c.email,
-              role: c.role || "co-organizer"
-            }))
+            name: c.name,
+            email: c.email,
+            role: c.role || "co-organizer"
+          }))
           : []
-      }, 
+      },
       { new: true }
     );
-    
+
 
     if (!updatedEvent) return res.status(404).json({ message: "Event not found" });
 
@@ -283,16 +266,11 @@ router.put('/event/:id', async (req, res) => {
           await newCoord.save();
 
           // Send email CO-ORGANIZER INVITATION FOR EDITING OF EVENTS
-          const transporter = nodemailer.createTransport({
-            service: "gmail",
-            auth: { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS },
-          });
-
-        await transporter.sendMail({
-          from: `"SPARTA ADMIN" <${process.env.SMTP_USER}>`,
-          to: coord.email,
-          subject: `Invitation to ${updatedEvent.eventName}`,
-          html: `
+          const msg = {
+            from: `"SPARTA ADMIN" <${process.env.SMTP_USER}>`,
+            to: coord.email,
+            subject: `Invitation to ${updatedEvent.eventName}`,
+            html: `
           <div style="font-family: Arial, sans-serif; color: #222;">
             <h2 style="color: #1A2A49;">Invitation to ${updatedEvent.eventName}</h2>
             <p>Dear ${coord.name || "Coordinator"},</p>
@@ -324,8 +302,8 @@ router.put('/event/:id', async (req, res) => {
             </p>
           </div>
          `,
-        });
-
+          };
+          await sgMail.send(msg);
           coordinatorInvites.push({ email: coord.email, accessKey });
         }
       }
