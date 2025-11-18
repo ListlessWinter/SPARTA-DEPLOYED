@@ -24,7 +24,7 @@ export default function RegisterPage() {
   useEffect(() => {
     const fetchInstitutions = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/institutions');
+        const response = await fetch('https://sparta-deployed.onrender.com/api/institutions');
         const data = await response.json();
         setInstitutions(data);
       } catch (err) {
@@ -38,7 +38,7 @@ export default function RegisterPage() {
   useEffect(() => {
     if (role === 'player' && formData.institution) {
       fetch(
-        `http://localhost:5000/api/events?institution=${encodeURIComponent(formData.institution)}`
+        `https://sparta-deployed.onrender.com/api/events?institution=${encodeURIComponent(formData.institution)}`
       )
         .then((res) => res.json())
         .then((data) => setEvents(data))
@@ -75,7 +75,7 @@ export default function RegisterPage() {
           };
 
     try {
-      const response = await fetch(`http://localhost:5000/api/auth/register/${role}`, {
+      const response = await fetch(`https://sparta-deployed.onrender.com/api/auth/register/${role}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
