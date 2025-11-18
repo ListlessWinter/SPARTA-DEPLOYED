@@ -7,6 +7,7 @@ const Institution = require('../models/Institution');
 
 const router = express.Router();
 
+
 // Helps get model by role
 const getModelByRole = (role) => {
   if (role === 'admin') return Admin;
@@ -17,18 +18,8 @@ const getModelByRole = (role) => {
 
 // Sending email
 const multer = require('multer');
-const nodemailer = require('nodemailer');
+const sgMail = require('@sendgrid/mail');
 const upload = multer({ storage: multer.memoryStorage() });
-
-const transporter = nodemailer.createTransport({
-  host: process.env.SMTP_HOST, 
-  port: process.env.SMTP_PORT, 
-  secure: process.env.SMTP_PORT == 465, 
-  auth: {
-    user: process.env.SMTP_USER, 
-    pass: process.env.SMTP_PASS, 
-  },
-});
 
 // REGISTER
 router.post('/auth/register/:role', async (req, res) => {
@@ -117,18 +108,23 @@ router.post('/send-request', upload.single('attachment'), async (req, res) => {
 
     let attachments = [];
     if (req.file) {
+      // SendGrid needs attachments to be base64 encoded
       attachments.push({
-        filename: req.file.originalname, 
-        content: req.file.buffer,        
-        contentType: req.file.mimetype,  
+        content: req.file.buffer.toString('base64'),
+        filename: req.file.originalname,
+        type: req.file.mimetype,
+        disposition: 'attachment',
       });
     }
 
-    // Define email options
-    const mailOptions = {
-      from: `"SPARTA Service" <${process.env.SMTP_USER}>`,
-      to: process.env.SMTP_USER, 
-      replyTo: email, 
+    // Define the SendGrid message object
+    const msg = {
+      to: process.env.SMTP_USER, // The admin's email (where you receive the request)
+      
+      // IMPORTANT: This 'from' email MUST be the one you verified in SendGrid
+      from: 'your-verified-email@gmail.com', // e.g., the same as SMTP_USER
+      
+      replyTo: email, // The user's email
       subject: 'New Institution Request from SPARTA Service Page',
       html: `
         <h2>New Service Request</h2>
@@ -140,15 +136,21 @@ router.post('/send-request', upload.single('attachment'), async (req, res) => {
         <hr>
         <p><i>${attachments.length > 0 ? 'A file was attached to this request.' : 'No file was attached.'}</i></p>
       `,
-      attachments: attachments, 
+      attachments: attachments,
     };
 
     // Send the email
-    await transporter.sendMail(mailOptions);
+    await sgMail.send(msg);
     res.status(200).json({ message: 'Request sent successfully! We will get back to you soon.' });
 
   } catch (err) {
     console.error('Error sending service request email:', err);
+    
+    // SendGrid can return detailed errors
+    if (err.response) {
+      console.error(err.response.body);
+    }
+    
     res.status(500).json({ message: 'An error occurred on the server. Please try again.' });
   }
 });
