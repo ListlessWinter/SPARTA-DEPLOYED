@@ -5,14 +5,17 @@ import { Bracket, Seed, SeedItem, SeedTeam } from "react-brackets";
 import "../../styles/bracket.css";
 
 const GameBracket = () => {
+
+  useEffect(() => { document.title = "SPARTA | Game Bracket"; }, []);
+
   const { eventName, game: gameId } = useParams();
   const decodedEvent = decodeURIComponent(eventName);
-
   const [game, setGame] = useState(null);
   const [selectedMatch, setSelectedMatch] = useState(null);
   const [tempScores, setTempScores] = useState([]);
-
-  const [showRulesModal, setShowRulesModal] = useState(false); 
+  const [showRulesModal, setShowRulesModal] = useState(false);
+  const [showTallyModal, setShowTallyModal] = useState(false);
+  const [medalTally, setMedalTally] = useState(null);
 
   const formatForInput = (date) => {
     if (!date) return "";
@@ -22,15 +25,11 @@ const GameBracket = () => {
     return localISO;
   };
 
-  useEffect(() => {
-    document.title = "SPARTA | Game";
-  }, []);
-
   // Fetch Game details
   useEffect(() => {
     const fetchGame = async () => {
       try {
-        const res = await fetch(`https://sparta-deployed.onrender.com/api/games/${gameId}`);
+        const res = await fetch(`http://localhost:5000/api/games/${gameId}`);
         const data = await res.json();
         setGame(data);
       } catch (err) {
@@ -279,7 +278,7 @@ const GameBracket = () => {
 
     try {
       await fetch(
-        `https://sparta-deployed.onrender.com/api/games/${gameId}/matches/${selectedMatch.id}`,
+        `http://localhost:5000/api/games/${gameId}/matches/${selectedMatch.id}`,
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
@@ -294,50 +293,97 @@ const GameBracket = () => {
     }
   };
 
-  // Finalized Scoring
-  const saveScores = async () => {
-    if (!selectedMatch) return;
-    try {
-      await fetch(
-        `https://sparta-deployed.onrender.com/api/games/${gameId}/matches/${selectedMatch.id}`,
-        {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            score1: tempScores[0],
-            score2: tempScores[1],
-            finalizeWinner: true,
-          }),
-        }
-      );
+ // Finalized Scoring
+ const saveScores = async () => {
+  if (!selectedMatch) return;
+  try {
+    const response = await fetch(
+      `http://localhost:5000/api/games/${gameId}/matches/${selectedMatch.id}`,
+      {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          score1: tempScores[0],
+          score2: tempScores[1],
+          finalizeWinner: true,
+        }),
+      }
+    );
 
-      const updatedMatches = game.matches.map((m) => {
-        if (m._id === selectedMatch.id) {
-          const winner =
-            tempScores[0] > tempScores[1]
-              ? selectedMatch.teams[0].name
-              : tempScores[1] > tempScores[0]
-                ? selectedMatch.teams[1].name
-                : null;
-          return {
-            ...m,
-            teams: m.teams.map((t, idx) => ({
-              ...t,
-              score: tempScores[idx],
-              winner: t.name === winner,
-            })),
-            winner,
-            finalizeWinner: true,
-          };
-        }
-        return m;
-      });
+    // Get full game data
+    const updatedGame = await response.json();
 
-      setGame({ ...game, matches: updatedMatches });
-      setSelectedMatch(null);
-    } catch (err) {
-      console.error("Error finalizing match:", err);
+    if (!response.ok) {
+      // Handle errors
+      console.error("Error finalizing match:", updatedGame.message);
+      alert(`Failed to save: ${updatedGame.message || 'Server error'}`);
+      return;
     }
+    setGame(updatedGame);
+
+    setSelectedMatch(null);
+  } catch (err) {
+    console.error("Error finalizing match:", err);
+  }
+};
+
+  // Medal tally
+  const calculateMedalTally = () => {
+    const { bracketType, matches, teams } = game;
+    let tally = { gold: null, silver: null, bronze: null };
+
+    try {
+      if (bracketType === "Single Elimination") {
+        const totalRounds = Math.ceil(Math.log2(teams.length));
+        const finalMatch = matches.find(m => m.round === totalRounds && m.finalizeWinner);
+        if (finalMatch) {
+          tally.gold = finalMatch.winner;
+          tally.silver = finalMatch.teams.find(t => t.name !== finalMatch.winner)?.name;
+          tally.bronze = "N/A (No 3rd Place Match)";
+        }
+      } else if (bracketType === "Double Elimination") {
+        const gf = matches.find(m => m.bracket === "GF" && m.finalizeWinner);
+        if (gf) {
+          tally.gold = gf.winner;
+          tally.silver = gf.teams.find(t => t.name !== gf.winner)?.name;
+
+          const lbMatches = matches.filter(m => m.bracket === "LB");
+          const maxLbRound = Math.max(...lbMatches.map(m => m.round));
+          const lbFinal = lbMatches.find(m => m.round === maxLbRound && m.finalizeWinner);
+
+          if (lbFinal) {
+            tally.bronze = lbFinal.teams.find(t => t.name !== lbFinal.winner)?.name;
+          }
+        }
+      } else if (bracketType === "Round Robin") {
+        const rrMatches = matches.filter(m => m.bracket === "RR");
+        const winCount = {};
+        teams.forEach(team => { winCount[team] = 0; });
+
+        rrMatches.forEach(m => {
+          if (m.finalizeWinner && m.winner) {
+            winCount[m.winner] = (winCount[m.winner] || 0) + 1;
+          }
+        });
+
+        const sortedTeams = Object.entries(winCount).sort(([, winsA], [, winsB]) => winsB - winsA);
+
+        tally.gold = sortedTeams[0] ? sortedTeams[0][0] : null;
+        tally.silver = sortedTeams[1] ? sortedTeams[1][0] : null;
+        tally.bronze = sortedTeams[2] ? sortedTeams[2][0] : null;
+      }
+    } catch (e) {
+      console.error("Error calculating medal tally:", e);
+      return { gold: "Error", silver: "Error", bronze: "Error" };
+    }
+
+    return tally;
+  };
+
+  const handleShowTally = () => {
+    const tally = calculateMedalTally();
+    setMedalTally(tally);
+    setShowTallyModal(true);
   };
 
   // Rendering Bracket
@@ -398,6 +444,18 @@ const GameBracket = () => {
     if (!selectedMatch) return;
 
     try {
+      // Check date if valid
+      if (selectedMatch.date) {
+        const schedDate = new Date(selectedMatch.date);
+        const gameStart = new Date(game.startDate);
+        const gameEnd = new Date(game.endDate);
+
+        if (schedDate < gameStart || schedDate > gameEnd) {
+          alert(`Date must be between ${new Date(game.startDate).toLocaleString()} and ${new Date(game.endDate).toLocaleString()}`);
+          return;
+        }
+      }
+
       let formattedDate = null;
       if (selectedMatch.date) {
         formattedDate = new Date(selectedMatch.date);
@@ -409,7 +467,7 @@ const GameBracket = () => {
       };
 
       await fetch(
-        `https://sparta-deployed.onrender.com/api/games/${gameId}/matches/${selectedMatch.id}/schedule`,
+        `http://localhost:5000/api/games/${gameId}/matches/${selectedMatch.id}/schedule`,
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
@@ -417,10 +475,11 @@ const GameBracket = () => {
         }
       );
 
-      const res = await fetch(`https://sparta-deployed.onrender.com/api/games/${gameId}`);
+      // refresh game after saving
+      const res = await fetch(`http://localhost:5000/api/games/${gameId}`);
       const updatedGame = await res.json();
-      setGame(updatedGame);
 
+      setGame(updatedGame);
       setSelectedMatch(null);
     } catch (err) {
       console.error("Error updating schedule:", err);
@@ -429,6 +488,7 @@ const GameBracket = () => {
   };
 
   const roundsData = makeRoundsFromMatches();
+  const isGameFinished = roundsData.some(r => r.title === "Champion");
 
   return (
     <MainLayout>
@@ -437,6 +497,8 @@ const GameBracket = () => {
         <p><b>Event:</b> {decodedEvent}</p>
         <p><b>Schedule:</b> {new Date(game.startDate).toLocaleString()} - {new Date(game.endDate).toLocaleString()}</p>
         <p><b>Bracket Type:</b> {game.bracketType}</p>
+
+         {/*Vid button*/}
         {game.videoLink && (
           <p>
             <a href={game.videoLink} target="_blank" rel="noopener noreferrer">
@@ -454,7 +516,7 @@ const GameBracket = () => {
             )}
           </div>
 
-
+          {/*Add vid button*/}
           <div className="video-section">
             <button
               onClick={() =>
@@ -467,8 +529,17 @@ const GameBracket = () => {
               Add Video Link
             </button>
           </div>
+
+          {/*Medal tally button*/}
+          {isGameFinished && (
+            <div className="medal-tally-section">
+              <button onClick={handleShowTally}>View Medal Tally</button>
+            </div>
+          )}
+
         </div>
       </div>
+
       {showRulesModal && (
         <div className="modal-overlay">
           <div className="modal rules-modal">
@@ -565,7 +636,7 @@ const GameBracket = () => {
               <>
                 <h3>Rules PDF</h3>
                 <iframe
-                  src={`url${game.rules}`}
+                  src={`http://localhost:5000${game.rules}`}
                   title="Rules PDF"
                   className="w-full h-[80vh] rounded-md"
                 />
@@ -583,6 +654,8 @@ const GameBracket = () => {
                       type="datetime-local"
                       style={{ width: "150px" }}
                       value={selectedMatch.date || ""}
+                      min={formatForInput(game.startDate)}
+                      max={formatForInput(game.endDate)}
                       onChange={(e) => setSelectedMatch({ ...selectedMatch, date: e.target.value })}
                     />
                   </div>
@@ -598,11 +671,9 @@ const GameBracket = () => {
                   </div>
 
                   <div className="modal-actions">
-                    <button type="button" onClick={saveSchedule}>
-                      Save Schedule
-                    </button>
 
                     <button type="button" onClick={() => setSelectedMatch(null)}>Cancel</button>
+                    <button type="button" onClick={saveSchedule}> Save Schedule </button>
                   </div>
                 </div>
               </>
@@ -625,8 +696,10 @@ const GameBracket = () => {
                   </div>
                 ))}
                 <div className="modal-actions">
-                  <button type="button" onClick={saveScores}>Save</button>
+
                   <button type="button" onClick={() => setSelectedMatch(null)}>Close</button>
+                  <button type="button" onClick={saveScores}>Save</button>
+
                 </div>
               </>
             ) : selectedMatch.type === "video" && (
@@ -641,18 +714,20 @@ const GameBracket = () => {
                   }
                 />
                 <div className="modal-actions">
+                  <button onClick={() => setSelectedMatch(null)}>Cancel</button>
+
                   <button
                     type="button"
                     onClick={async () => {
                       try {
-                        await fetch(`https://sparta-deployed.onrender.com/api/${gameId}/video`, {
+                        await fetch(`http://localhost:5000/api/${gameId}/video`, {
                           method: "PUT",
                           headers: { "Content-Type": "application/json" },
                           body: JSON.stringify({ videoLink: selectedMatch.videoLink }),
                         });
 
                         // Refresh game after saving
-                        const res = await fetch(`https://sparta-deployed.onrender.com/api/games/${gameId}`);
+                        const res = await fetch(`http://localhost:5000/api/games/${gameId}`);
                         const updated = await res.json();
                         setGame(updated);
 
@@ -665,7 +740,6 @@ const GameBracket = () => {
                   >
                     Save
                   </button>
-                  <button onClick={() => setSelectedMatch(null)}>Cancel</button>
                 </div>
               </>
             )
@@ -673,7 +747,20 @@ const GameBracket = () => {
           </div>
         </div>
       )}
-
+      {/*Medal tally modal*/}
+      {showTallyModal && medalTally && (
+        <div className="modal-overlay">
+          <div className="modal medal-tally-modal" style={{ textAlign: 'center' }}>
+            <h2>Medal Tally</h2>
+            <div className="tally-content" style={{ padding: '20px', fontSize: '1.2rem', lineHeight: '2' }}>
+              <p>🥇 <strong>Gold:</strong> {medalTally.gold || 'N/A'}</p>
+              <p>🥈 <strong>Silver:</strong> {medalTally.silver || 'N/A'}</p>
+              <p>🥉 <strong>Bronze:</strong> {medalTally.bronze || 'N/A'}</p>
+            </div>
+            <button onClick={() => setShowTallyModal(false)}>Close</button>
+          </div>
+        </div>
+      )}
     </MainLayout>
   );
 };

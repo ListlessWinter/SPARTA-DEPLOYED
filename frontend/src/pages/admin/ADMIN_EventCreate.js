@@ -1,9 +1,13 @@
 import MainLayout from "../../components/MainLayout";
-import { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { IoIosInformationCircleOutline } from "react-icons/io";
 import '../../styles/ADMIN_EventCreate.css';
 
 const CreateEvent = () => {
+
+  useEffect(() => {document.title = "SPARTA | Create Event";},[]);
+
   const navigate = useNavigate();
   const [eventName, setEventName] = useState("");
   const [userName, setUserName] = useState("");
@@ -25,15 +29,11 @@ const CreateEvent = () => {
 
   const user = JSON.parse(localStorage.getItem("auth"));
 
-  useEffect(() => {
-    document.title = "SPARTA | Event Create";
-  }, []);
-
   // Handle form submission
   const handleCreate = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch("https://sparta-deployed.onrender.com/api/event", {
+      const response = await fetch("http://localhost:5000/api/event", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -59,7 +59,7 @@ const CreateEvent = () => {
         setTimeout(() => {
           setShowModal(false);
           navigate(-1);
-        }, 4000)
+        }, 8000)
       } else {
         setModalMessage("There are still fields that needs to be filled-up.   ")
         setShowModal(true);
@@ -175,21 +175,21 @@ const CreateEvent = () => {
                   />
                 </label>
 
-                <label>
+                <label style={{display:"flex", flexDirection:"column", marginBottom:"10px"}}>
                   Description:
                   <textarea
                     value={description}
                     onChange={e => setDescription(e.target.value)}
                     placeholder="Enter Event Description"
                     rows="4"
-                    cols="57"
+                    cols="60"
                     required
                     style={{ resize: 'vertical', fontFamily: 'Montserrat, sans-serif', marginTop: '5px' }}
                   />
                 </label>
 
                 <div className="event-reqs">
-                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "8px" }}>
+                  <div className="event-form-title" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "8px" }}>
                     <h4>EVENT REQUIREMENTS</h4>
                     <button className="add-coordinator-button" type="button" onClick={handleAddRequirement}>
                       + Add Requirement
@@ -231,7 +231,7 @@ const CreateEvent = () => {
             <div className="event-form-right" style={{ minHeight: `${220 + coordinators.length * 60}px` }}>
               <div className="event-form-title">
                 <h4> ORGANIZER DETAILS </h4>
-                <p style={{ color: 'red', fontSize: '10px' }}> *All Fields Are REQUIRED To Be Filled Up* </p>
+                <p style={{ color: 'red'}}> *All Fields Are REQUIRED To Be Filled Up* </p>
               </div>
 
               <form className="event-forms" onSubmit={handleCreate}>
@@ -261,9 +261,22 @@ const CreateEvent = () => {
                 <hr style={{ border: '1px solid #ccc', margin: '10px 0' }} />
 
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "8px" }}>
-                  <div className="event-form-title">
-                    <h4> CO & SUB-ORGANIZERS </h4>
-                    <p style={{ color: '#3E64AF', fontSize: '10px' }}> *Fields are Optional To Be Filled Up* </p>
+                  <div className="event-form-title" >
+                    <div style={{display: "flex", flexDirection: "row", gap:"5px", alignItems: "center"}}>
+                      <h4> COORDINATORS </h4>
+
+                      <div className="info-icon" tabIndex={0} aria-describedby="coord-types-tooltip">
+                        <IoIosInformationCircleOutline />
+                        <div className="hover-modal" role="tooltip" id="coord-types-tooltip">
+                          <strong>Coordinator Types</strong>
+                          <ul style={{listStyle: "none"}}>
+                            <li><b>Co-Organizer</b> — can create teams and games, accepts players into institutions and teams and can access scoreboard. They can also view player data such as the player's submitted requirements.</li>
+                            <li><b>Sub-Organizer</b> — can manage teams and players within an event and game. However, they aren't allowed to create events and games.</li>
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+                    <p style={{ color: '#3E64AF' }}> *Fields are Optional To Be Filled Up* </p>
                   </div>
                   <button
                     className="add-coordinator-button"
@@ -332,7 +345,7 @@ const CreateEvent = () => {
             </div>
           </div>
 
-          <div className="event-container">
+          <div>
               <div className="lower-buttons">
                 <button type="button" onClick={handleCancel}>Cancel</button>
                 <button type="submit" onClick={handleCreate}>Create Event</button>

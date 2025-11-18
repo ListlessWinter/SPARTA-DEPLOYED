@@ -6,8 +6,10 @@ import axios from 'axios';
 import "../../styles/Calendar.css";
 
 const PlayerDashboard = () => {
+
+  useEffect(() => {document.title = "SPARTA | Dashboard";},[]);
+
     const user = JSON.parse(localStorage.getItem('auth'));
-  
     const [date, setDate] = useState(new Date());
     const [matchEvents, setMatchEvents] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -15,15 +17,11 @@ const PlayerDashboard = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [multiDayEvents, setMultiDayEvents] = useState([]);
   
-    useEffect(() => {
-      document.title = "SPARTA | Dashboard";
-    }, []);
-
     // Fetch game schedules
     useEffect(() => {
       const fetchGames = async () => {
         try {
-          const res = await axios.get(`https://sparta-deployed.onrender.com/api/games?institution=${encodeURIComponent(user?.institution)}&eventName=${encodeURIComponent(user?.eventName)}`);
+          const res = await axios.get(`http://localhost:5000/api/games?institution=${encodeURIComponent(user?.institution)}&eventName=${encodeURIComponent(user?.eventName)}`);
           const matches = [];
           const multiDay = [];
   
@@ -174,38 +172,41 @@ const PlayerDashboard = () => {
   
   return (
     <PlayerMainLayout>
-    <div className="dashboard-container">
-      <div className="calendar-container">
-        <Calendar 
-          onChange={onChange} 
-          value={date} 
-          tileContent={tileContent}
-          tileClassName={tileClassName}
-          className="custom-calendar"
-          showNeighboringMonth={false}
-          onClickDay={handleDateClick}
-        />
+    <div className="dashboard-page-container">
+
+      <div className="dashboard-main-content">
+        <div className="calendar-container">
+          <Calendar 
+            onChange={onChange} 
+            value={date} 
+            tileContent={tileContent}
+            tileClassName={tileClassName}
+            className="custom-calendar"
+            showNeighboringMonth={false}
+            onClickDay={handleDateClick}
+          />
+        </div>
       </div>
 
-      <div className="upcoming-events">
-        <h3>UPCOMING EVENTS</h3>
-        {loading ? (
-          <p>Loading events...</p>
-        ) : upcomingEvents.length > 0 ? (
-          <ul>
-            {upcomingEvents.map((event, index) => (
-              <li key={index} className="upcoming-event">
-                <strong>{formatEventDate(event.date)} • {event.time}</strong>
-                {event.title} - {event.teams}
-                <br />
-                <span className="location">📍 {event.location}</span>
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p>No upcoming events</p>
-        )}
-      </div>
+        <div className="upcoming-events" style={{margin: "0px"}}>
+          <h3>UPCOMING GAMES</h3>
+          {loading ? (
+            <p>Loading events...</p>
+          ) : upcomingEvents.length > 0 ? (
+            <ul>
+              {upcomingEvents.map((event, index) => (
+                <li key={index} className="upcoming-event">
+                  <strong>{formatEventDate(event.date)} • {event.time}</strong>
+                  {event.title} - {event.teams}
+                  <br />
+                  <span className="location">📍 {event.location}</span>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p style={{fontStyle: "italic"}}>Head over the Events Page to join a game match!</p>
+          )}
+        </div>
 
       {/* Event Modal */}
       {isModalOpen && (

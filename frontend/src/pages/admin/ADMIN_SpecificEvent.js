@@ -9,21 +9,20 @@ import { MdOutlineFeedback } from "react-icons/md";
 import '../../styles/ADMIN_SpecificEvents.css';
 
 const SpecificEvent = () => {
+
+    useEffect(() => {document.title = "SPARTA | " + decodedName;},[]);
+
     const navigate = useNavigate();
     const { eventName } = useParams();
     const decodedName = decodeURIComponent(eventName);
 
     const [event, setEventDetails] = useState(null);
 
-    useEffect(() => {
-      document.title = "SPARTA | " + decodedName;
-    }, []);
-
     // Fetch Event details
     useEffect(() => {
     const fetchEventDetails = async () => {
       try {
-        const response = await fetch(`https://sparta-deployed.onrender.com/api/specific-event?eventName=${encodeURIComponent(decodedName)}`);
+        const response = await fetch(`http://localhost:5000/api/specific-event?eventName=${encodeURIComponent(decodedName)}`);
         const data = await response.json();
         setEventDetails(data);
       } catch (error) {

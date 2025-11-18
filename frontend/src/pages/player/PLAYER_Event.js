@@ -5,19 +5,18 @@ import { MdEventNote } from "react-icons/md";
 import '../../styles/ADMIN_Event.css'; 
 
 const PlayerEvent = () => {
+
+  useEffect(() => {document.title = "SPARTA | Events";},[]);
+
   const navigate = useNavigate();
   const [events, setEvents] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const user = JSON.parse(localStorage.getItem('auth'));
 
-  useEffect(() => {
-    document.title = "SPARTA | Events";
-  }, []);
-
   //Fetch Events
   useEffect(() => {
     const fetchEvents = async () => {
-      const response = await fetch(`https://sparta-deployed.onrender.com/api/active-events?institution=${user?.institution}&email=${user.email}&role=${user.role}`);
+      const response = await fetch(`http://localhost:5000/api/active-events?institution=${user?.institution}&email=${user.email}&role=${user.role}`);
       const data = await response.json();
       setEvents(data);
     };
@@ -36,6 +35,7 @@ const PlayerEvent = () => {
 
   return (
     <PlayerMainLayout>
+    <div className="event-list-container">
       <div className="event-main-header">
         <input
           type="text"
@@ -63,11 +63,21 @@ const PlayerEvent = () => {
 
             <div className="event-name" onClick={() => handleEventClick(event)}>
               {event.eventName}
+              <p>
+                  {event?.eventStartDate
+                    ? new Date(event.eventStartDate).toLocaleDateString()
+                    : "Loading..."}{" "}
+                  -{" "}
+                  {event?.eventEndDate
+                    ? new Date(event.eventEndDate).toLocaleDateString()
+                    : "Loading..."}
+                </p>
             </div>
           </div>
         ))}
       </div>
     )}
+    </div>
     </PlayerMainLayout>
   )
 };

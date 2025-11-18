@@ -1,6 +1,12 @@
+@media (min-width: 1024px) and (max-width: 1599px) {
+  .team-create-maindiv {
+    width: 45vw;
+  }
+
+}
+
 .team-create-maindiv {
   border-radius: 10px;
-  width: 600px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -13,7 +19,6 @@
   font-size: 10px;
   font-family: Monteserrat, sans-serif;
   color: white;
-  padding: 3px;
   border:1px solid #666699;
   border-top-left-radius: 5px;
   border-top-right-radius: 5px;
@@ -23,8 +28,7 @@
 }
 
 .team-form-container {
-  align-items: center;
-  padding: 10px;
+  padding: 0 10px;
   font-family: Montserrat, sans-serif;
   background-color: rgba(255, 255, 255, 0.251);
   width: inherit;
@@ -45,8 +49,6 @@
 }
 
 .team-form {
-  display: flex;
-  flex-direction: row;
   gap: 10px;
   font-size: 14px;    
 }
@@ -96,6 +98,7 @@
 .multi-select {
   position: relative;
   width: 300px;
+  margin-top: 5px;
 }
 
 .multi-select input {
@@ -133,7 +136,7 @@
 }
 
 .selected-tags {
-  margin-top: 8px;
+  margin: 10px 0;
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
@@ -142,11 +145,10 @@
 .tag {
   background: #d68b1d;
   color: white;
-  padding: 4px 8px;
-  border-radius: 6px;
+  padding: 3px 5px;
+  border-radius: 5px;
   display: flex;
   align-items: center;
-  gap: 6px;
 }
 
 .tag button {
@@ -254,4 +256,47 @@
 
 .team-modal button:hover {
   background: #CE892C;
+}
+
+.toast-notification {
+  position: fixed;
+  bottom: 25px;
+  right: 25px;
+  padding: 14px 20px;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  animation: fadeInSlide 0.3s ease-out, fadeOut 0.5s ease-in 7.5s forwards;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.toast-notification.success {
+  background-color: #086c3a;
+}
+
+.toast-notification.error {
+  background-color: #d32f2f;
+}
+
+@keyframes fadeInSlide {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Smooth exit */
+@keyframes fadeOut {
+  to {
+    opacity: 0;
+    transform: translateY(20px);
+  }
 }

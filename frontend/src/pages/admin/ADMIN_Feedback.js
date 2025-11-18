@@ -1,24 +1,22 @@
 import MainLayout from "../../components/MainLayout";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import '../../styles/ADMIN_Feedback.css';
 import { VscSearchStop } from "react-icons/vsc";
 
 const Feedback = () => {
+
+  useEffect(() => {document.title = "SPARTA | Event Feedback";},[]);
+
   const { eventName } = useParams();
   const decodedEvent = decodeURIComponent(eventName);
-
   const [feedbacks, setFeedbacks] = useState([]);
-
-  useEffect(() => {
-    document.title = "SPARTA | Feedback";
-  }, []);
 
   // Fetch Feedbacks
   useEffect(() => {
     const fetchFeedbacks = async () => {
       try {
-        const res = await fetch(`https://sparta-deployed.onrender.com/api/feedback/${decodedEvent}`);
+        const res = await fetch(`http://localhost:5000/api/feedback/${decodedEvent}`);
         const data = await res.json();
         setFeedbacks(data);
       } catch (err) {

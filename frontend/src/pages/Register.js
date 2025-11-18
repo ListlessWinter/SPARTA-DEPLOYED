@@ -24,7 +24,7 @@ export default function RegisterPage() {
   useEffect(() => {
     const fetchInstitutions = async () => {
       try {
-        const response = await fetch('https://sparta-deployed.onrender.com/api/institutions');
+        const response = await fetch('http://localhost:5000/api/institutions');
         const data = await response.json();
         setInstitutions(data);
       } catch (err) {
@@ -36,21 +36,15 @@ export default function RegisterPage() {
   }, []);
 
   useEffect(() => {
-    const fetchEvents = async () => {
-      if (role === 'player' && formData.institution) {
-        try {
-          const response = await fetch(`https://sparta-deployed.onrender.com/api/events?institution=${encodeURIComponent(formData.institution)}`);
-          const data = await response.json();
-          setEvents(data);
-        } catch (err) {
-          console.error('Failed to load events:', err);
-        }
-      }
-    };
-  
-    fetchEvents();
+    if (role === 'player' && formData.institution) {
+      fetch(
+        `http://localhost:5000/api/events?institution=${encodeURIComponent(formData.institution)}`
+      )
+        .then((res) => res.json())
+        .then((data) => setEvents(data))
+        .catch((err) => console.error('Failed to load events:', err));
+    }
   }, [formData.institution, role]);
-  
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -60,7 +54,7 @@ export default function RegisterPage() {
     setToast({ show: true, message, type });
     setTimeout(() => {
       setToast({ show: false, message: '', type: '' });
-    }, 3000);
+    }, 8000);
   };
 
   const handleSubmit = async (e) => {
@@ -81,7 +75,7 @@ export default function RegisterPage() {
           };
 
     try {
-      const response = await fetch(`https://sparta-deployed.onrender.com/api/auth/register/${role}`, {
+      const response = await fetch(`http://localhost:5000/api/auth/register/${role}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
@@ -91,7 +85,7 @@ export default function RegisterPage() {
 
       if (response.ok) {
         showToast(`Successfully registered as ${role}`, 'success');
-        setTimeout(() => navigate('/dashboard'), 2000); 
+        setTimeout(() => navigate('/dashboard'), 8000);
       } else {
         showToast(data.message || 'Registration failed', 'error');
       }
@@ -185,9 +179,14 @@ export default function RegisterPage() {
               Register as {role.charAt(0).toUpperCase() + role.slice(1)}
             </button>
 
+            <button type="button" className="switch-button" onClick={() => navigate('/Service')}>
+              Can't find your institution?<br /> Register your institution here.
+            </button>
+
             <button type="button" className="switch-button" onClick={() => navigate('/')}>
               Already have an account? Login
             </button>
+
           </form>
         </div>
       </div>

@@ -4,6 +4,9 @@ import { useNavigate, useParams } from "react-router-dom";
 import "../../styles/ADMIN_TeamCreate.css";
 
 const CreateTeam = () => {
+
+  useEffect(() => {document.title = "SPARTA | Create Team";},[]);
+
   const navigate = useNavigate();
   const [teamName, setTeamName] = useState("");
   const [teamManager, setTeamManager] = useState("");
@@ -16,14 +19,11 @@ const CreateTeam = () => {
   const [search, setSearch] = useState("");
   const [showDropdown, setShowDropdown] = useState(false);
 
-  const [modalMessage, setModalMessage] = useState("");
-  const [showModal, setShowModal] = useState(false);
+  const [showToast, setShowToast] = useState(false);
+  const [toastMessage, setToastMessage] = useState("");
+  const [toastType, setToastType] = useState("success"); 
 
   const decodedEventName = decodeURIComponent(eventName);
-
-  useEffect(() => {
-    document.title = "SPARTA | Team Create";
-  }, []);
 
   // Team Creation
   const handleCreate = async (e) => {
@@ -49,7 +49,7 @@ const CreateTeam = () => {
         formData.append("teamIcon", teamIcon);
       }
 
-      const response = await fetch("https://sparta-deployed.onrender.com/api/team", {
+      const response = await fetch("http://localhost:5000/api/team", {
         method: "POST",
         body: formData, 
       });
@@ -57,21 +57,30 @@ const CreateTeam = () => {
       const data = await response.json();
 
       if (response.ok) {
-        alert("Team created!");
-        setModalMessage("Team created successfully!");
-        setShowModal(true);
+        setToastMessage("Team Successfully Created");
+        setToastType("success");
+        setShowToast(true);
+
         setTimeout(() => {
-          setShowModal(false);
+          setShowToast(false);
           navigate(-1);
-        }, 3000);
+        }, 8000);
       } else {
-        alert(`${data.message}`);
+        setToastMessage(data.message || "Failed to create team.");
+        setToastType("error");
+        setShowToast(true);
+
+        setTimeout(() => setShowToast(false), 8000);
       }
-    } catch (error) {
-      console.error("Error creating team:", error);
-      setModalMessage("Failed to create team.");
-      setShowModal(true);
-    }
+      } catch (error) {
+        console.error("Error creating team:", error);
+        
+        setToastMessage("Failed to create team.");
+        setToastType("error");
+        setShowToast(true);
+
+        setTimeout(() => setShowToast(false), 8000);
+      }
   };
 
   // Fetch Coordinators
@@ -81,7 +90,7 @@ const CreateTeam = () => {
       const institution = user?.institution;
 
       try {
-        const res = await fetch(`https://sparta-deployed.onrender.com/api/coordinators?institution=${institution}&event=${decodedEventName}`);
+        const res = await fetch(`http://localhost:5000/api/coordinators?institution=${institution}&event=${decodedEventName}`);
         const data = await res.json();
         setCoordinators(Array.isArray(data) ? data : []);
       } catch (err) {
@@ -120,11 +129,16 @@ const CreateTeam = () => {
             <h2>Team Creation Form</h2>
           </div>
 
-          <div className="team-form-container">
+          <div style={{width: "inherit", padding: "10px 10px", borderLeft: "1px solid rgb(176, 176, 176)", borderRight: "1px solid rgb(176, 176, 176)", textAlign: "center", fontFamily: "Poppins, Sans-Serif"}}>
+              <h4>Create a New Team for {decodedEventName}</h4>
+              <p style={{margin: "5px 0", fontStyle: "italic", color: "#777"}}>Please fill out the form below to create a new team. Ensure all details are accurate before submission.</p>
+          </div>
 
+          <div className="team-form-container">
+            
             <form className="team-form" onSubmit={handleCreate}>
 
-              <div style={{ display: "flex", flexDirection: "row", gap: "50px" }}>
+              <div style={{ display: "flex", flexDirection: "row", gap: "50px", justifyContent: "space-evenly" }}>
                 <div style={{ display: "flex", flexDirection: "column", width: "250px", margin: "5px", padding: "5px" }}>
                   <div className="input-group">
                     <input
@@ -160,7 +174,7 @@ const CreateTeam = () => {
                   </div>
                 </div>
 
-                <div style={{ display: "flex", flexDirection: "column", width: "250px", margin: "5px", padding: "5px" }}>
+                <div style={{ display: "flex", flexDirection: "column", width: "250px", margin: "5px", padding: "5px", textAlign: "center" }}>
                   <div>
                     <label className="color-picker">
                       Team Color:
@@ -172,7 +186,7 @@ const CreateTeam = () => {
                       />
                     </label>
                   </div>
-                  <h6> or you may upload the team logo</h6>
+                  <p style={{margin: "5px"}}> or you may upload the team logo</p>
                   <div className="file-upload">
 
                     <span className="file-name">
@@ -236,20 +250,17 @@ const CreateTeam = () => {
               </div>
 
               <div className="lower-buttons">
-                <button type="submit">Create Team</button>
                 <button type="button" onClick={handleCancel}>Cancel</button>
-              </div>
+                <button type="submit">Create Team</button>
+            </div>
 
             </form>
           </div>
         </div>
 
-        {showModal && (
-          <div className="modal-backdrop">
-            <div className="team-modal">
-              <p>{modalMessage}</p>
-              <button onClick={() => setShowModal(false)}>Close</button>
-            </div>
+        {showToast && (
+          <div className={`toast ${toastType === 'success' ? 'toast-success' : 'toast-error'}`}>
+            {toastMessage}
           </div>
         )}
       </>

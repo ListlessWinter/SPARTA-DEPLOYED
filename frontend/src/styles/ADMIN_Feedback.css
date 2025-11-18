@@ -2,18 +2,38 @@
     display: flex;
     flex-direction: row;
     gap: 20px;
-    padding: 15px;
     width: 100%;
-    max-width: 1200px;
     align-items: flex-start;
+}
+
+@media (max-width: 1023px) {
+  .feedback-maindiv {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    align-items: center;
+  }
+
+  .feedback-item {
+    width: 20vw;
+  }
+}
+
+@media (min-width: 1024px) and (max-width: 1600px) {
+  .feedback-maindiv {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+  }
+
+  .feedback-item {
+    width: 15vw;
+  }
 }
 
 .feedback-header-row {
     display: flex;
     justify-content: flex-end;
     width: 100%;
-    max-width: 1200px;
-    margin: 5px 15px;
 }
 
 .feedback-header-row h3, .feedback-header-row p {
@@ -42,8 +62,7 @@
 .feedback-item {
     display: flex;
     flex-direction: row;
-    width: 175px;
-    min-height: fit-content;
+    height: 30vh;
 }
 
 .feedback-container {
@@ -56,9 +75,9 @@
 .feedback-contents {
     background: white;
     border-radius: 10px;
-    padding: 5px 10px;
+    padding: 10px;
     font-family: Poppins, sans-serif;
-    min-height: 25vh;
+    height: 25vh;
     display: flex;
     flex-direction: column;
     align-content: space-between;
@@ -183,7 +202,7 @@
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
   opacity: 0;
   transform: translateY(20px);
-  animation: toastFade 6s ease-in-out forwards;
+  animation: fadeInSlide 0.3s ease-out, fadeOut 0.5s ease-in 7.5s forwards;
   z-index: 100;
   font-family: Montserrat, sans-serif;
 }

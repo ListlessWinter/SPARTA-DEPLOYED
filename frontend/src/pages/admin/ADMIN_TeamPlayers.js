@@ -5,6 +5,9 @@ import '../../styles/ADMIN_TeamPlayers.css';
 import { LiaGhostSolid } from "react-icons/lia";
 
 const TeamPlayers = () => {
+
+  useEffect(() => {document.title = "SPARTA | " + decodedTeam + " Players";},[]);
+
   const { eventName, teamName } = useParams();
   const decodedEvent = decodeURIComponent(eventName);
   const decodedTeam = decodeURIComponent(teamName);
@@ -15,6 +18,7 @@ const TeamPlayers = () => {
   const [players, setPlayers] = useState([]);
   const [teamColor, setTeamColor] = useState("#808080");
   const [teamRank, setTeamRank] = useState(null);
+  const [pendingCount, setPendingCount] = useState(0);
 
 
   const handleViewButton = (playerId) => {
@@ -25,15 +29,11 @@ const TeamPlayers = () => {
     navigate(`/admin/event/${encodeURIComponent(decodedEvent)}/team/${encodeURIComponent(teamName)}/pending`);
   }
 
-  useEffect(() => {
-    document.title = "SPARTA | Team Players";
-  }, []);
-
   // Fetch players
   useEffect(() => {
     const fetchPlayers = async () => {
       try {
-        const res = await fetch(`https://sparta-deployed.onrender.com/api/players?institution=${encodeURIComponent(user?.institution)}&eventName=${encodeURIComponent(decodedEvent)}&team=${encodeURIComponent(decodedTeam)}`);
+        const res = await fetch(`http://localhost:5000/api/players?institution=${encodeURIComponent(user?.institution)}&eventName=${encodeURIComponent(decodedEvent)}&team=${encodeURIComponent(decodedTeam)}`);
         const data = await res.json();
         setPlayers(data);
       } catch (err) {
@@ -48,7 +48,7 @@ const TeamPlayers = () => {
   useEffect(() => {
     const fetchTeamDetails = async () => {
       try {
-        const res = await fetch(`https://sparta-deployed.onrender.com/api/team?institution=${encodeURIComponent(user?.institution)}&event=${encodeURIComponent(decodedEvent)}&teamName=${encodeURIComponent(decodedTeam)}`);
+        const res = await fetch(`http://localhost:5000/api/team?institution=${encodeURIComponent(user?.institution)}&event=${encodeURIComponent(decodedEvent)}&teamName=${encodeURIComponent(decodedTeam)}`);
         const data = await res.json();
         setTeamColor(data.teamColor || "#808080");
       } catch (err) {
@@ -63,7 +63,7 @@ const TeamPlayers = () => {
   useEffect(() => {
     const fetchTeamRankings = async () => {
       try {
-        const res = await fetch(`https://sparta-deployed.onrender.com/api/teams/scores?institution=${encodeURIComponent(user?.institution)}&event=${encodeURIComponent(decodedEvent)}`);
+        const res = await fetch(`http://localhost:5000/api/teams/scores?institution=${encodeURIComponent(user?.institution)}&event=${encodeURIComponent(decodedEvent)}`);
         const data = await res.json();
 
         // Sort descending by final score
@@ -89,6 +89,34 @@ const TeamPlayers = () => {
       fetchTeamRankings();
     }
   }, [user?.institution, decodedEvent, decodedTeam]);
+
+  // fetch pending players count for this team (polls every 30s)
+  useEffect(() => {
+    let mounted = true;
+    const fetchPendingCount = async () => {
+      try {
+        const res = await fetch(
+          `http://localhost:5000/api/players/team-pending?institution=${encodeURIComponent(
+            user?.institution
+          )}&eventName=${encodeURIComponent(eventName)}&team=${encodeURIComponent(
+            teamName
+          )}`
+        );
+        if (!res.ok) return;
+        const data = await res.json();
+        if (mounted) setPendingCount(Array.isArray(data) ? data.length : 0);
+      } catch (err) {
+        console.error("Error fetching pending count:", err);
+      }
+    };
+
+    fetchPendingCount();
+    const id = setInterval(fetchPendingCount, 30000); // every 30s
+    return () => {
+      mounted = false;
+      clearInterval(id);
+    };
+  }, [user?.institution, eventName, teamName]);
 
   function getOrdinal(n) {
     const s = ["th", "st", "nd", "rd"];
@@ -118,7 +146,14 @@ const TeamPlayers = () => {
         </div>
 
         <div className='team-pending-players'>
-          <button onClick={handlePending}>Pending Players</button>
+          <button className="team-pending-btn" onClick={handlePending}>
+            Pending Players
+            {pendingCount > 0 && (
+              <span className="team-pending-badge" aria-label={`${pendingCount} pending`}>
+                {pendingCount}
+              </span>
+            )}
+          </button>
         </div>
 
         <div className='team-players-table'>

@@ -1,6 +1,5 @@
 .sidemenu {
-  width: 200px;
-  height: 100vh;
+  height: 100%;
   background-color: #1A2A49;
   position: fixed;
   left: 0;
@@ -8,7 +7,7 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  z-index: 1000;
+  z-index: 5000;
 }
 
 .sidemenu-logo {
@@ -18,7 +17,7 @@
 }
 
 .logo-img {
-  width: 100px;
+  width: 4vw;
   height: auto;
 }
 
@@ -27,7 +26,7 @@
   padding: 0;
   margin: 0 0 0 20px; 
   flex-grow: 1;
-  border-top: 2px solid white;
+  /* border-top: 2px solid white; */
 }
 
 .sidemenu-list li {
@@ -68,67 +67,30 @@
 
 }
 
-.bottom-info h2 {
-  font-family:Arial, Helvetica, sans-serif;
-  font-size: 16px;
-  text-align: center;
-  color: white;
-  border: 2px solid white;
-  padding: 5px 20px;
-  border-radius: 5px;
-  background-color: #063d73;
-}
-
-.user-info {
-  display: flex;
-  align-items: center;
-  text-align: center;
-  flex-direction: column;
-  gap: 10px;
-  font-size: 12px;
-  font-family: Monteserrat, Sans-Serif;
-  color: white;
-
-}
-
-.user-name {
-  font-size: 14px;
-  font-family: Poppins, sans-serif;
-  white-space: nowrap;
-}
-.s-logout-button {
-  margin-top: 20px;
-  border: none; 
-  padding: 5px 10px; 
-  border-radius: 5px; 
-  background-color: #dc3545; 
-  color: #fff; 
-  font-size: 15px; 
-  cursor: pointer; 
-  transition: background 
-  0.2s ease, transform 0.1s ease; }
-  
-.s-logout-button button:hover {
-  background-color: #CE892C;
- } 
-  
-.s-logout-button button:active {
-  transform: scale(0.97);
-}
-
 /* Responsive: side menu scaling + collapsed view for smaller screens */
 .sidemenu {
   transition: width 200ms ease, transform 200ms ease;
 }
 
-/* Medium screens: slightly narrower */
-@media (max-width: 1024px) {
+@media (min-width: 1600px) {
   .sidemenu {
-    width: 160px;
+    width: 10.5vw;
   }
 
   .logo-img {
-    width: 84px;
+    width: 5vw;
+    height: auto;
+  }
+}
+
+/* Medium screens: slightly narrower */
+@media (min-width: 1440px) and (max-width: 1599px) {
+  .sidemenu {
+    width: 12vw;
+  }
+
+  .logo-img {
+    width: 68px;
   }
 
   .sidemenu-list a {
@@ -140,7 +102,7 @@
 /* Tablet / small laptops -> compact vertical bar */
 @media (max-width: 768px) {
   .sidemenu {
-    width: 80px;
+    width: 10vw;
   }
 
   .sidemenu-logo {
@@ -153,21 +115,18 @@
     height: auto;
   }
 
-  /* Reduce left margin so icons align inside the narrower bar */
   .sidemenu-list {
-    margin-left: 0;
+    margin: 0 auto;
     padding-left: 0;
   }
 
-  /* Center icons, hide textual labels if present (keeps icons visible) */
   .sidemenu-list a {
     justify-content: center;
     padding: 10px 6px;
     gap: 0;
-    font-size: 0; /* hide inline text nodes while keeping icon elements (svg / i) */
+    font-size: 0; 
   }
 
-  /* If your link text is wrapped in a .label or span, hide that explicitly */
   .sidemenu-list a .label,
   .sidemenu-list a span,
   .sidemenu-list a .text {

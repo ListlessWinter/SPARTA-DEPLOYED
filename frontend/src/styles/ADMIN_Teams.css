@@ -1,11 +1,40 @@
+@media (max-width: 1023px) {
+  .teams-event ul {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .teams-event {
+    margin: 10px auto;
+    display: grid;
+  }
+}
+
+@media (min-width: 1024px) and (max-width: 1599px) {
+  .teams-event {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  .teams-event ul {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+  }
+}
+
+@media (min-width: 1600px) {
+  .teams-event ul {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+  }
+}
+
 h3 {
   font-family: Arial, Helvetica, sans-serif;
   text-align: center;
 }
 
 .teams-event {
-  display: flex;
-  flex-wrap: wrap;
   align-items: center;
   justify-content: center;
   box-sizing: border-box;
@@ -14,8 +43,6 @@ h3 {
 }
 
 .teams-event ul{
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
   gap: 1rem;
   list-style: none;
   padding: 0;
@@ -24,6 +51,7 @@ h3 {
 
 .teams-header-row {
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: space-between;
   margin: 5px 20px;
@@ -55,9 +83,15 @@ h3 {
   cursor: pointer;
 }
 
-div button:hover {
+.new-team-btn:hover {
   background-color: #CE892C;
   color: white;
+}
+
+.new-team-btn:disabled {
+  background-color: gray;
+  cursor: not-allowed;
+  opacity: 0.7;
 }
 
 .team-search-bar:focus {
@@ -65,20 +99,26 @@ div button:hover {
   box-shadow: 0 0 0 2px rgba(255,152,0,0.15);
 }
 
+.team-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
 .team-btn {
   cursor: pointer;
-  padding: 8px 12px;
   border: 1px solid rgb(255, 255, 255);
   border-radius: 6px;
   margin: 10px 0;
-  padding: 10px;
+  padding: 5px;
   min-width: 22vh;
   min-height: 29vh;
   font-family: Paytone One, sans-serif;
   font-size: 20px;
   text-transform: uppercase;
   font-weight: bold;
-  color: white;
   text-align: center;
   align-items: center;
 }
@@ -105,21 +145,22 @@ div button:hover {
   gap: 16px;
 }
 
-.form-group {
+.teamedit-form-group {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
 }
 
-.form-group label {
+.teamedit-form-group label {
   font-weight: 600;
   margin-bottom: 6px;
 }
 
-.form-group input,
-.form-group select,
-.form-group textarea {
-  width: 100%;
+.teamedit-form-group input,
+.teamedit-form-group select,
+.teamedit-form-group textarea {
+  width: 15vw;
+  margin-left: 1rem;
   padding: 8px 10px;
   border: 1px solid #ccc;
   border-radius: 6px;
@@ -132,16 +173,197 @@ div button:hover {
   gap: 1rem !important;
 }
 
-.modal .form-group {
+.modal .teamedit-form-group {
   display: flex !important;
   flex-direction: column !important;
   align-items: flex-start !important;
   width: 100% !important;
 }
 
-.modal .form-group input,
-.modal .form-group select,
-.modal .form-group textarea {
+.modal .teamedit-form-group input,
+.modal .teamedit-form-group select,
+.modal .teamedit-form-group textarea {
   width: 100% !important;
   margin-top: 6px !important;
+}
+
+.team-menu-container {
+  position: absolute;
+  top: 20px;
+  right: 5px;
+  z-index: 2;
+  cursor: pointer;
+}
+
+.team-menu-icon {
+  color: white;
+  width: 22px;
+  height: 22px;
+  transition: transform 0.2s ease;
+}
+
+.team-menu-icon:hover {
+  transform: scale(1.1);
+}
+
+.menu-dropdown {
+  position: absolute;
+  top: 0px;
+  right: 20px;
+  background: white;
+  color: black;
+  border-radius: 6px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  display: flex;
+  flex-direction: column;
+  min-width: 100px;
+  z-index: 3;
+}
+
+.menu-dropdown button {
+  background: none;
+  border: none;
+  border-radius: 6px;
+  text-align: left;
+  padding: 8px 10px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.menu-dropdown button:hover {
+  background-color: #f0f0f0;
+}
+
+.team-btn {
+  position: relative;
+  z-index: 1;
+}
+
+/* Confirm modal overlay */
+.confirm-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 18, 40, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1200;
+}
+
+.confirm-modal {
+  background: #fff;
+  padding: 20px 22px;
+  border-radius: 10px;
+  width: 360px;
+  max-width: calc(100% - 40px);
+  box-shadow: 0 12px 40px rgba(10,18,40,0.2);
+  text-align: center;
+  color: #1A2A49;
+}
+
+.confirm-modal h3 {
+  margin: 0 0 8px;
+  font-size: 18px;
+}
+
+.confirm-modal p {
+  margin: 8px 0 16px;
+  font-size: 14px;
+  color: #334155;
+}
+
+.confirm-modal-actions {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+}
+
+/* buttons inside modal */
+.confirm-modal .btn {
+  padding: 8px 14px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.confirm-modal .btn.cancel {
+  background: #eef2ff;
+  color: #1A2A49;
+  border: 1px solid rgba(26,42,73,0.06);
+}
+
+.confirm-modal .btn.confirm {
+  background: #d32f2f;
+  color: #fff;
+}
+
+/* Toast styles matching Register.js */
+.toast {
+  position: fixed;
+  right: 18px;
+  bottom: 18px;
+  padding: 12px 16px;
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(10,18,40,0.28);
+  z-index: 1300;
+  font-weight: 600;
+  color: #fff;
+}
+
+.toast-success {
+  background: rgba(157, 34, 17, 0.95);
+}
+
+.toast-error {
+  background: rgba(211,47,47,0.95);
+}
+
+/* small responsive tweak */
+@media (max-width: 480px) {
+  .confirm-modal { width: 92%; padding: 16px; }
+  .toast { left: 12px; right: 12px; bottom: 12px; }
+}
+
+.team-edit-modal {
+  background: #fff;
+  padding: 20px 25px;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+  max-width: 420px;
+  width: 90%;
+  animation: popup 0.25s ease-out;
+  position: relative;
+  z-index: 2100;
+  font-family: 'Montserrat', sans-serif;
+}
+
+.team-edit-form {
+  gap: 10px;
+  font-size: 14px;
+}
+
+.teamedit-modal-actions {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.teamedit-modal-actions button {
+  flex: 1 1;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.teamedit-modal-actions button:first-child {
+    background: #545557;
+    color: white;
+}
+
+.teamedit-modal-actions button:last-child {
+    background: #0f8942;
+    color: white;
 }

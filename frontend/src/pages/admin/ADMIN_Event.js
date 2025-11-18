@@ -3,9 +3,13 @@ import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { MoreVertical } from "lucide-react";
 import { MdEventNote } from "react-icons/md";
+import { IoIosInformationCircleOutline } from "react-icons/io";
 import "../../styles/ADMIN_Event.css";
 
 const Event = () => {
+
+  useEffect(() => {document.title = "SPARTA | Event";},[]);
+
   const navigate = useNavigate();
   const [events, setEvents] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
@@ -14,14 +18,10 @@ const Event = () => {
   const [, setNewSubOrganizer] = useState(""); 
   const user = JSON.parse(localStorage.getItem("auth"));
 
-  useEffect(() => {
-    document.title = "SPARTA | Event";
-  }, []);
-
   // Fetch events
   useEffect(() => {
     const fetchEvents = async () => {
-      const response = await fetch(`https://sparta-deployed.onrender.com/api/active-events?institution=${user?.institution}&email=${user.email}&role=${user.role}`);
+      const response = await fetch(`http://localhost:5000/api/active-events?institution=${user?.institution}&email=${user.email}&role=${user.role}`);
       const data = await response.json();
       setEvents(data);
     }; 
@@ -42,7 +42,7 @@ const Event = () => {
   const handleDelete = async (id) => {
     if (!window.confirm("Are you sure you want to delete this event?")) return;
     try {
-      await fetch(`https://sparta-deployed.onrender.com/api/event/${id}`, { method: "DELETE" });
+      await fetch(`http://localhost:5000/api/event/${id}`, { method: "DELETE" });
       setEvents(events.filter((e) => e._id !== id));
     } catch (err) {
       console.error("Delete failed:", err);
@@ -53,7 +53,7 @@ const Event = () => {
   const handleEditSave = async () => {
     try {
       const res = await fetch(
-        `https://sparta-deployed.onrender.com/api/event/${editEvent._id}`,
+        `http://localhost:5000/api/event/${editEvent._id}`,
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
@@ -105,15 +105,24 @@ const Event = () => {
               >
                 {/* Menu button */}
                 {user.role === "admin" && (
-                  <>
-                    <MoreVertical size={20} className="menu-icon" onClick={() => setMenuOpen(menuOpen === event._id ? null : event._id)} />
+                  <div className="menu-container">
+                    <MoreVertical
+                      size={20}
+                      className="menu-icon"
+                      onClick={() => setMenuOpen(menuOpen === event._id ? null : event._id)}
+                    />
+
                     {menuOpen === event._id && (
-                      <div className="menu-dropdown">
-                        <button onClick={() => setEditEvent(event)}>EDIT</button>
-                        <button onClick={() => handleDelete(event._id)}>DELETE</button>
+                      <div className="dropdown-menu">
+                        <div className="dropdown-item" onClick={() => setEditEvent(event)}>
+                          Edit
+                        </div>
+                        <div className="dropdown-item delete" onClick={() => handleDelete(event._id)}>
+                          Delete
+                        </div>
                       </div>
                     )}
-                  </>
+                  </div>  
                 )}
               </div>
 
@@ -227,9 +236,25 @@ const Event = () => {
 
                 {/* Co & Sub-organizers just like CreateEvent */}
                 <hr />
-                <h4>CO & SUB-ORGANIZERS</h4>
+                <div style={{display: "flex", flexDirection: "row", gap:"5px", alignItems: "center", justifyContent: "center"}}>
+                  <h4>CO & SUB-ORGANIZERS</h4>
+                  <div className="info-icon" tabIndex={0} aria-describedby="coord-types-tooltip">
+                    <IoIosInformationCircleOutline />
+                      <div className="hover-modal" role="tooltip" id="coord-types-tooltip">
+                        <strong>Coordinator Types</strong>
+                          <ul style={{listStyle: "none", textAlign: "left"}}>
+                            <li>
+                              <b>Co-Organizer</b> — can create teams and games, accepts players into institutions and teams and can access scoreboard. They can also view player data such as the player's submitted requirements.
+                            </li>
+                            <li>
+                              <b>Sub-Organizer</b> — can manage teams and players within an event and game. However, they aren't allowed to create events and games.
+                            </li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
                 <p style={{ color: "#3E64AF", fontSize: "10px" }}>
-                  *Optional – you may add multiple*
+                  *You may add multiple Co & Sub-organizers*
                 </p>
                 <button
                   type="button"
@@ -318,16 +343,16 @@ const Event = () => {
                 </div>
 
                 <div className="event-modal-actions">
-                  <button className="modal-save-btn" type="submit">Save</button>
                   <button className="modal-cancel-btn" type="button" onClick={() => setEditEvent(null)}>
                     Cancel
                   </button>
+                  <button className="modal-save-btn" type="submit">Save</button>
                 </div>
               </form>
             </div>
           </div>
         )}
-
+    
     </MainLayout>
   );
 };

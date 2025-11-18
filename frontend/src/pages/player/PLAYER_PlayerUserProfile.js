@@ -4,20 +4,19 @@ import { useParams } from "react-router-dom";
 import "../../styles/PlayerProfile.css";
 
 const PlayerUserProfile = () => {
+
+  useEffect(() => {document.title = "SPARTA | Player Profile";},[]);
+
   const {userId} = useParams();
   const [player, setPlayer] = useState({});
   const [isEditing, setIsEditing] = useState(false);
   const [activeTab, setActiveTab] = useState("player");
 
-  useEffect(() => {
-    document.title = "SPARTA | Player Profile";
-  }, []);
-
   // Fetch user dertails
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const res = await fetch(`https://sparta-deployed.onrender.com/api/players/${userId}`);
+        const res = await fetch(`http://localhost:5000/api/players/${userId}`);
         const data = await res.json();
         setPlayer(data);
       } catch (err) {
@@ -34,7 +33,7 @@ const PlayerUserProfile = () => {
   // Edit 
   const handleSave = async () => {
     try {
-      const res = await fetch(`https://sparta-deployed.onrender.com/api/players/${userId}/profile`, {
+      const res = await fetch(`http://localhost:5000/api/players/${userId}/profile`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(player),
@@ -66,18 +65,7 @@ const PlayerUserProfile = () => {
             alt="Profile"
             onError={(e) => { e.target.src = "default-pic.png"; }}
           />
-{isEditing ? (
-    <input
-      type="text"
-      name="playerName"
-      value={player.playerName || ""}
-      onChange={handleChange}
-      className="profile-input"
-      placeholder="Enter Name"
-    />
-  ) : (
-    <p><b>{player.playerName || "N/A"}</b></p>
-  )}
+          <p><b>{player.playerName || "N/A"}</b></p>
           <p>{player.institution}</p>
         </div>
 

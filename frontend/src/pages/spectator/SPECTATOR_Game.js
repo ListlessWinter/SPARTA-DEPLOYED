@@ -39,7 +39,9 @@ const SpectatorGame = () => {
   useEffect(() => {
     const fetchGames = async () => {
       try {
-        const response = await fetch(`https://sparta-deployed.onrender.com/api/games?institution=${encodeURIComponent(decodedInstitution)}&eventName=${encodeURIComponent(decodedName)}`);
+        const response = await fetch(
+          `http://localhost:5000/api/games?institution=${encodeURIComponent(decodedInstitution)}&eventName=${encodeURIComponent(decodedName)}`
+        );
         const data = await response.json();
 
         const grouped = {};
@@ -60,8 +62,10 @@ const SpectatorGame = () => {
     fetchGames();
   }, [decodedInstitution, decodedName]);
 
+
   return (
     <>
+
       <div className="spectator-header">
         <div className="header-text">
           SPARTA SPECTATOR LIVE VIEWING
@@ -88,7 +92,7 @@ const SpectatorGame = () => {
         />
       </div>
 
-      <div className="spectator-game-main-div">
+      <div className="game-main-div">
 
         {filteredGames.length === 0 ? (
           <div className="no-games-found">

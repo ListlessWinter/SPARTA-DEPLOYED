@@ -4,6 +4,9 @@ import { useNavigate, useParams } from "react-router-dom";
 import '../../styles/ADMIN_GameCreate.css'
 
 const CreateGame = () => {
+
+  useEffect(() => { document.title = "SPARTA | Create Game"; }, []);
+
   const [gameType, setGameType] = useState("Basketball");
   const [category, setCategory] = useState("Men");
   const [startDate, setStartDate] = useState("");
@@ -23,21 +26,62 @@ const CreateGame = () => {
   const [modalMessage, setModalMessage] = useState("");
   const [showModal, setShowModal] = useState(false);
 
+  const [eventDetails, setEventDetails] = useState(null);
+
   const navigate = useNavigate();
   const { eventName } = useParams();
   const decodedEventName = decodeURIComponent(eventName);
 
   const user = JSON.parse(localStorage.getItem("auth"));
 
+  // Date format reader thingy
+  const formatDateTimeLocal = (isoString) => {
+    if (!isoString) return "";
+    try {
+      const date = new Date(isoString);
+      if (isNaN(date.getTime())) return ""; 
+      const offset = date.getTimezoneOffset() * 60000;
+      const localDate = new Date(date.getTime() - offset);
+      return localDate.toISOString().slice(0, 16); 
+    } catch (e) {
+      return "";
+    }
+  };
+
+  const eventStartFormatted = formatDateTimeLocal(eventDetails?.eventStartDate);
+  const eventEndFormatted = formatDateTimeLocal(eventDetails?.eventEndDate);
+
+
+  // Fetch Event Details (for date validation) 
   useEffect(() => {
-    document.title = "SPARTA | Game Create";
-  }, []);
+    const fetchEventDetails = async () => {
+      if (!user?.institution || !decodedEventName) return;
+      try {
+        const response = await fetch(`http://localhost:5000/api/events?institution=${encodeURIComponent(user.institution)}&name=${encodeURIComponent(decodedEventName)}`);
+        
+        if (!response.ok) {
+          const errData = await response.json();
+          throw new Error(errData.message || "Event not found");
+        }
+        
+        const data = await response.json();
+        setEventDetails(data);
+
+      } catch (error) {
+        console.error("Error fetching event details:", error);
+        setModalMessage(`Error fetching event details: ${error.message}. Cannot validate game dates.`);
+        setShowModal(true);
+      }
+    };
+
+    fetchEventDetails();
+  }, [user?.institution, decodedEventName]);
 
   // Fetch teams
   useEffect(() => {
     const fetchTeams = async () => {
       try {
-        const response = await fetch(`https://sparta-deployed.onrender.com/api/teams?institution=${encodeURIComponent(user?.institution)}&event=${encodeURIComponent(decodedEventName)}`);
+        const response = await fetch(`http://localhost:5000/api/teams?institution=${encodeURIComponent(user?.institution)}&event=${encodeURIComponent(decodedEventName)}`);
         const data = await response.json();
         setAvailableTeams(data);
       } catch (error) {
@@ -84,11 +128,11 @@ const CreateGame = () => {
       formData.append("referees", JSON.stringify(referees));
 
       if (rulesFile) {
-        formData.append("rulesFile", rulesFile);  
+        formData.append("rulesFile", rulesFile);
       }
-      formData.append("rulesText", rulesText); 
-      
-      const response = await fetch("https://sparta-deployed.onrender.com/api/games", {
+      formData.append("rulesText", rulesText);
+
+      const response = await fetch("http://localhost:5000/api/games", {
         method: "POST",
         body: formData,
       });
@@ -101,7 +145,7 @@ const CreateGame = () => {
         setTimeout(() => {
           setShowModal(false);
           navigate(-1);
-        }, 4000);
+        }, 8000);
       } else {
         setModalMessage("Failed! " + data.message);
         setShowModal(true);
@@ -116,7 +160,7 @@ const CreateGame = () => {
   useEffect(() => {
     const fetchCoordinators = async () => {
       try {
-        const res = await fetch(`https://sparta-deployed.onrender.com/api/coordinators?institution=${user?.institution}&event=${decodedEventName}`);
+        const res = await fetch(`http://localhost:5000/api/coordinators?institution=${user?.institution}&event=${decodedEventName}`);
         const data = await res.json();
         setCoordinators(Array.isArray(data) ? data : []);
       } catch (err) {
@@ -219,6 +263,9 @@ const CreateGame = () => {
                         value={startDate}
                         onChange={(e) => setStartDate(e.target.value)}
                         required
+                        min={eventStartFormatted}
+                        max={eventEndFormatted}
+                        disabled={!eventDetails} 
                       />
                     </label>
 
@@ -229,8 +276,12 @@ const CreateGame = () => {
                         value={endDate}
                         onChange={(e) => setEndDate(e.target.value)}
                         required
+                        min={startDate || eventStartFormatted} 
+                        max={eventEndFormatted}
+                        disabled={!eventDetails} 
                       />
                     </label>
+                    {!eventDetails && <p style={{color: 'red', fontSize: '0.8em'}}>Loading event dates...</p>}
                   </div>
 
                   {/* Participating Teams */}
@@ -240,26 +291,60 @@ const CreateGame = () => {
                       {availableTeams.length === 0 ? (
                         <p>No teams available for this event.</p>
                       ) : (
-                        availableTeams.map((team) => (
-                          <button
-                            key={team._id}
-                            type="button"
-                            onClick={() => toggleTeamSelection(team.teamName)}
+                        <>
+                          {/* Toggle Select All */}
+                          <button type="button" 
+                            onClick={() => {
+                              const allSelected = selectedTeams.length === availableTeams.length;
+                              setSelectedTeams(
+                                allSelected ? [] : availableTeams.map((t) => t.teamName)
+                              );
+                            }}
                             style={{
-                              margin: "5px",
-                              padding: "8px 12px",
-                              backgroundColor: selectedTeams.includes(team.teamName)
-                                ? "#181b59"
-                                : "#ccc",
+                              margin: "5px 0 5px",
+                              padding: "5px 10px",
+                              backgroundColor:
+                                selectedTeams.length === availableTeams.length
+                                  ? "#b95454ff" 
+                                  : "#18593cff", 
                               color: "white",
                               border: "none",
-                              borderRadius: "5px",
+                              borderRadius: "6px",
                               cursor: "pointer",
+                              
+                              transition: "background-color 0.2s ease",
                             }}
                           >
-                            {team.teamName}
+                            {selectedTeams.length === availableTeams.length
+                              ? "Unselect All"
+                              : "Select All"}
                           </button>
-                        ))
+
+                          {/* Individual team select list */}
+                          <div className="team-buttons" style={{ marginTop: "10px" }}>
+                            {availableTeams.map((team) => (
+                              <button
+                                key={team._id}
+                                type="button"
+                                onClick={() => toggleTeamSelection(team.teamName)}
+                                style={{
+                                  margin: "5px",
+                                  padding: "8px 12px",
+                                  backgroundColor: selectedTeams.includes(team.teamName)
+                                    ? "#181b59"
+                                    : "#ccc",
+                                  color: "white",
+                                  border: "none",
+                                  borderRadius: "5px",
+                                  cursor: "pointer",
+                                  transition: "background-color 0.2s ease",
+                                }}
+                              >
+                                {team.teamName}
+                              </button>
+                            ))}
+                          </div>
+                        </>
                       )}
                     </div>
                   </div>
@@ -294,7 +379,8 @@ const CreateGame = () => {
                     </div>
                   </div>
                 </div>
-
+              
+              <div>
                 {/* Add Coordinator */}
                 <div className="game-organizers">
                   <h4>SUB-ORGANIZERS</h4>
@@ -304,7 +390,7 @@ const CreateGame = () => {
                       type="text"
                       placeholder="Enter Name or Select"
                       value={search}
-                      onFocus={() => setShowDropdown(true)}   // show on click/focus
+                      onFocus={() => setShowDropdown(true)}
                       onBlur={() => setTimeout(() => setShowDropdown(false), 150)}
                       onChange={(e) => setSearch(e.target.value)}
                     />
@@ -346,7 +432,7 @@ const CreateGame = () => {
                     <input
                       type="text"
                       placeholder="Type referee name and press Add"
-                      style={{ margin: "5px" }}
+                      style={{ margin: "5px", width: "60%" }}
                       value={refereeInput}
                       onChange={(e) => setRefereeInput(e.target.value)}
                       onKeyDown={(e) => e.key === "Enter" ? (e.preventDefault(), handleAddReferee()) : null}
@@ -377,7 +463,7 @@ const CreateGame = () => {
                     <div className="file-upload">
                       <input
                         id="rulesFile"
-                        name="rulesFile" 
+                        name="rulesFile"
                         type="file"
                         accept=".pdf,.doc,.docx"
                         onChange={(e) => setRulesFile(e.target.files[0])}
@@ -394,10 +480,10 @@ const CreateGame = () => {
                     </div>
                   </div>
                 </div>
-
-
-              </form>
-            </div>
+              </div>      
+            </form>
+            
+          </div>
 
             <div className="lower-buttons">
               <button type="button" onClick={() => navigate(-1)}>Cancel</button>
@@ -409,7 +495,7 @@ const CreateGame = () => {
         {showModal && (
           <div className="modal-backdrop">
             <div className="game-modal">
-              <p>{modalMessage}</p>
+              <p style={{ color: '#333', fontSize: '14px', textTransform: 'capitalize' }}>{modalMessage}</p>
               <button onClick={() => setShowModal(false)}>Close</button>
             </div>
           </div>

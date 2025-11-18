@@ -9,14 +9,21 @@ import { IoMdClose } from "react-icons/io";
 import '../../styles/ADMIN_Games.css';
 
 const Game = () => {
+  const { eventName } = useParams();
+  const decodedName = decodeURIComponent(eventName);
+  useEffect(() => {document.title = "SPARTA | " + decodedName + " Games";},[decodedName]);
+
   const navigate = useNavigate();
   const [gamesByType, setGamesByType] = useState({});
   const user = JSON.parse(localStorage.getItem("auth"));
   const userInstitution = user?.institution;
-  const { eventName } = useParams();
-  const decodedName = decodeURIComponent(eventName);
 
   const [searchQuery, setSearchQuery] = useState("");
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [gameToDelete, setGameToDelete] = useState(null);
+  const [showToast, setShowToast] = useState(false);
+  const [toastMessage, setToastMessage] = useState("");
+
   const filteredGames = Object.entries(gamesByType).filter(([combinedType]) =>
     combinedType.toLowerCase().includes(searchQuery.toLowerCase())
   );
@@ -34,16 +41,12 @@ const Game = () => {
     Chess: GiChessKnight,
   };
 
-  useEffect(() => {
-    document.title = "SPARTA | " + decodedName + " Games";
-  }, []);
-
   // Fetch Games
   useEffect(() => {
     const fetchGames = async () => {
       try {
         const response = await fetch(
-          `https://sparta-deployed.onrender.com/api/games?institution=${encodeURIComponent(userInstitution)}&eventName=${encodeURIComponent(decodedName)}`
+          `http://localhost:5000/api/games?institution=${encodeURIComponent(userInstitution)}&eventName=${encodeURIComponent(decodedName)}`
         );
         const data = await response.json();
 
@@ -70,33 +73,60 @@ const Game = () => {
     navigate(`/admin/event/${encodeURIComponent(decodedName)}/addgame`);
   };
 
-  // Delete Games
-  const handleDeleteGame = async (gameId) => {
-    if (!window.confirm("Are you sure you want to delete this game?")) return;
+  // show confirmation modal
+  const handleDeleteGame = (gameId) => {
+    // find a friendly name for the game
+    const game = Object.values(gamesByType).flat().find(g => g._id === gameId);
+    const name = game ? `${game.category} ${game.gameType}` : "this game";
+    setGameToDelete({ id: gameId, name });
+    setShowDeleteModal(true);
+  };
+
+  // perform delete after confirmation
+  const confirmDeleteGame = async () => {
+    if (!gameToDelete) return;
     try {
-      const res = await fetch(`https://sparta-deployed.onrender.com/api/games/${gameId}`, {
+      const res = await fetch(`http://localhost:5000/api/games/${gameToDelete.id}`, {
         method: "DELETE",
       });
-  
+
       if (res.ok) {
-        alert("Game deleted successfully");
-        // Refresh games
+        // Remove from local state
         const updatedGames = { ...gamesByType };
         for (const key in updatedGames) {
-          updatedGames[key] = updatedGames[key].filter(game => game._id !== gameId);
+          updatedGames[key] = updatedGames[key].filter(game => game._id !== gameToDelete.id);
           if (updatedGames[key].length === 0) {
             delete updatedGames[key];
           }
         }
         setGamesByType(updatedGames);
+
+        setShowDeleteModal(false);
+        setToastMessage("Game has been deleted");
+        setShowToast(true);
+        // hide toast after 7s
+        setTimeout(() => setShowToast(false), 8000);
       } else {
-         alert("Failed to delete game");
+        setShowDeleteModal(false);
+        setToastMessage("Failed to delete game");
+        setShowToast(true);
+        setTimeout(() => setShowToast(false), 8000);
       }
     } catch (error) {
       console.error("Error deleting game:", error);
+      setShowDeleteModal(false);
+      setToastMessage("Error deleting game");
+      setShowToast(true);
+      setTimeout(() => setShowToast(false), 8000);
+    } finally {
+      setGameToDelete(null);
     }
   };
-  
+
+  const cancelDelete = () => {
+    setGameToDelete(null);
+    setShowDeleteModal(false);
+  };
 
   return (
     <MainLayout>
@@ -119,7 +149,6 @@ const Game = () => {
       </div>
 
       <div className="game-main-div">
-
         {filteredGames.length === 0 ? (
           <div className="no-games-found">
             <FaCircleQuestion size={40} />
@@ -131,7 +160,7 @@ const Game = () => {
             const icon = gameIcons[gameType] || gameIcons.Default;
           
             return (
-            <div style={{margin: "1rem"}}>
+            <div style={{margin: "1rem"}} key={combinedType}>
               <div style={{width: "100%", display: "flex", justifyContent: "flex-end"}}>
                   {(user.role === "admin" || user.role === "co-organizer") && (
                   <button className="delete-game-btn" onClick={() => handleDeleteGame(games[0]._id)}>
@@ -140,7 +169,7 @@ const Game = () => {
                   )}
               </div>
 
-              <div className="game-button-container" key={combinedType}>
+              <div className="game-button-container">
               
                 <button
                   className="game-button"
@@ -161,6 +190,27 @@ const Game = () => {
           })
         )}
       </div>
+
+      {/* Delete confirmation modal */}
+      {showDeleteModal && gameToDelete && (
+        <div className="confirm-modal-overlay">
+          <div className="confirm-modal">
+            <h3>Confirm Delete</h3>
+            <p>Are you sure you want to delete <b>{gameToDelete.name}</b>?</p>
+            <div className="confirm-modal-actions">
+              <button className="btn cancel" onClick={cancelDelete}>Cancel</button>
+              <button className="btn confirm" onClick={confirmDeleteGame}>Delete</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Toast */}
+      {showToast && (
+        <div className="toast-bottom-right" role="status" aria-live="polite">
+          {toastMessage}
+        </div>
+      )}
     </>
     </MainLayout>
   );

@@ -2,25 +2,25 @@ import PlayerMainLayout from "../../components/P_MainLayout";
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { TbCalendarQuestion } from "react-icons/tb";
+import "../../styles/LiveScores.css";
 
 const PlayerPantheonRanks = () => {
+
+  useEffect(() => {document.title = "SPARTA | Pantheon Ranks";},[]);
+
   const navigate = useNavigate();
   const { eventName } = useParams();
   const decodedEvent = decodeURIComponent(eventName);
-
   const [teams, setTeams] = useState([]);
  
   const user = JSON.parse(localStorage.getItem("auth"));
   
-  useEffect(() => {
-    document.title = "SPARTA | Pantehon Ranking";
-  }, []);
 
   // Fetch teams with scores
   useEffect(() => {
     const fetchTeams = async () => {
       try {
-        const response = await fetch(`https://sparta-deployed.onrender.com/api/teams/scores?institution=${encodeURIComponent(user?.institution)}&event=${encodeURIComponent(decodedEvent)}`);
+        const response = await fetch(`http://localhost:5000/api/teams/scores?institution=${encodeURIComponent(user?.institution)}&event=${encodeURIComponent(decodedEvent)}`);
         const data = await response.json();
         // Sort by finatl score
         setTeams(data.sort((a, b) => b.grandTotal - a.grandTotal));
@@ -52,7 +52,7 @@ const PlayerPantheonRanks = () => {
     return (
         <PlayerMainLayout>
             <div className="live-scores-header">
-                    <h1>Live Scores for {decodedEvent}</h1>
+                    <h1>FINAL RANK FOR {decodedEvent}</h1>
                 </div>
                 
                 <div className="live-scores-main-div">

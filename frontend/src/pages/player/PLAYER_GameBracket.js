@@ -5,6 +5,9 @@ import { Bracket, Seed, SeedItem, SeedTeam } from "react-brackets";
 import "../../styles/bracket.css";
 
 const PlayerGameBracket = () => {
+
+  useEffect(() => {document.title = "SPARTA | Game Bracket";},[]);
+
   const { eventName, game: gameId } = useParams();
   const decodedEvent = decodeURIComponent(eventName);
 
@@ -14,15 +17,11 @@ const PlayerGameBracket = () => {
 
   const [showRulesModal, setShowRulesModal] = useState(false); 
 
-  useEffect(() => {
-    document.title = "SPARTA | Game";
-  }, []);
-
   // Fetch Game details
   useEffect(() => {
     const fetchGame = async () => {
       try {
-        const res = await fetch(`https://sparta-deployed.onrender.com/api/games/${gameId}`);
+        const res = await fetch(`http://localhost:5000/api/games/${gameId}`);
         const data = await res.json();
         setGame(data);
       } catch (err) {

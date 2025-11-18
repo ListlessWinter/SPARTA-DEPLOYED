@@ -4,6 +4,9 @@ import { FaSchoolFlag } from "react-icons/fa6";
 import '../../styles/ADMIN_PlayerApproval.css';
 
 const Approval = () => {
+
+  useEffect(() => {document.title = "SPARTA | Player Approvals";},[]);
+
   const [players, setPlayers] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const playersPerPage = 10;
@@ -12,15 +15,11 @@ const Approval = () => {
   const [showToast, setShowToast] = useState({ show: false, message: "", type: "" });
   const [declineConfirm, setDeclineConfirm] = useState({ show: false, playerId: null });
 
-  useEffect(() => {
-    document.title = "SPARTA | Player Approval";
-  }, []);
-
   // Fetch pending players
   useEffect(() => {
     const fetchPlayers = async () => {
       try {
-        const res = await fetch(`https://sparta-deployed.onrender.com/api/players/pending?institution=${user?.institution}`);
+        const res = await fetch(`http://localhost:5000/api/players/pending?institution=${user?.institution}`);
         const data = await res.json();
         setPlayers(data);
       } catch (err) {
@@ -37,13 +36,13 @@ const Approval = () => {
     setShowToast({ show: true, message, type });
     setTimeout(() => {
       setShowToast({ show: false, message: "", type: "" });
-    }, 3000);
+    }, 8000);
   };
 
   // Approve player
   const handleApprove = async (id) => {
     try {
-      const res = await fetch(`https://sparta-deployed.onrender.com/api/players/approve/${id}`, {
+      const res = await fetch(`http://localhost:5000/api/players/approve/${id}`, {
         method: "PUT",
       });
       if (res.ok) {
@@ -73,7 +72,7 @@ const Approval = () => {
     closeDeclineConfirm();
 
     try {
-      const res = await fetch(`https://sparta-deployed.onrender.com/api/players/${id}`, {
+      const res = await fetch(`http://localhost:5000/api/players/${id}`, {
         method: "DELETE",
       });
       if (res.ok) {
@@ -197,9 +196,9 @@ const Approval = () => {
       {/* Toast Notification */}
       {showToast.show && (
         <div
-          className={`toast-notification ${
-            showToast.type === "success" ? "toast-success" : "toast-error"
-          }`}
+          className={`toast ${showToast.type === "success" ? "toast-success" : "toast-error"}`}
+          role="status"
+          aria-live="polite"
         >
           {showToast.message}
         </div>

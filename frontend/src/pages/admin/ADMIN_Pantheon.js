@@ -4,6 +4,9 @@ import { useNavigate } from "react-router-dom";
 import { MoreVertical } from "lucide-react";
 
 const Pantheon = () => {
+
+  useEffect(() => {document.title = "SPARTA | Pantheon";},[]);
+
   const navigate= useNavigate();
   const [events, setEvents] = useState([]);
   const [menuOpen, setMenuOpen] = useState(null);
@@ -12,14 +15,10 @@ const Pantheon = () => {
   const user = JSON.parse(localStorage.getItem('auth'));
   const userInstitution = user?.institution;
  
-  useEffect(() => {
-    document.title = "SPARTA | Pantheon";
-  }, []);
-
   // Fetch events
   useEffect(() => {
     const fetchEvents = async () => {
-      const response = await fetch(`https://sparta-deployed.onrender.com/api/past-events?institution=${userInstitution}`);
+      const response = await fetch(`http://localhost:5000/api/past-events?institution=${userInstitution}`);
       const data = await response.json();
       setEvents(data);
     };
@@ -36,7 +35,7 @@ const Pantheon = () => {
   const handleDelete = async (id) => {
     if (!window.confirm("Are you sure you want to delete this event?")) return;
     try {
-      await fetch(`https://sparta-deployed.onrender.com/api/event/${id}`, { method: "DELETE" });
+      await fetch(`http://localhost:5000/api/event/${id}`, { method: "DELETE" });
       setEvents(events.filter((e) => e._id !== id));
     } catch (err) {
       console.error("Delete failed:", err);
@@ -47,7 +46,7 @@ const Pantheon = () => {
   const handleEditSave = async () => {
     try {
       const res = await fetch(
-        `https://sparta-deployed.onrender.com/api/event/${editEvent._id}`,
+        `http://localhost:5000/api/event/${editEvent._id}`,
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
@@ -65,8 +64,11 @@ const Pantheon = () => {
 
   return (
     <MainLayout>
+
+      <div style={{width: "100%", display: "flex", justifyContent: "center"}}>
+        <img style={{width: "30vw"}} src="../SPARTA_PANTHEON.png" alt="Pantheon Icon" className="pantheon-icon" />
+      </div>
       <div className="event-list">
-       
       {events.map((event) => (
           <div key={event._id} className="event-item">
             <div className="event-color" style={{ background: event.eventColor || "#A96B24" }}         

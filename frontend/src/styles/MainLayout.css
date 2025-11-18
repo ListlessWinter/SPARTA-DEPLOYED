@@ -1,10 +1,16 @@
 .main-content {
   margin-left: 200px; /* Pushes content to the right of sidebar */
-  margin-top: 125px;
-  margin-bottom: 30px;   /* Pushes content below header */
+  margin-top: 15vh;
   padding: 0 20px 0 20px;
-  min-height: calc(100vh - 95px);
-  background-color: #f8f9fa;
+  min-height: calc(100vh - 15vh);
   box-sizing: border-box;
   height: fit-content;
+}
+
+@media (max-width: 768px) {
+  .main-content {
+    margin-left: 50px;;
+    margin-top: 100px;
+    padding: 0 10px 0 10px;
+  }
 }

@@ -44,12 +44,6 @@ router.post('/event', async (req, res) => {
     });
     await event.save();
 
-      // Send email invite
-      const transporter = nodemailer.createTransport({
-        service: "gmail",
-        auth: { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS },
-      });
-
     // CO-ORGANIZER INVITATION
     const coordinatorInvites = [];
     for (let coord of coordinators) {
@@ -66,6 +60,12 @@ router.post('/event', async (req, res) => {
           eventName
         });
         await coordinator.save();
+
+        // Send email invite
+        const transporter = nodemailer.createTransport({
+          service: "gmail",
+          auth: { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS },
+        });
 
         await transporter.sendMail({
           from: `"SPARTA Admin" <${process.env.SMTP_USER}>`,
