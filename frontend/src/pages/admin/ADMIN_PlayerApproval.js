@@ -42,7 +42,7 @@ const Approval = () => {
   // Approve player
   const handleApprove = async (id) => {
     try {
-      const res = await fetch(`http://localhost:5000/api/players/approve/${id}`, {
+      const res = await fetch(`https://sparta-deployed.onrender.com/api/players/approve/${id}`, {
         method: "PUT",
       });
       if (res.ok) {
