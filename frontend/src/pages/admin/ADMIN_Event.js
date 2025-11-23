@@ -50,7 +50,7 @@ const Event = () => {
   const performDelete = async () => {
     if (!deleteTarget) return;
     try {
-      await fetch(`http://localhost:5000/api/event/${deleteTarget._id}`, { method: "DELETE" });
+      await fetch(`https://sparta-deployed.onrender.com/api/event/${deleteTarget._id}`, { method: "DELETE" });
       setEvents(events.filter((e) => e._id !== deleteTarget._id));
     } catch (err) {
       console.error("Delete failed:", err);
@@ -69,7 +69,7 @@ const Event = () => {
   const handleEditSave = async () => {
     try {
       const res = await fetch(
-        `http://localhost:5000/api/event/${editEvent._id}`,
+        `https://sparta-deployed.onrender.com/api/event/${editEvent._id}`,
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },

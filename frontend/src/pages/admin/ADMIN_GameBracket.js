@@ -278,7 +278,7 @@ const GameBracket = () => {
 
     try {
       await fetch(
-        `http://localhost:5000/api/games/${gameId}/matches/${selectedMatch.id}`,
+        `https://sparta-deployed.onrender.com/api/games/${gameId}/matches/${selectedMatch.id}`,
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
@@ -298,7 +298,7 @@ const GameBracket = () => {
   if (!selectedMatch) return;
   try {
     const response = await fetch(
-      `http://localhost:5000/api/games/${gameId}/matches/${selectedMatch.id}`,
+      `https://sparta-deployed.onrender.com/api/games/${gameId}/matches/${selectedMatch.id}`,
       {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
@@ -467,7 +467,7 @@ const GameBracket = () => {
       };
 
       await fetch(
-        `http://localhost:5000/api/games/${gameId}/matches/${selectedMatch.id}/schedule`,
+        `https://sparta-deployed.onrender.com/api/games/${gameId}/matches/${selectedMatch.id}/schedule`,
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
@@ -476,7 +476,7 @@ const GameBracket = () => {
       );
 
       // refresh game after saving
-      const res = await fetch(`http://localhost:5000/api/games/${gameId}`);
+      const res = await fetch(`https://sparta-deployed.onrender.com/api/games/${gameId}`);
       const updatedGame = await res.json();
 
       setGame(updatedGame);
@@ -638,7 +638,7 @@ const GameBracket = () => {
               <>
                 <h3>Rules PDF</h3>
                 <iframe
-                  src={`http://localhost:5000${game.rules}`}
+                  src={`https://sparta-deployed.onrender.com${game.rules}`}
                   title="Rules PDF"
                   className="w-full h-[80vh] rounded-md"
                 />
@@ -725,14 +725,14 @@ const GameBracket = () => {
                     type="button"
                     onClick={async () => {
                       try {
-                        await fetch(`http://localhost:5000/api/${gameId}/video`, {
+                        await fetch(`https://sparta-deployed.onrender.com/api/${gameId}/video`, {
                           method: "PUT",
                           headers: { "Content-Type": "application/json" },
                           body: JSON.stringify({ videoLink: selectedMatch.videoLink }),
                         });
 
                         // Refresh game after saving
-                        const res = await fetch(`http://localhost:5000/api/games/${gameId}`);
+                        const res = await fetch(`https://sparta-deployed.onrender.com/api/games/${gameId}`);
                         const updated = await res.json();
                         setGame(updated);
 
