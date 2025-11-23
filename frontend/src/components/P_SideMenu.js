@@ -15,7 +15,7 @@ const PlayerSideMenu = () => {
   // To Update the local data of users
   useEffect(() => {
     const fetchUser = async () => {
-      const res = await fetch(`http://localhost:5000/api/players/${user._id}`);
+      const res = await fetch(`https://sparta-deployed.onrender.com/api/players/${user._id}`);
       const UpdateUser = await res.json();
       setUser(UpdateUser);
       localStorage.setItem("auth", JSON.stringify(UpdateUser));
