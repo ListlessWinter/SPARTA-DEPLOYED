@@ -29,7 +29,7 @@ const GameBracket = () => {
   useEffect(() => {
     const fetchGame = async () => {
       try {
-        const res = await fetch(`http://localhost:5000/api/games/${gameId}`);
+        const res = await fetch(`https://sparta-deployed.onrender.com/api/games/${gameId}`);
         const data = await res.json();
         setGame(data);
       } catch (err) {
@@ -544,7 +544,7 @@ const GameBracket = () => {
         <div className="modal-overlay">
           <div className="modal rules-modal">
             <h2>Game Rules</h2>
-
+            <hr />
             {game.rules.endsWith(".pdf") ? (
               <iframe
                 src={game.rules}
@@ -595,18 +595,20 @@ const GameBracket = () => {
         {game.bracketType === "Round Robin" && (
           <div className="round-robin bracket-container">
             <h2>Round Robin</h2>
-            {roundsData.map((round, rIndex) => (
-              <div key={rIndex} className="rr-round">
-                <h3 className="rr-title">{round.title}</h3>
-                <div className="rr-matches">
-                  {round.seeds.map((seed, sIndex) => (
-                    <React.Fragment key={sIndex}>
-                      {renderSeed({ seed })}
-                    </React.Fragment>
-                  ))}
+            <div style={{display: "grid", gridTemplateColumns: "repeat(4, 1fr)"}}>
+              {roundsData.map((round, rIndex) => (
+                <div key={rIndex} className="rr-round">
+                  <h3 className="rr-title">{round.title}</h3>
+                  <div className="rr-matches">
+                    {round.seeds.map((seed, sIndex) => (
+                      <React.Fragment key={sIndex}>
+                        {renderSeed({ seed })}
+                      </React.Fragment>
+                    ))}
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         )}
 
@@ -648,6 +650,7 @@ const GameBracket = () => {
               <>
                 <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
                   <h3>Schedule Match</h3>
+                  <hr />
                   <div style={{ display: "flex", flexDirection: "row", gap: "30px" }}>
                     <label>Date : </label>
                     <input
@@ -680,6 +683,7 @@ const GameBracket = () => {
             ) : selectedMatch.type === "scores" ? (
               <>
                 <h3>Update Match Scores</h3>
+                <hr />
                 {selectedMatch.teams.map((team, idx) => (
                   <div key={idx} className="score-input">
                     <label style={{ marginLeft: "10px" }}>
@@ -705,6 +709,7 @@ const GameBracket = () => {
             ) : selectedMatch.type === "video" && (
               <>
                 <h3>Add Video Link</h3>
+                <hr />
                 <input
                   type="text"
                   placeholder="Enter video URL"
@@ -750,9 +755,10 @@ const GameBracket = () => {
       {/*Medal tally modal*/}
       {showTallyModal && medalTally && (
         <div className="modal-overlay">
-          <div className="modal medal-tally-modal" style={{ textAlign: 'center' }}>
-            <h2>Medal Tally</h2>
-            <div className="tally-content" style={{ padding: '20px', fontSize: '1.2rem', lineHeight: '2' }}>
+          <div className="modal medal-tally-modal">
+            <h2 >MEDAL TALLY</h2>
+            <hr />
+            <div className="tally-content" style={{ padding: '5px', lineHeight: '2' }}>
               <p>🥇 <strong>Gold:</strong> {medalTally.gold || 'N/A'}</p>
               <p>🥈 <strong>Silver:</strong> {medalTally.silver || 'N/A'}</p>
               <p>🥉 <strong>Bronze:</strong> {medalTally.bronze || 'N/A'}</p>

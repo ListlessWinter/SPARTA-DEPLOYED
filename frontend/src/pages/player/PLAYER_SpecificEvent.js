@@ -24,7 +24,7 @@ const PlayerSpecificEvent = () => {
   useEffect(() => {
     const fetchEventDetails = async () => {
       try {
-        const response = await fetch(`http://localhost:5000/api/specific-event?eventName=${encodeURIComponent(decodedName)}`);
+        const response = await fetch(`https://sparta-deployed.onrender.com/api/specific-event?eventName=${encodeURIComponent(decodedName)}`);
         const data = await response.json();
         setEventDetails(data);
       } catch (error) {

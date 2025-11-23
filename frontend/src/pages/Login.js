@@ -39,7 +39,7 @@ export default function LoginPage() {
     }
 
     try {
-      const response = await fetch(`https://sparta-deployed.onrender.com/api/auth/login/${role}`, {
+      const response = await fetch(`http://localhost:5000/api/auth/login/${role}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
@@ -77,7 +77,7 @@ export default function LoginPage() {
     {showLoginSuccess && (
       <div className="modal-overlay">
         <div className="modal">
-          <h2>Login Successful</h2>
+          <h2>LOGIN SUCCESSFUL!</h2>
           <p>Welcome back!</p>
           <button onClick={() => setShowLoginSuccess(false)}>Continue</button>
         </div>

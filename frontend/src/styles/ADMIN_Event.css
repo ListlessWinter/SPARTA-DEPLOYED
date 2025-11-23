@@ -1,4 +1,4 @@
-@media (max-width: 1023px) {
+@media (max-width: 1272px) {
   .event-main-header {
     gap: 10px;
     width: 85vw;
@@ -6,17 +6,15 @@
 
   .event-list-container {
     width: 100%;
-    margin-top: 120px;
   }
 
   .event-item {
-    min-width: 25vw;
-    max-width: fit-content;
+    min-width: 15vw;
     max-height: fit-content;
   }
 
   .event-color {
-    height: 5vh;
+    height: 7vh;
   }
 
   .event-name {
@@ -30,7 +28,7 @@
   }
 }
 
-@media (min-width: 1024px) and (max-width: 1600px) {
+@media (min-width: 1273px) and (max-width: 1600px) {
   .event-main-header {
     gap: 0;
     width: auto;
@@ -45,8 +43,7 @@
   }
 
   .event-list-container {
-    width: 1200px;
-    margin-top: 150px;
+    width: 100%;
   }
 
   .event-item {
@@ -223,7 +220,7 @@
   transition: color 0.2s ease;
   position: absolute;
   top: 0px;
-  left: -15px;
+  right: -5px;
 }
 
 .menu-icon:hover {

@@ -62,7 +62,7 @@ const PlayerGame = () => {
   useEffect(() => {
     const fetchGames = async () => {
       try {
-        const response = await fetch(`http://localhost:5000/api/games?institution=${encodeURIComponent(user?.institution)}&eventName=${encodeURIComponent(decodedName)}`);
+        const response = await fetch(`https://sparta-deployed.onrender.com/api/games?institution=${encodeURIComponent(user?.institution)}&eventName=${encodeURIComponent(decodedName)}`);
         const data = await response.json();
         const grouped = {};
         data.forEach((game) => {
@@ -84,7 +84,7 @@ const PlayerGame = () => {
   useEffect(() => {
     const fetchTeams = async () => {
       try {
-        const res = await fetch(`http://localhost:5000/api/teams?institution=${encodeURIComponent(user?.institution)}&event=${encodeURIComponent(decodedName)}`);
+        const res = await fetch(`https://sparta-deployed.onrender.com/api/teams?institution=${encodeURIComponent(user?.institution)}&event=${encodeURIComponent(decodedName)}`);
         const data = await res.json();
         setTeams(data);
       } catch (err) {
@@ -98,7 +98,7 @@ const PlayerGame = () => {
   useEffect(() => {
     const fetchEventRequirements = async () => {
       try {
-        const res = await fetch(`http://localhost:5000/api/event?eventName=${encodeURIComponent(decodedName)}&institution=${encodeURIComponent(user?.institution)}`);
+        const res = await fetch(`https://sparta-deployed.onrender.com/api/event?eventName=${encodeURIComponent(decodedName)}&institution=${encodeURIComponent(user?.institution)}`);
         const data = await res.json();
         setEventRequirements(data.requirements || []);
       } catch (err) {
@@ -127,7 +127,7 @@ const PlayerGame = () => {
 
     try {
       const res = await fetch(
-        `http://localhost:5000/api/players/${user._id}/register-game`,
+        `https://sparta-deployed.onrender.com/api/players/${user._id}/register-game`,
         {
           method: "PUT",
           body: formData,
@@ -211,7 +211,7 @@ const PlayerGame = () => {
             </div>
 
             <form onSubmit={handleSubmit} className="modal-form">
-              <div className="form-group">
+              <div>
                 <label className="form-label">Player Name:</label>
                 <input
                   type="text"
@@ -222,7 +222,7 @@ const PlayerGame = () => {
                 />
               </div>
 
-              <div className="form-group">
+              <div>
                 <label className="form-label">Team:</label>
                 <select
                   value={team || user?.team || ""}
@@ -239,7 +239,7 @@ const PlayerGame = () => {
                 </select>
               </div>
 
-              <div className="form-group">
+              <div>
                 <label className="form-label">Gender:</label>
                 <select
                   value={gender}
@@ -256,7 +256,7 @@ const PlayerGame = () => {
                 </select>
               </div>
 
-              <div className="form-group">
+              <div style={{display: "flex", flexDirection: "column", alignItems: "flex-start"}}>
                 <label className="form-label">Games:</label>
                 {games
                   .filter((g) => {

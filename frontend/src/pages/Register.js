@@ -54,7 +54,7 @@ export default function RegisterPage() {
     setToast({ show: true, message, type });
     setTimeout(() => {
       setToast({ show: false, message: '', type: '' });
-    }, 8000);
+    }, 5000);
   };
 
   const handleSubmit = async (e) => {
@@ -150,7 +150,7 @@ export default function RegisterPage() {
                 value={formData.institution}
                 onChange={handleChange}
                 required
-                style={{ width: '250px' }}
+                style={{ width: '275px' }}
               >
                 <option value="">Select Institution</option>
                 {institutions.map((inst) => (

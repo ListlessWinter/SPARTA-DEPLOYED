@@ -2,10 +2,9 @@ import MainLayout from "../../components/MainLayout";
 import { useState, useEffect } from "react";
 import Calendar from 'react-calendar';
 import axios from 'axios';
-import { MdEditSquare} from "react-icons/md";
 import "../../styles/Calendar.css";
 
-  const Dashboard = () => {
+const Dashboard = () => {
 
   useEffect(() => {document.title = "SPARTA | Dashboard";},[]);
 
@@ -19,20 +18,11 @@ import "../../styles/Calendar.css";
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [multiDayEvents, setMultiDayEvents] = useState([]);
 
-  // Announcements State
-  const [announcements, setAnnouncements] = useState([]);
-  const [loadingAnnouncements, setLoadingAnnouncements] = useState(true);
-  const [showPostModal, setShowPostModal] = useState(false);
-  const [newAnnouncement, setNewAnnouncement] = useState("");
+  // List Modal State
+  const [showListModal, setShowListModal] = useState(false);
+  const [listModalTitle, setListModalTitle] = useState("");
+  const [listModalItems, setListModalItems] = useState([]);
 
-  // Toast State
-  const [showToast, setShowToast] = useState({ show: false, message: "", type: "" });
-
-  // Toast helper
-  const showToastMessage = (message, type) => {
-    setShowToast({ show: true, message, type });
-    setTimeout(() => setShowToast({ show: false, message: "", type: "" }), 8000);
-  };
 
   // Fetch Game schedules
   useEffect(() => {
@@ -42,7 +32,7 @@ import "../../styles/Calendar.css";
         return;
       }
       try {
-        let url = `http://localhost:5000/api/games?institution=${encodeURIComponent(user.institution)}`;
+        let url = `https://sparta-deployed.onrender.com/api/games?institution=${encodeURIComponent(user.institution)}`;
 
         if (user?.role === "co-organizer" || user?.role === "sub-organizer") {
           url += `&eventName=${encodeURIComponent(user.eventName)}`;
@@ -95,61 +85,6 @@ import "../../styles/Calendar.css";
 
     fetchGames();
   }, [user?.institution, user?.eventName, user?.role]);
-
-  // Fetch Announcements
-  useEffect(() => {
-    const fetchAnnouncements = async () => {
-      if (!user?.institution) {
-        setLoadingAnnouncements(false);
-        return;
-      }
-      try {
-        setLoadingAnnouncements(true);
-        let url = `http://localhost:5000/api/announcements?institution=${encodeURIComponent(user.institution)}`;
-        
-        if (user?.role === "co-organizer" || user?.role === "sub-organizer") {
-          url += `&eventName=${encodeURIComponent(user.eventName)}`;
-        }
-
-        const res = await axios.get(url);
-        setAnnouncements(res.data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)));
-      } catch (err) {
-        console.error("Error fetching announcements:", err);
-      } finally {
-        setLoadingAnnouncements(false);
-      }
-    };
-    fetchAnnouncements();
-  }, [user?.institution, user?.eventName, user?.role]);
-
-  // Post Announcement
-  const handlePostAnnouncement = async () => {
-    if (!newAnnouncement.trim()) {
-      showToastMessage("Announcement cannot be empty", "error");
-      return;
-    }
-    try {
-      const res = await axios.post("http://localhost:5000/api/announcements", {
-        institution: user.institution,
-        eventName: (user?.role === "co-organizer" || user?.role === "sub-organizer") ? user.eventName : null,
-        authorName: user.username || "Admin", 
-        message: newAnnouncement,
-      });
-
-      if (res.data) {
-        setAnnouncements([res.data, ...announcements]);
-        setNewAnnouncement("");
-        setShowPostModal(false);
-        showToastMessage("Announcement posted successfully!", "success");
-      } else {
-        showToastMessage("Failed to post announcement", "error");
-      }
-    } catch (err) {
-      console.error("Error posting announcement:", err);
-      showToastMessage("Something went wrong!", "error");
-    }
-  };
-
 
   const onChange = (newDate) => {
     setDate(newDate);
@@ -244,12 +179,48 @@ import "../../styles/Calendar.css";
     );
   };
 
-  const upcomingEvents = matchEvents
-    .filter(event => event.date >= new Date(new Date().setHours(0, 0, 0, 0))) // Filter from start of today
+  // compute start/end of today once
+  const startOfToday = new Date();
+  startOfToday.setHours(0, 0, 0, 0);
+  const endOfToday = new Date();
+  endOfToday.setHours(23, 59, 59, 999);
+
+  // ongoingEvents = events happening today
+  const ongoingEvents = matchEvents
+    .filter(event => event.date >= startOfToday && event.date <= endOfToday)
     .sort((a, b) => a.date - b.date)
     .slice(0, 5);
 
-  const canPost = user?.role === 'organizer' || user?.role === 'co-organizer' || user?.role === 'admin';
+  // upcomingEvents = events after today
+  const upcomingEvents = matchEvents
+    .filter(event => event.date > endOfToday)
+    .sort((a, b) => a.date - b.date)
+    .slice(0, 5);
+
+  const openListModal = (type) => {
+    const today = new Date();
+    const startOfToday = new Date(today); startOfToday.setHours(0,0,0,0);
+    const endOfToday = new Date(today); endOfToday.setHours(23,59,59,999);
+
+    if (type === "ongoing") {
+      const items = matchEvents.filter(e => e.date >= startOfToday && e.date <= endOfToday)
+                               .sort((a,b) => a.date - b.date);
+      setListModalTitle("Ongoing Events");
+      setListModalItems(items);
+    } else {
+      const items = matchEvents.filter(e => e.date > endOfToday)
+                               .sort((a,b) => a.date - b.date);
+      setListModalTitle("Upcoming Events");
+      setListModalItems(items);
+    }
+    setShowListModal(true);
+  };
+
+  const closeListModal = () => {
+    setShowListModal(false);
+    setListModalItems([]);
+    setListModalTitle("");
+  };
 
   return (
     <MainLayout>
@@ -257,6 +228,7 @@ import "../../styles/Calendar.css";
 
         {/* Main Dashboard Content */}
         <div className="dashboard-main-content">
+          
           <div className="calendar-container">
             <Calendar 
               onChange={onChange} 
@@ -267,48 +239,6 @@ import "../../styles/Calendar.css";
               showNeighboringMonth={false}
               onClickDay={handleDateClick}
             />
-          </div>
-
-          <div style={{ flexGrow: 1, display: "flex", flexDirection: "row", gap: "15px" }}>
-            <div className="upcoming-events">
-              <h3>ONGOING EVENTS</h3>
-              {loading ? (
-                <p>Loading events...</p>
-              ) : upcomingEvents.length > 0 ? (
-                <ul>
-                  {upcomingEvents.map((event, index) => (
-                    <li key={index} className="upcoming-event">
-                      <strong>{formatEventDate(event.date)} • {event.time}</strong>
-                      {event.title} - {event.teams}
-                      <br />
-                      <span className="location">📍 {event.location}</span>
-                    </li>
-                  ))}
-                </ul>
-              ) : (
-                <p>Wohoo! You have no on-going event for today.</p>
-              )}
-            </div>
-
-            <div className="upcoming-events">
-              <h3>UPCOMING EVENTS</h3>
-              {loading ? (
-                <p>Loading events...</p>
-              ) : upcomingEvents.length > 0 ? (
-                <ul>
-                  {upcomingEvents.map((event, index) => (
-                    <li key={index} className="upcoming-event">
-                      <strong>{formatEventDate(event.date)} • {event.time}</strong>
-                      {event.title} - {event.teams}
-                      <br />
-                      <span className="location">📍 {event.location}</span>
-                    </li>
-                  ))}
-                </ul>
-              ) : (
-                <p>No upcoming events</p>
-              )}
-            </div>
           </div>
         </div>
 
@@ -345,96 +275,85 @@ import "../../styles/Calendar.css";
           </div>
         )}
 
-        {/* Announcements Container */}
-        <div className="dashboard-side-content" >
-          <div className="announcements-container">
-            <div className="announcement-header" style={{display: "flex", flexDirection: "column"}}>
-                <h3>ANNOUNCEMENTS</h3>
-            </div>
-                
-                <div className="announcements-list">
-                  {loadingAnnouncements ? (
-                    <p>Loading announcements...</p>
-                  ) : announcements.length === 0 ? (
-                    <div className="no-feedback-message">
-                      <p>No announcements posted yet.</p>
-                    </div>
-                  ) : (
-                    announcements.map((ann) => (
-                      <div className="announcement-block" key={ann._id}>
-                        <div className="announcement-block-contents">
-                          <h5
-                            style={{
-                              fontStyle: "italic",
-                              textAlign: "left",
-                              margin: "0",
-                            }}
-                          >
-                            {new Date(ann.createdAt).toLocaleDateString()}
-                          </h5>
-                          <p style={{margin: "5px", textAlign: "center"}}>{ann.message}</p>
-                          <h5 style={{margin: "5px", textAlign: "end"}}>
-                            - {ann.authorName}
-                          </h5>
-                        </div>
-                      </div>
-                    ))
-                  )}
-                </div>
+        {/* List Modal for Ongoing/Upcoming */}
+        {showListModal && (
+          <div className="dashboard-event-modal-overlay" onClick={closeListModal}>
+            <div className="dashboard-event-modal" onClick={(e) => e.stopPropagation()}>
+              <div className="dashboard-event-modal-header">
+                <h3>{listModalTitle}</h3>
+                <button className="close-modal" onClick={closeListModal}>×</button>
+              </div>
 
-                <div className="announcement-footer">
-                  {canPost && (
-                    <button style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "5px" }} onClick={() => setShowPostModal(true)}> <MdEditSquare /> Create a Post</button>
-                  )}
-                </div>
-          </div>
-
-          <div className="user-manual">
-            <h3 style={{ textAlign: "center", margin: "5px" }}> User Manual </h3>
-          </div>
-
-        </div>
-
-        {/* Post Announcement Modal */}
-        {showPostModal && (
-          <div className="feedback-overlay">
-            <div className="feedback-modal">
-              <h2>Post an Announcement</h2>
-              <p style={{marginBottom: "5px", fontFamily: "Poppins, Sans-Serif"}}>Please enter the details of your announcement below. Your announcement post can be seen by all users with the organizer role in your institution</p>
-
-              <textarea
-                value={newAnnouncement}
-                onChange={(e) => setNewAnnouncement(e.target.value)}
-                placeholder="Write your announcement..."
-                rows="5"
-                style={{
-                  width: "100%"
-                }}
-              />
-
-              <div className="feedback-actions">
-                <button className="cancel" onClick={() => setShowPostModal(false)}>
-                  Cancel
-                </button>
-                <button className="submit" onClick={handlePostAnnouncement}>
-                  Submit
-                </button>
+              <div className="calendar-events-list">
+                {listModalItems.length > 0 ? (
+                  <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: 12 }}>
+                    {listModalItems.map((event, index) => (
+                      <li style={{borderLeft: "5px solid #ce892c", borderRadius: "10px", backgroundColor: "#f0f4f7d1", padding: " 10px 5px"}} key={index}>
+                        <strong>{formatEventDate(event.date)} • {event.time}</strong>
+                        <div>{event.title} — {event.teams}</div>
+                        <div className="location" style={{ marginTop: 8 }}>📍 {event.location}</div>
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <div className="no-events">No events</div>
+                )}
               </div>
             </div>
           </div>
         )}
+    
+        {/* Announcements Container */}
+        <div className="dashboard-side-content" >
 
-        {/* Toast Notification */}
-        {showToast.show && (
-          <div
-            className={`toast-notification ${
-              showToast.type === "success" ? "toast-success" : "toast-error"
-            }`}
-          >
-            {showToast.message}
+          <div style={{ flexGrow: 1, display: "flex", flexDirection: "column"}}>
+            <div className="upcoming-events">
+              <div style={{display: "flex", justifyContent: "space-between", alignItems: "center"}}>
+                <h3>ONGOING EVENTS</h3>
+                <button className="view-all-btn" onClick={() => openListModal("ongoing")}>View All</button>
+              </div>
+              {loading ? (
+                <p>Loading events...</p>
+              ) : ongoingEvents.length > 0 ? (
+                <ul>
+                  {ongoingEvents.map((event, index) => (
+                    <li key={index} className="upcoming-event">
+                      <strong>{formatEventDate(event.date)} • {event.time}</strong>
+                      {event.title} - {event.teams}
+                      <br />
+                      <span className="location">📍 {event.location}</span>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p style={{padding: "10px"}}>Wohoo! You have no on-going event for today.</p>
+              )}
+            </div>
+
+            <div className="upcoming-events">
+              <div style={{display: "flex", justifyContent: "space-between", alignItems: "center"}}>
+                <h3>UPCOMING EVENTS</h3>
+                <button className="view-all-btn" onClick={() => openListModal("upcoming")}>View All</button>
+              </div>
+              {loading ? (
+                <p>Loading events...</p>
+              ) : upcomingEvents.length > 0 ? (
+                <ul>
+                  {upcomingEvents.map((event, index) => (
+                    <li key={index} className="upcoming-event">
+                      <strong>{formatEventDate(event.date)} • {event.time}</strong>
+                      {event.title} - {event.teams}
+                      <br />
+                      <span className="location">📍 {event.location}</span>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p>No upcoming events</p>
+              )}
+            </div>
           </div>
-        )}
-
+        </div>
       </div>
     </MainLayout>
   );

@@ -46,7 +46,7 @@ const Game = () => {
     const fetchGames = async () => {
       try {
         const response = await fetch(
-          `http://localhost:5000/api/games?institution=${encodeURIComponent(userInstitution)}&eventName=${encodeURIComponent(decodedName)}`
+          `https://sparta-deployed.onrender.com/api/games?institution=${encodeURIComponent(userInstitution)}&eventName=${encodeURIComponent(decodedName)}`
         );
         const data = await response.json();
 
@@ -86,7 +86,7 @@ const Game = () => {
   const confirmDeleteGame = async () => {
     if (!gameToDelete) return;
     try {
-      const res = await fetch(`http://localhost:5000/api/games/${gameToDelete.id}`, {
+      const res = await fetch(`https://sparta-deployed.onrender.com/api/games/${gameToDelete.id}`, {
         method: "DELETE",
       });
 
@@ -105,19 +105,19 @@ const Game = () => {
         setToastMessage("Game has been deleted");
         setShowToast(true);
         // hide toast after 7s
-        setTimeout(() => setShowToast(false), 8000);
+        setTimeout(() => setShowToast(false), 5000);
       } else {
         setShowDeleteModal(false);
         setToastMessage("Failed to delete game");
         setShowToast(true);
-        setTimeout(() => setShowToast(false), 8000);
+        setTimeout(() => setShowToast(false), 5000);
       }
     } catch (error) {
       console.error("Error deleting game:", error);
       setShowDeleteModal(false);
       setToastMessage("Error deleting game");
       setShowToast(true);
-      setTimeout(() => setShowToast(false), 8000);
+      setTimeout(() => setShowToast(false), 5000);
     } finally {
       setGameToDelete(null);
     }

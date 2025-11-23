@@ -13,7 +13,7 @@ const PlayerPantheon = () => {
   // Fetch Events
   useEffect(() => {
     const fetchEvents = async () => {
-      const response = await fetch(`http://localhost:5000/api/past-events?institution=${user?.institution}`);
+      const response = await fetch(`https://sparta-deployed.onrender.com/api/past-events?institution=${user?.institution}`);
       const data = await response.json();
       setEvents(data);
     };

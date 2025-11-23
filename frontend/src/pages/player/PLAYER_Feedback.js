@@ -23,7 +23,7 @@ const PlayerFeedback = () => {
   // Toast helper
   const showToastMessage = (message, type) => {
     setShowToast({ show: true, message, type });
-    setTimeout(() => setShowToast({ show: false, message: "", type: "" }), 8000);
+    setTimeout(() => setShowToast({ show: false, message: "", type: "" }), 5000);
   };
 
   // Fetch player data
@@ -31,7 +31,7 @@ const PlayerFeedback = () => {
     const fetchUser = async () => {
       try {
         if (!userId) return;
-        const res = await fetch(`http://localhost:5000/api/players/${userId?._id}`);
+        const res = await fetch(`https://sparta-deployed.onrender.com/api/players/${userId?._id}`);
         const data = await res.json();
         setUser(data); 
       } catch (err) {
@@ -45,7 +45,7 @@ const PlayerFeedback = () => {
   useEffect(() => {
     const fetchFeedbacks = async () => {
       try {
-        const res = await fetch(`http://localhost:5000/api/feedback/${decodedEvent}`);
+        const res = await fetch(`https://sparta-deployed.onrender.com/api/feedback/${decodedEvent}`);
         const data = await res.json();
         setFeedbacks(data);
       } catch (err) {
@@ -58,7 +58,7 @@ const PlayerFeedback = () => {
   // Post Feedback
   const handlePost = async () => {
     try {
-      const res = await fetch("http://localhost:5000/api/feedback", {
+      const res = await fetch("https://sparta-deployed.onrender.com/api/feedback", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
