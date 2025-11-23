@@ -89,7 +89,7 @@
 }
 
 .feedback-contents::-webkit-scrollbar {
-  width: 10px;
+  width: 7px;
 }
 
 .feedback-contents::-webkit-scrollbar-track {
