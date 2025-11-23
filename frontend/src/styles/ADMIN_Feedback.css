@@ -62,14 +62,14 @@
 .feedback-item {
     display: flex;
     flex-direction: row;
-    height: 30vh;
+    height: fit-content;
 }
 
 .feedback-container {
     background: linear-gradient(180deg, #ce892c, #1a2a49);
     padding: 2px;
     border-radius: 12px;
-    width: 200px;;
+    width: 200px;
 }
 
 .feedback-contents {
@@ -86,6 +86,25 @@
     overflow-y: auto;
     overflow-x: hidden;
     word-break: break-word;
+}
+
+.feedback-contents::-webkit-scrollbar {
+  width: 10px;
+}
+
+.feedback-contents::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.feedback-contents::-webkit-scrollbar-thumb {
+  background: #cfcfcf;
+  border-radius: 10px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+.feedback-contents::-webkit-scrollbar-thumb:hover {
+  background: #b5b5b5;
 }
 
 .no-feedback-message {
