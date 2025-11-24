@@ -163,6 +163,7 @@ body {
     grid-template-columns: repeat(7, 1fr);
     margin: 0 auto;
     width: 100%;
+    padding: 1rem;
 }
 
 .spectator-event-list {
@@ -284,14 +285,6 @@ p {
 
 .game-header {
   margin: 10px auto;
-}
-.spectator-game-main-div {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 16px;
-  padding: 1rem;
-  margin: 0 auto;
 }
 
 .game-button-container {
