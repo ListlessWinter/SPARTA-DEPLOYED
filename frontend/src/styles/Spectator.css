@@ -148,6 +148,23 @@ body {
     border-radius: 10px;
 }
 
+.spectator-game-header-row {
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+    /* width: 90%; */
+    margin: auto;
+    padding: 0 35px;
+}
+
+.spectator-game-main-div {
+    box-sizing: border-box;
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    margin: 0 auto;
+    width: 100%;
+}
+
 .spectator-event-list {
     display: flex;
     flex-direction: row;
