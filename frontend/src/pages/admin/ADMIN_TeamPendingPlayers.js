@@ -107,7 +107,7 @@ const TeamPlayerApproval = () => {
                   <td>{player.email}</td>
                   <td>{player.team}</td>
                   <td>{player.game}</td>
-                  <td>
+                  <td style={{ textAlign: "left", width: "15vw" }}>
                     {player.uploadedRequirements && player.uploadedRequirements.length > 0 ? (
                       <ul style={{ listStyleType: "none", padding: 0, margin: 0 }}>
                         {player.uploadedRequirements.map((req, idx) => (
