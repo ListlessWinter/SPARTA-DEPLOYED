@@ -172,7 +172,6 @@ const TeamPlayers = () => {
                     <th>COURSE</th>
                     <th>GAME</th>
                     <th>EMAIL</th>
-                    <th>PROFILE</th>
                   </tr>
                 </thead>
                 <tbody>
