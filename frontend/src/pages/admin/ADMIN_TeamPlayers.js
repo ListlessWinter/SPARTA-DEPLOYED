@@ -168,9 +168,10 @@ const TeamPlayers = () => {
                 <thead>
                   <tr>
                     <th>PLAYERS</th>
+                    <th>EMAIL</th>
                     <th>COURSE</th>
                     <th>GAME</th>
-                    <th>STATUS</th>
+                    <th>EMAIL</th>
                     <th>PROFILE</th>
                   </tr>
                 </thead>
@@ -178,9 +179,9 @@ const TeamPlayers = () => {
                   {players.map((player, idx) => (
                     <tr key={player._id}>
                       <td>{player.playerName}</td>
+                      <td>{player.email}</td>
                       <td>{player.course || "N/A"}</td>
                       <td>{Array.isArray(player.game) ? player.game.join(", ") : player.game || "N/A"}</td>
-                      <td>{player.eventName}</td>
                       <td>
                         <button onClick={() => handleViewButton(player._id)}> View Profile </button>
                       </td>
