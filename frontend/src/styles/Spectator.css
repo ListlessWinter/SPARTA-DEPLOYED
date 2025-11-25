@@ -8,7 +8,6 @@
     width: auto;
     overflow-x: visible;
     margin: 10px auto;
-    padding: 10px 10px;
   }
 
   .spectator-logo{
@@ -116,7 +115,6 @@ body {
     overflow-x: auto;
     margin: 0 auto;
     gap: 15px;
-    padding: 20px 20px;
 }
 
 .institution-list > button {
@@ -148,6 +146,24 @@ body {
     background-color: #f8f8ff;
     box-shadow: 0 2px 12px rgba(30, 42, 73, 0.08);
     border-radius: 10px;
+}
+
+.spectator-game-header-row {
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+    /* width: 90%; */
+    margin: auto;
+    padding: 0 35px;
+}
+
+.spectator-game-main-div {
+    box-sizing: border-box;
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    margin: 0 auto;
+    width: 100%;
+    padding: 1rem;
 }
 
 .spectator-event-list {
@@ -269,14 +285,6 @@ p {
 
 .game-header {
   margin: 10px auto;
-}
-.spectator-game-main-div {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 16px;
-  padding: 1rem;
-  margin: 0 auto;
 }
 
 .game-button-container {

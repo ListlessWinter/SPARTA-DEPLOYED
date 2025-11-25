@@ -33,7 +33,7 @@ const TeamPlayers = () => {
   useEffect(() => {
     const fetchPlayers = async () => {
       try {
-        const res = await fetch(`http://localhost:5000/api/players?institution=${encodeURIComponent(user?.institution)}&eventName=${encodeURIComponent(decodedEvent)}&team=${encodeURIComponent(decodedTeam)}`);
+        const res = await fetch(`https://sparta-deployed.onrender.com/api/players?institution=${encodeURIComponent(user?.institution)}&eventName=${encodeURIComponent(decodedEvent)}&team=${encodeURIComponent(decodedTeam)}`);
         const data = await res.json();
         setPlayers(data);
       } catch (err) {
@@ -48,7 +48,7 @@ const TeamPlayers = () => {
   useEffect(() => {
     const fetchTeamDetails = async () => {
       try {
-        const res = await fetch(`http://localhost:5000/api/team?institution=${encodeURIComponent(user?.institution)}&event=${encodeURIComponent(decodedEvent)}&teamName=${encodeURIComponent(decodedTeam)}`);
+        const res = await fetch(`https://sparta-deployed.onrender.com/api/team?institution=${encodeURIComponent(user?.institution)}&event=${encodeURIComponent(decodedEvent)}&teamName=${encodeURIComponent(decodedTeam)}`);
         const data = await res.json();
         setTeamColor(data.teamColor || "#808080");
       } catch (err) {
@@ -63,7 +63,7 @@ const TeamPlayers = () => {
   useEffect(() => {
     const fetchTeamRankings = async () => {
       try {
-        const res = await fetch(`http://localhost:5000/api/teams/scores?institution=${encodeURIComponent(user?.institution)}&event=${encodeURIComponent(decodedEvent)}`);
+        const res = await fetch(`https://sparta-deployed.onrender.com/api/teams/scores?institution=${encodeURIComponent(user?.institution)}&event=${encodeURIComponent(decodedEvent)}`);
         const data = await res.json();
 
         // Sort descending by final score
@@ -96,7 +96,7 @@ const TeamPlayers = () => {
     const fetchPendingCount = async () => {
       try {
         const res = await fetch(
-          `http://localhost:5000/api/players/team-pending?institution=${encodeURIComponent(
+          `https://sparta-deployed.onrender.com/api/players/team-pending?institution=${encodeURIComponent(
             user?.institution
           )}&eventName=${encodeURIComponent(eventName)}&team=${encodeURIComponent(
             teamName
@@ -168,19 +168,19 @@ const TeamPlayers = () => {
                 <thead>
                   <tr>
                     <th>PLAYERS</th>
+                    <th>EMAIL</th>
                     <th>COURSE</th>
                     <th>GAME</th>
-                    <th>STATUS</th>
-                    <th>PROFILE</th>
+                    <th>EMAIL</th>
                   </tr>
                 </thead>
                 <tbody>
                   {players.map((player, idx) => (
                     <tr key={player._id}>
                       <td>{player.playerName}</td>
+                      <td>{player.email}</td>
                       <td>{player.course || "N/A"}</td>
                       <td>{Array.isArray(player.game) ? player.game.join(", ") : player.game || "N/A"}</td>
-                      <td>{player.eventName}</td>
                       <td>
                         <button onClick={() => handleViewButton(player._id)}> View Profile </button>
                       </td>

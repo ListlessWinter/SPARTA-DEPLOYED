@@ -1,7 +1,6 @@
 import PlayerMainLayout from "../../components/P_MainLayout";
 import { useState, useEffect } from "react";
 import Calendar from 'react-calendar';
-//import 'react-calendar/dist/Calendar.css'; // Default calendar styling
 import axios from 'axios';
 import "../../styles/Calendar.css";
 
@@ -21,7 +20,7 @@ const PlayerDashboard = () => {
     useEffect(() => {
       const fetchGames = async () => {
         try {
-          const res = await axios.get(`http://localhost:5000/api/games?institution=${encodeURIComponent(user?.institution)}&eventName=${encodeURIComponent(user?.eventName)}`);
+          const res = await axios.get(`https://sparta-deployed.onrender.com/api/games?institution=${encodeURIComponent(user?.institution)}&eventName=${encodeURIComponent(user?.eventName)}`);
           const matches = [];
           const multiDay = [];
   
@@ -189,7 +188,7 @@ const PlayerDashboard = () => {
       </div>
 
         <div className="upcoming-events" style={{margin: "0px"}}>
-          <h3>UPCOMING GAMES</h3>
+          <h3 style={{borderBottom: "1px solid #bcc7dd"}}>UPCOMING GAMES</h3>
           {loading ? (
             <p>Loading events...</p>
           ) : upcomingEvents.length > 0 ? (
@@ -197,6 +196,7 @@ const PlayerDashboard = () => {
               {upcomingEvents.map((event, index) => (
                 <li key={index} className="upcoming-event">
                   <strong>{formatEventDate(event.date)} • {event.time}</strong>
+                  <br />
                   {event.title} - {event.teams}
                   <br />
                   <span className="location">📍 {event.location}</span>
@@ -210,8 +210,8 @@ const PlayerDashboard = () => {
 
       {/* Event Modal */}
       {isModalOpen && (
-        <div className="event-modal-overlay" onClick={closeModal}>
-          <div className="event-modal" onClick={(e) => e.stopPropagation()}>
+        <div className="dashboard-event-modal-overlay" onClick={closeModal}>
+          <div className="dashboard-event-modal" onClick={(e) => e.stopPropagation()} style={{overflowX: "hidden"}}>
             <div className="event-modal-header">
               <h3>Events on {selectedDate.toLocaleDateString('en-US', { 
                 weekday: 'long', 

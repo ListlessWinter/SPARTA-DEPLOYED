@@ -40,7 +40,7 @@ const SpectatorGame = () => {
     const fetchGames = async () => {
       try {
         const response = await fetch(
-          `http://localhost:5000/api/games?institution=${encodeURIComponent(decodedInstitution)}&eventName=${encodeURIComponent(decodedName)}`
+          `https://sparta-deployed.onrender.com/api/games?institution=${encodeURIComponent(decodedInstitution)}&eventName=${encodeURIComponent(decodedName)}`
         );
         const data = await response.json();
 
@@ -82,7 +82,7 @@ const SpectatorGame = () => {
         <h2>All Games for {eventName}</h2>
       </div>
 
-      <div className="game-header-row">
+      <div className="spectator-game-header-row">
         <input
           type="text"
           className="game-search-bar"
@@ -92,7 +92,7 @@ const SpectatorGame = () => {
         />
       </div>
 
-      <div className="game-main-div">
+      <div className="spectator-game-main-div">
 
         {filteredGames.length === 0 ? (
           <div className="no-games-found">

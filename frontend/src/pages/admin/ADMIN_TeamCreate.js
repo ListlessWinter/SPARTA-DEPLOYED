@@ -49,7 +49,7 @@ const CreateTeam = () => {
         formData.append("teamIcon", teamIcon);
       }
 
-      const response = await fetch("http://localhost:5000/api/team", {
+      const response = await fetch("https://sparta-deployed.onrender.com/api/team", {
         method: "POST",
         body: formData, 
       });
@@ -64,13 +64,13 @@ const CreateTeam = () => {
         setTimeout(() => {
           setShowToast(false);
           navigate(-1);
-        }, 8000);
+        }, 5000);
       } else {
         setToastMessage(data.message || "Failed to create team.");
         setToastType("error");
         setShowToast(true);
 
-        setTimeout(() => setShowToast(false), 8000);
+        setTimeout(() => setShowToast(false), 5000);
       }
       } catch (error) {
         console.error("Error creating team:", error);
@@ -79,7 +79,7 @@ const CreateTeam = () => {
         setToastType("error");
         setShowToast(true);
 
-        setTimeout(() => setShowToast(false), 8000);
+        setTimeout(() => setShowToast(false), 5000);
       }
   };
 
@@ -90,7 +90,7 @@ const CreateTeam = () => {
       const institution = user?.institution;
 
       try {
-        const res = await fetch(`http://localhost:5000/api/coordinators?institution=${institution}&event=${decodedEventName}`);
+        const res = await fetch(`https://sparta-deployed.onrender.com/api/coordinators?institution=${institution}&event=${decodedEventName}`);
         const data = await res.json();
         setCoordinators(Array.isArray(data) ? data : []);
       } catch (err) {

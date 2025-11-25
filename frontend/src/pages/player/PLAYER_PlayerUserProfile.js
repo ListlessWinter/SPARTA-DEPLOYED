@@ -11,12 +11,13 @@ const PlayerUserProfile = () => {
   const [player, setPlayer] = useState({});
   const [isEditing, setIsEditing] = useState(false);
   const [activeTab, setActiveTab] = useState("player");
+  const [showToast, setShowToast] = useState(false);
 
   // Fetch user dertails
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const res = await fetch(`http://localhost:5000/api/players/${userId}`);
+        const res = await fetch(`https://sparta-deployed.onrender.com/api/players/${userId}`);
         const data = await res.json();
         setPlayer(data);
       } catch (err) {
@@ -33,7 +34,7 @@ const PlayerUserProfile = () => {
   // Edit 
   const handleSave = async () => {
     try {
-      const res = await fetch(`http://localhost:5000/api/players/${userId}/profile`, {
+      const res = await fetch(`https://sparta-deployed.onrender.com/api/players/${userId}/profile`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(player),
@@ -42,7 +43,9 @@ const PlayerUserProfile = () => {
         const updated = await res.json();
         setPlayer(updated);
         setIsEditing(false);
-        alert("Profile updated!");
+        // show toast notification instead of alert
+        setShowToast(true);
+        setTimeout(() => setShowToast(false), 3000);
       } else {
         alert("Failed to update profile");
       }
@@ -54,6 +57,17 @@ const PlayerUserProfile = () => {
   return (
     <PlayerMainLayout>
   <div className="player-profile-container">
+
+    <div className="profile-actions">
+      {isEditing ? (
+        <>
+          <button className="btn save-btn" onClick={handleSave}>Save</button>
+          <button className="btn cancel-btn" onClick={() => setIsEditing(false)}>Cancel</button>
+            </>
+      ) : (
+          <button className="btn edit-btn" onClick={() => setIsEditing(true)}>Edit Profile</button>
+          )}
+    </div>    
 
     <div className="profile-view">
       {/* Left card */}
@@ -115,8 +129,8 @@ const PlayerUserProfile = () => {
               { label: "Course", value: player.course || "N/A", name: "course", editable: true },
               { label: "Contact", value: player.contactNumber || "N/A", name: "contactNumber" },
               { label: "Address", value: player.permanentAddress || "N/A", name: "permanentAddress", className: "address-field" },
-              { label: "Weight", value: player.weight ? `${player.weight} kg` : "N/A", name: "weight", type: "number" },
-              { label: "Height", value: player.height ? `${player.height} cm` : "N/A", name: "height", type: "number" },
+              { label: "Weight (kg)", value: player.weight ? `${player.weight} kg` : "N/A", name: "weight", type: "number" },
+              { label: "Height (ft.)", value: player.height ? `${player.height} ft.` : "N/A", name: "height", type: "number" },
             ].map((field, idx) => (
               <div className={`profile-field ${field.className || ""}`} key={idx}>
                 <span className="profile-label">{field.label}</span>
@@ -184,16 +198,12 @@ const PlayerUserProfile = () => {
               </div>
         </div>
 
-     <div className="profile-actions">
-          {isEditing ? (
-            <>
-              <button className="btn save-btn" onClick={handleSave}>Save</button>
-              <button className="btn cancel-btn" onClick={() => setIsEditing(false)}>Cancel</button>
-            </>
-          ) : (
-            <button className="btn edit-btn" onClick={() => setIsEditing(true)}>Edit Profile</button>
-          )}
+      {/* Toast notification */}
+      {showToast && (
+        <div className="profile-toast" role="status" aria-live="polite">
+          Profile Updated
         </div>
+      )}
       </div>
     </PlayerMainLayout>
   );

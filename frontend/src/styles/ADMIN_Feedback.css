@@ -1,9 +1,7 @@
 .feedback-maindiv {
-    display: flex;
-    flex-direction: row;
-    gap: 20px;
     width: 100%;
-    align-items: flex-start;
+    margin: 15px auto;
+
 }
 
 @media (max-width: 1023px) {
@@ -18,10 +16,10 @@
   }
 }
 
-@media (min-width: 1024px) and (max-width: 1600px) {
+@media (min-width: 1273px) and (max-width: 1600px) {
   .feedback-maindiv {
-    display: flex;
-    flex-direction: row;
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
     align-items: flex-start;
   }
 
@@ -62,26 +60,49 @@
 .feedback-item {
     display: flex;
     flex-direction: row;
-    height: 30vh;
+    height: fit-content;
 }
 
 .feedback-container {
     background: linear-gradient(180deg, #ce892c, #1a2a49);
     padding: 2px;
     border-radius: 12px;
-    width: 200px;;
+    width: 200px;
 }
 
 .feedback-contents {
     background: white;
     border-radius: 10px;
-    padding: 10px;
+    padding: 15px;
     font-family: Poppins, sans-serif;
-    height: 25vh;
+    min-height: 10vh;
+    max-height: 25vh;
     display: flex;
     flex-direction: column;
     align-content: space-between;
     gap: 10px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    word-break: break-word;
+}
+
+.feedback-contents::-webkit-scrollbar {
+  width: 7px;
+}
+
+.feedback-contents::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.feedback-contents::-webkit-scrollbar-thumb {
+  background: #cfcfcf;
+  border-radius: 10px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+.feedback-contents::-webkit-scrollbar-thumb:hover {
+  background: #b5b5b5;
 }
 
 .no-feedback-message {

@@ -18,7 +18,7 @@ const TeamPlayerApproval = () => {
   // Fetch pending players
   const fetchPlayers = useCallback(async () => {
     try {
-      const res = await fetch(`http://localhost:5000/api/players/team-pending?institution=${user?.institution}&eventName=${encodeURIComponent(eventName)}&team=${encodeURIComponent(teamName)}`);
+      const res = await fetch(`https://sparta-deployed.onrender.com/api/players/team-pending?institution=${user?.institution}&eventName=${encodeURIComponent(eventName)}&team=${encodeURIComponent(teamName)}`);
       const data = await res.json();
       setPlayers(data);
     } catch (err) {
@@ -41,12 +41,13 @@ const TeamPlayerApproval = () => {
   // Approve player
   const handleApprove = async (id) => {
     try {
-      const res = await fetch(`http://localhost:5000/api/players/team-approve/${id}`, {
+      const res = await fetch(`https://sparta-deployed.onrender.com/api/players/team-approve/${id}`, {
         method: "PUT",
       });
       if (res.ok) {
         showToastMessage("Approved Player", "success");
-        fetchPlayers();
+        //fetchPlayers();
+        setPlayers((prevPlayers) => prevPlayers.filter((player) => player._id !== id));
       }
     } catch (err) {
       console.error("Error approving player:", err);
@@ -67,12 +68,13 @@ const TeamPlayerApproval = () => {
     const id = declineConfirm.playerId;
     closeDeclineConfirm();
     try {
-      const res = await fetch(`http://localhost:5000/api/players/team-decline/${id}`, {
+      const res = await fetch(`https://sparta-deployed.onrender.com/api/players/team-decline/${id}`, {
         method: "PUT",
       });
       if (res.ok) {
         showToastMessage("Declined Player", "error");
-        fetchPlayers();
+        //fetchPlayers();
+        setPlayers((prevPlayers) => prevPlayers.filter((player) => player._id !== id));
       }
     } catch (err) {
       console.error("Error declining player:", err);
@@ -105,7 +107,7 @@ const TeamPlayerApproval = () => {
                   <td>{player.email}</td>
                   <td>{player.team}</td>
                   <td>{player.game}</td>
-                  <td>
+                  <td style={{ textAlign: "left", width: "15vw" }}>
                     {player.uploadedRequirements && player.uploadedRequirements.length > 0 ? (
                       <ul style={{ listStyleType: "none", padding: 0, margin: 0 }}>
                         {player.uploadedRequirements.map((req, idx) => (

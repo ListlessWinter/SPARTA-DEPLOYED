@@ -29,7 +29,7 @@ const GameBracket = () => {
   useEffect(() => {
     const fetchGame = async () => {
       try {
-        const res = await fetch(`http://localhost:5000/api/games/${gameId}`);
+        const res = await fetch(`https://sparta-deployed.onrender.com/api/games/${gameId}`);
         const data = await res.json();
         setGame(data);
       } catch (err) {
@@ -278,7 +278,7 @@ const GameBracket = () => {
 
     try {
       await fetch(
-        `http://localhost:5000/api/games/${gameId}/matches/${selectedMatch.id}`,
+        `https://sparta-deployed.onrender.com/api/games/${gameId}/matches/${selectedMatch.id}`,
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
@@ -298,7 +298,7 @@ const GameBracket = () => {
   if (!selectedMatch) return;
   try {
     const response = await fetch(
-      `http://localhost:5000/api/games/${gameId}/matches/${selectedMatch.id}`,
+      `https://sparta-deployed.onrender.com/api/games/${gameId}/matches/${selectedMatch.id}`,
       {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
@@ -467,7 +467,7 @@ const GameBracket = () => {
       };
 
       await fetch(
-        `http://localhost:5000/api/games/${gameId}/matches/${selectedMatch.id}/schedule`,
+        `https://sparta-deployed.onrender.com/api/games/${gameId}/matches/${selectedMatch.id}/schedule`,
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
@@ -476,7 +476,7 @@ const GameBracket = () => {
       );
 
       // refresh game after saving
-      const res = await fetch(`http://localhost:5000/api/games/${gameId}`);
+      const res = await fetch(`https://sparta-deployed.onrender.com/api/games/${gameId}`);
       const updatedGame = await res.json();
 
       setGame(updatedGame);
@@ -544,7 +544,7 @@ const GameBracket = () => {
         <div className="modal-overlay">
           <div className="modal rules-modal">
             <h2>Game Rules</h2>
-
+            <hr />
             {game.rules.endsWith(".pdf") ? (
               <iframe
                 src={game.rules}
@@ -595,18 +595,20 @@ const GameBracket = () => {
         {game.bracketType === "Round Robin" && (
           <div className="round-robin bracket-container">
             <h2>Round Robin</h2>
-            {roundsData.map((round, rIndex) => (
-              <div key={rIndex} className="rr-round">
-                <h3 className="rr-title">{round.title}</h3>
-                <div className="rr-matches">
-                  {round.seeds.map((seed, sIndex) => (
-                    <React.Fragment key={sIndex}>
-                      {renderSeed({ seed })}
-                    </React.Fragment>
-                  ))}
+            <div style={{display: "grid", gridTemplateColumns: "repeat(4, 1fr)"}}>
+              {roundsData.map((round, rIndex) => (
+                <div key={rIndex} className="rr-round">
+                  <h3 className="rr-title">{round.title}</h3>
+                  <div className="rr-matches">
+                    {round.seeds.map((seed, sIndex) => (
+                      <React.Fragment key={sIndex}>
+                        {renderSeed({ seed })}
+                      </React.Fragment>
+                    ))}
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         )}
 
@@ -636,7 +638,7 @@ const GameBracket = () => {
               <>
                 <h3>Rules PDF</h3>
                 <iframe
-                  src={`http://localhost:5000${game.rules}`}
+                  src={`https://sparta-deployed.onrender.com${game.rules}`}
                   title="Rules PDF"
                   className="w-full h-[80vh] rounded-md"
                 />
@@ -648,6 +650,7 @@ const GameBracket = () => {
               <>
                 <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
                   <h3>Schedule Match</h3>
+                  <hr />
                   <div style={{ display: "flex", flexDirection: "row", gap: "30px" }}>
                     <label>Date : </label>
                     <input
@@ -680,6 +683,7 @@ const GameBracket = () => {
             ) : selectedMatch.type === "scores" ? (
               <>
                 <h3>Update Match Scores</h3>
+                <hr />
                 {selectedMatch.teams.map((team, idx) => (
                   <div key={idx} className="score-input">
                     <label style={{ marginLeft: "10px" }}>
@@ -705,6 +709,7 @@ const GameBracket = () => {
             ) : selectedMatch.type === "video" && (
               <>
                 <h3>Add Video Link</h3>
+                <hr />
                 <input
                   type="text"
                   placeholder="Enter video URL"
@@ -720,14 +725,14 @@ const GameBracket = () => {
                     type="button"
                     onClick={async () => {
                       try {
-                        await fetch(`http://localhost:5000/api/${gameId}/video`, {
+                        await fetch(`https://sparta-deployed.onrender.com/api/${gameId}/video`, {
                           method: "PUT",
                           headers: { "Content-Type": "application/json" },
                           body: JSON.stringify({ videoLink: selectedMatch.videoLink }),
                         });
 
                         // Refresh game after saving
-                        const res = await fetch(`http://localhost:5000/api/games/${gameId}`);
+                        const res = await fetch(`https://sparta-deployed.onrender.com/api/games/${gameId}`);
                         const updated = await res.json();
                         setGame(updated);
 
@@ -750,9 +755,10 @@ const GameBracket = () => {
       {/*Medal tally modal*/}
       {showTallyModal && medalTally && (
         <div className="modal-overlay">
-          <div className="modal medal-tally-modal" style={{ textAlign: 'center' }}>
-            <h2>Medal Tally</h2>
-            <div className="tally-content" style={{ padding: '20px', fontSize: '1.2rem', lineHeight: '2' }}>
+          <div className="modal medal-tally-modal">
+            <h2 >MEDAL TALLY</h2>
+            <hr />
+            <div className="tally-content" style={{ padding: '5px', lineHeight: '2' }}>
               <p>🥇 <strong>Gold:</strong> {medalTally.gold || 'N/A'}</p>
               <p>🥈 <strong>Silver:</strong> {medalTally.silver || 'N/A'}</p>
               <p>🥉 <strong>Bronze:</strong> {medalTally.bronze || 'N/A'}</p>

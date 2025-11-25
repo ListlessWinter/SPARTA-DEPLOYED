@@ -15,7 +15,7 @@ const PlayerSideMenu = () => {
   // To Update the local data of users
   useEffect(() => {
     const fetchUser = async () => {
-      const res = await fetch(`http://localhost:5000/api/players/${user._id}`);
+      const res = await fetch(`https://sparta-deployed.onrender.com/api/players/${user._id}`);
       const UpdateUser = await res.json();
       setUser(UpdateUser);
       localStorage.setItem("auth", JSON.stringify(UpdateUser));
@@ -52,21 +52,6 @@ const PlayerSideMenu = () => {
           <Link to="/pantheon"> <GiGreekTemple /> Pantheon </Link>
         </li>
       </ul>
-
-
-        <div className="bottom-info">
-          <div>
-            <h2 style={{backgroundColor:"#CE892C"}}>PLAYER</h2>
-          </div>
-
-          <div className="user-info">
-          <span> {user?.playerName || "User Name"} </span>
-          <span> {user?.email || "No Email"} </span> 
-          </div>
-
-          <button className="s-logout-button" onClick={handleLogout}>Logout</button>
-        
-        </div>
          
     </div>
   );

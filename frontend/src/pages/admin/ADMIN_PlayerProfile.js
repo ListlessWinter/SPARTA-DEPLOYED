@@ -15,7 +15,7 @@ const PlayerProfile = () => {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const res = await fetch(`http://localhost:5000/api/players/${playerId}`);
+        const res = await fetch(`https://sparta-deployed.onrender.com/api/players/${playerId}`);
         const data = await res.json();
         setPlayer(data);
       } catch (err) {
@@ -75,8 +75,8 @@ const PlayerProfile = () => {
                     { label: "Course", value: player.course || "N/A", name: "course", editable: true },
                     { label: "Contact", value: player.contactNumber || "N/A" },
                     { label: "Address", value: player.permanentAddress || "N/A", className: "address-field" },
-                    { label: "Weight", value: player.weight ? `${player.weight} kg` : "N/A" },
-                    { label: "Height", value: player.height ? `${player.height} cm` : "N/A" },
+                    { label: "Weight (kg)", value: player.weight ? `${player.weight} kg` : "N/A" },
+                    { label: "Height (ft.)", value: player.height ? `${player.height} ft.` : "N/A" },
 
                   ].map((field, idx) => (
                     <div className={`profile-field ${field.className || ""}`} key={idx}>
