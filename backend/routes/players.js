@@ -209,28 +209,26 @@ router.put("/players/:id/register-game", upload.any(), async (req, res) => {
     const { playerName, team, sex } = req.body;
     let games = req.body.game;
 
-    // Ensure games is always an array
-    if (!games) {
-      return res.status(400).json({ message: "No game selected" });
+    // Check the player
+    const player = await Player.findById(req.params.id);
+
+    if (!player) {
+      return res.status(404).json({ message: "Player not found" });
     }
+
+    // File validation
+    if (!games) return res.status(400).json({ message: "No game selected" });
     if (!Array.isArray(games)) games = [games];
 
-    // Validate game IDs
-    const validGameIds = games.filter((id) =>
-      mongoose.Types.ObjectId.isValid(id)
-    );
-    if (!validGameIds.length) {
-      return res.status(400).json({ message: "Invalid game ID(s)" });
-    }
+    const validGameIds = games.filter((id) => mongoose.Types.ObjectId.isValid(id));
+    if (!validGameIds.length) return res.status(400).json({ message: "Invalid game ID(s)" });
 
-    // Find the game docs
     const gameDocs = await Game.find({ _id: { $in: validGameIds } });
-    if (!gameDocs.length) {
-      return res.status(404).json({ message: "Games not found" });
-    }
+    if (!gameDocs.length) return res.status(404).json({ message: "Games not found" });
 
-    // Upload each requirement file to Supabase
-    const uploadedRequirements = [];
+
+    // New upload
+    const newUploads = [];
 
     for (const file of req.files || []) {
       const match = file.fieldname.match(/requirements\[(.+)\]/);
@@ -238,8 +236,9 @@ router.put("/players/:id/register-game", upload.any(), async (req, res) => {
 
       const uniqueFileName = `req-${Date.now()}-${file.originalname}`;
 
-      const { data, error } = await supabase.storage
-        .from("requirements") // bucket or da storage name
+      // Upload to Supabase
+      const { error } = await supabase.storage
+        .from("requirements")
         .upload(uniqueFileName, file.buffer, {
           cacheControl: "3600",
           upsert: false,
@@ -256,32 +255,41 @@ router.put("/players/:id/register-game", upload.any(), async (req, res) => {
         .from("requirements")
         .getPublicUrl(uniqueFileName);
 
-      uploadedRequirements.push({
+      newUploads.push({
         name: reqName,
-        filePath: publicData.publicUrl, // store public URL
+        filePath: publicData.publicUrl,
       });
     }
 
-    // Update the player
-    const updatedPlayer = await Player.findByIdAndUpdate(
-      req.params.id,
-      {
-        $set: { playerName, team, sex, teamApproval: false },
-        $push: {
-          game: {
-            $each: gameDocs.map((g) => `${g.category} ${g.gameType}`),
-          },
-          uploadedRequirements: { $each: uploadedRequirements },
-        },
-      },
-      { new: true }
-    );
-
-    if (!updatedPlayer) {
-      return res.status(404).json({ message: "Player not found" });
+    // Overwrite existing data to prevent uncessesary files
+    if (newUploads.length > 0) {
+      newUploads.forEach((newFile) => {
+        // Find file with same name
+        player.uploadedRequirements = player.uploadedRequirements.filter(
+          (existing) => existing.name !== newFile.name
+        );
+        // Add the new file
+        player.uploadedRequirements.push(newFile);
+      });
     }
 
-    res.json({ message: "Game(s) registered", player: updatedPlayer });
+    // Update the inputed data
+    player.playerName = playerName;
+    player.team = team;
+    player.sex = sex;
+    player.teamApproval = false; // Reset approval
+
+    // UPDATE GAMES (Prevent duplicates)
+    const newGameNames = gameDocs.map((g) => `${g.category} ${g.gameType}`);
+
+    // For extra safety when joining games
+    const combinedGames = [...(player.game || []), ...newGameNames];
+    player.game = [...new Set(combinedGames)];
+
+    await player.save();
+
+    res.json({ message: "Game(s) registered and files updated", player });
+
   } catch (err) {
     console.error("Error registering player:", err);
     res.status(500).json({ message: "Failed to register player" });

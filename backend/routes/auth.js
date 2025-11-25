@@ -7,7 +7,6 @@ const Institution = require('../models/Institution');
 
 const router = express.Router();
 
-
 // Helps get model by role
 const getModelByRole = (role) => {
   if (role === 'admin') return Admin;
