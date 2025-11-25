@@ -8,8 +8,12 @@ const Institution = require('../models/Institution');
 const router = express.Router();
 
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 
 // Helps get model by role
+=======
+// Helps get model by roles
+>>>>>>> Stashed changes
 =======
 // Helps get model by roles
 >>>>>>> Stashed changes
