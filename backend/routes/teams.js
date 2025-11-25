@@ -181,22 +181,65 @@ router.get("/coordinators", async (req, res) => {
   }
 });
 
-// UPDATE team
+//Update Team
 router.put("/team/:id", upload.single("teamIcon"), async (req, res) => {
   try {
     const { id } = req.params;
     const updates = { ...req.body };
 
+    // Fetch the existing team
+    const team = await Team.findById(id);
+    if (!team) return res.status(404).json({ message: "Team not found" });
+
     if (req.file) {
-      updates.teamIcon = `/uploads/teams/${req.file.filename}`;
+
+      // Delete the OLD image from db if exist
+      if (team.teamIcon) {
+        const oldFileName = team.teamIcon.split('/').pop();
+
+        const { error: removeError } = await supabase.storage
+          .from("teams")
+          .remove([oldFileName]);
+
+        if (removeError) {
+          console.warn("Failed to remove old image from Supabase:", removeError);
+        }
+      }
+
+      // Upload the NEW image
+      const fileExt = path.extname(req.file.originalname);
+      const newFileName = `teamIcon-${Date.now()}${fileExt}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from("teams")
+        .upload(newFileName, req.file.buffer, {
+          cacheControl: "3600",
+          upsert: false,
+          contentType: req.file.mimetype,
+        });
+
+      if (uploadError) {
+        console.error("Supabase upload failed:", uploadError);
+        return res.status(500).json({ message: "Failed to upload new team icon" });
+      }
+
+      // Get new Public URL
+      const { data: publicData } = supabase.storage
+        .from("teams")
+        .getPublicUrl(newFileName);
+
+      updates.teamIcon = publicData.publicUrl;
     }
 
     if (updates.coordinators) {
-      updates.coordinators = JSON.parse(updates.coordinators);
+        try {
+            updates.coordinators = JSON.parse(updates.coordinators);
+        } catch (e) {
+        }
     }
 
-    const team = await Team.findByIdAndUpdate(id, updates, { new: true });
-    if (!team) return res.status(404).json({ message: "Team not found" });
+    Object.assign(team, updates);
+    await team.save();
 
     res.json({ message: "Team updated successfully", team });
   } catch (err) {
@@ -209,18 +252,81 @@ router.put("/team/:id", upload.single("teamIcon"), async (req, res) => {
 router.delete("/team/:id", async (req, res) => {
   try {
     const { id } = req.params;
-    const team = await Team.findByIdAndDelete(id);
 
+    // Find the team first
+    const team = await Team.findById(id);
     if (!team) return res.status(404).json({ message: "Team not found" });
 
-    res.json({ message: "Team deleted successfully" });
+    // Delete the image in the db
+    if (team.teamIcon) {
+      // Extract the filename from the URL
+      const fileName = team.teamIcon.split('/').pop();
+
+      const { error } = await supabase.storage
+        .from("teams")
+        .remove([fileName]);
+
+      if (error) {
+        console.error("Error deleting file from Supabase:", error);
+      }
+    }
+
+    await Team.findByIdAndDelete(id);
+
+    res.json({ message: "Team and associated icon deleted successfully" });
   } catch (err) {
     console.error("Error deleting team:", err);
     res.status(500).json({ message: "Server error" });
   }
 });
 
+// New endpoint: aggregated player counts per event/team
+router.get("/teams/player-counts", async (req, res) => {
+  try {
+    const { institution, event, approved } = req.query;
+    if (!institution) return res.status(400).json({ message: "Institution is required" });
 
+    const match = { institution };
 
+    if (event) match.eventName = event;
+    // Only count players that have a team assigned, non-empty
+    match.team = { $exists: true, $ne: "" };
+    if (approved !== undefined) {
+      match.teamApproval = approved === "true";
+    }
+
+    const pipeline = [
+      { $match: match },
+      {
+        $group: {
+          _id: { eventName: "$eventName", teamName: "$team" },
+          count: { $sum: 1 },
+        },
+      },
+      {
+        $group: {
+          _id: "$_id.eventName",
+          teams: { $push: { teamName: "$_id.teamName", count: "$count" } },
+          totalPlayers: { $sum: "$count" },
+        },
+      },
+      {
+        $project: { _id: 0, eventName: "$_id", teams: 1, totalPlayers: 1 },
+      },
+    ];
+
+    const results = await Player.aggregate(pipeline);
+
+    if (event) {
+      const single = results.find((r) => r.eventName === event) || { eventName: event, teams: [], totalPlayers: 0 };
+      return res.json(single);
+    }
+
+    res.json(results);
+  } catch (err) {
+    console.error("Error fetching player counts:", err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
 
 module.exports = router;

@@ -119,7 +119,7 @@ const checkAndSendMatchNotifications = async () => {
 
 const start = () => {
   // Change for different time, (0 * * * *) is every hr and all * is every min
-  cron.schedule('0 6 * * *', checkAndSendMatchNotifications, {
+  cron.schedule('* * * * *', checkAndSendMatchNotifications, {
     scheduled: true,
     timezone: "Asia/Manila", 
   });
