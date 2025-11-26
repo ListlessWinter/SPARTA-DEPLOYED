@@ -1,6 +1,7 @@
 const express = require("express");
 const Team = require("../models/Team");
 const Game = require("../models/Game");
+const Player = require("../models/Player");
 const Coordinator = require("../models/Coordinator")
 
 const multer = require("multer");
