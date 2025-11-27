@@ -132,7 +132,7 @@ const TeamPlayerApproval = () => {
                       "No requirements uploaded."
                     )}
                   </td>
-                  <td>
+                  <td style={{ display: "flex", gap: "10px" }}>
                     <button className="approve-btn" onClick={() => handleApprove(player._id)}>
                       Accept
                     </button>

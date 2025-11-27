@@ -30,6 +30,18 @@
   }
 }
 
+@media (min-width: 1601px) {
+  .feedback-maindiv {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    align-items: flex-start;
+  }
+
+  .feedback-item {
+    width: 10vw;
+  }
+}
+
 .feedback-header-row {
     display: flex;
     justify-content: flex-end;
@@ -65,6 +77,7 @@
     margin: 10px 0;
     flex-direction: row;
     height: fit-content;
+    height: 200px;
 }
 
 .feedback-container {
@@ -72,7 +85,7 @@
     padding: 2px;
     border-radius: 12px;
     width: 200px;
-    height: fit-content;
+    height: inherit;
 }
 
 .feedback-contents {
@@ -80,8 +93,7 @@
     border-radius: 10px;
     padding: 15px;
     font-family: Poppins, sans-serif;
-    min-height: 10vh;
-    max-height: 25vh;
+    height: 170px;
     display: flex;
     flex-direction: column;
     align-content: space-between;
