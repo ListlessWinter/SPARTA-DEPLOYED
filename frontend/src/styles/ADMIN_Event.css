@@ -122,7 +122,6 @@
 }
 
 .event-list-container {
-  margin-left: 10px;
   margin-bottom: 25px;
   min-height: calc(85vh - 95px);
   box-sizing: border-box;
