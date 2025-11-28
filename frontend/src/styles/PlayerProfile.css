@@ -23,7 +23,7 @@
 @media (min-width: 1273px) and (max-width: 1599px) {
   .profile-view {
     flex-direction: row;
-    width: auto;  }
+    width: 100%;  }
 
   .player-profile-container {
     max-width: 1200px;
@@ -289,7 +289,7 @@
   display: flex;
   gap: 10px;
   justify-content: flex-end;
-  width: auto;
+  width: 100%;
 }
 
 .btn {
