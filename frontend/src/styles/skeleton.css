@@ -1,0 +1,183 @@
+
+/* Skeleton styles for loading placeholder */
+.event-item.skeleton {
+  cursor: default;
+  pointer-events: none;
+  opacity: 0.95;
+  user-select: none;
+}
+
+.event-item.skeleton .event-color {
+  background: linear-gradient(90deg, #e6e6e6 25%, #f4f4f4 50%, #e6e6e6 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.1s linear infinite;
+  border-radius: 6px;
+  width: 100%;
+  height: 60px;
+  min-height: 60px;
+}
+
+.event-name .skeleton-line {
+  height: 12px;
+  margin: 8px 0;
+  background: linear-gradient(90deg, #e6e6e6 25%, #f4f4f4 50%, #e6e6e6 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.1s linear infinite;
+  border-radius: 6px;
+}
+
+.skeleton-title {
+  width: 70%;
+  height: 16px;
+  margin-top: 8px;
+}
+
+.skeleton-sub {
+  width: 45%;
+}
+
+@keyframes shimmer {
+  from {
+    background-position: 200% 0;
+  }
+  to {
+    background-position: -200% 0;
+  }
+}
+
+/* ...existing code... */
+
+/* Games-specific skeleton styles to avoid collisions with other pages */
+.game-button.games-skeleton {
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: linear-gradient(90deg, #e9e9e9 25%, #f6f6f6 50%, #e9e9e9 75%);
+  background-size: 200% 100%;
+  animation: games-shimmer 1.0s linear infinite;
+  color: transparent; /* keep layout but hide text during skeleton */
+  border: none;
+}
+
+.games-skeleton-circle {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  display: inline-block;
+  background: linear-gradient(90deg, #e6e6e6 25%, #f4f4f4 50%, #e6e6e6 75%);
+  background-size: 200% 100%;
+  animation: games-shimmer 1.0s linear infinite;
+  flex: 0 0 50px;
+}
+
+.games-skeleton-lines {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+  align-items: flex-start;
+}
+
+.games-skeleton-line {
+  height: 12px;
+  border-radius: 6px;
+  background: linear-gradient(90deg, #e6e6e6 25%, #f4f4f4 50%, #e6e6e6 75%);
+  background-size: 200% 100%;
+  animation: games-shimmer 1.0s linear infinite;
+}
+
+.games-skeleton-title {
+  width: 40%;
+  height: 16px;
+}
+
+.games-skeleton-sub {
+  width: 25%;
+  height: 12px;
+}
+
+/* Games-specific shimmer keyframes to avoid interfering with other shimmers */
+@keyframes games-shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+/* Ensure layout and spacing for skeleton grid in games */
+.game-main-div {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 16px;
+}
+
+
+/* Games-specific skeleton styles to avoid collisions with other pages */
+.game-button.games-skeleton {
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: linear-gradient(90deg, #e9e9e9 25%, #f6f6f6 50%, #e9e9e9 75%);
+  background-size: 200% 100%;
+  animation: games-shimmer 1.0s linear infinite;
+  color: transparent; /* keep layout but hide text during skeleton */
+  border: none;
+}
+
+.games-skeleton-circle {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  display: inline-block;
+  background: linear-gradient(90deg, #e6e6e6 25%, #f4f4f4 50%, #e6e6e6 75%);
+  background-size: 200% 100%;
+  animation: games-shimmer 1.0s linear infinite;
+  flex: 0 0 50px;
+}
+
+.games-skeleton-lines {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+  align-items: flex-start;
+}
+
+.games-skeleton-line {
+  height: 12px;
+  border-radius: 6px;
+  background: linear-gradient(90deg, #e6e6e6 25%, #f4f4f4 50%, #e6e6e6 75%);
+  background-size: 200% 100%;
+  animation: games-shimmer 1.0s linear infinite;
+}
+
+.games-skeleton-title {
+  width: 40%;
+  height: 16px;
+}
+
+.games-skeleton-sub {
+  width: 25%;
+  height: 12px;
+}
+
+/* Games-specific shimmer keyframes to avoid interfering with other shimmers */
+@keyframes games-shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+/* Ensure layout and spacing for skeleton grid in games */
+.game-main-div {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 16px;
+}

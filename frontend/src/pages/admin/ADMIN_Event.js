@@ -5,6 +5,7 @@ import { MoreVertical } from "lucide-react";
 import { MdEventNote } from "react-icons/md";
 import { IoIosInformationCircleOutline } from "react-icons/io";
 import "../../styles/ADMIN_Event.css";
+import "../../styles/skeleton.css";
 
 const Event = () => {
 

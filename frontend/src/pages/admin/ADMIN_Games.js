@@ -15,6 +15,7 @@ const Game = () => {
 
   const navigate = useNavigate();
   const [gamesByType, setGamesByType] = useState({});
+  const [loading, setLoading] = useState(true); // add loading state
   const user = JSON.parse(localStorage.getItem("auth"));
   const userInstitution = user?.institution;
 
@@ -44,6 +45,7 @@ const Game = () => {
   // Fetch Games
   useEffect(() => {
     const fetchGames = async () => {
+      setLoading(true); // start loading
       try {
         const response = await fetch(
           `https://sparta-deployed.onrender.com/api/games?institution=${encodeURIComponent(userInstitution)}&eventName=${encodeURIComponent(decodedName)}`
@@ -62,6 +64,8 @@ const Game = () => {
         setGamesByType(grouped);
       } catch (error) {
         console.error("Error fetching games:", error);
+      } finally {
+        setLoading(false); // end loading
       }
     };
 
@@ -149,7 +153,25 @@ const Game = () => {
       </div>
 
       <div className="game-main-div">
-        {filteredGames.length === 0 ? (
+        {loading ? (
+          // Skeleton placeholders while loading
+          Array.from({ length: 8 }).map((_, idx) => (
+            <div style={{ margin: "1rem" }} key={`skeleton-${idx}`}>
+              <div style={{ width: "100%", display: "flex", justifyContent: "flex-end" }}>
+                {/* Hide delete stub while loading */}
+              </div>
+              <div className="game-button-container">
+                <button className="game-button games-skeleton" aria-hidden="true">
+                  <span className="games-skeleton-circle" />
+                  <span className="games-skeleton-lines">
+                    <span className="games-skeleton-line games-skeleton-title" />
+                    <span className="games-skeleton-line games-skeleton-sub" />
+                  </span>
+                </button>
+              </div>
+            </div>
+          ))
+        ) : filteredGames.length === 0 ? (
           <div className="no-games-found">
             <FaCircleQuestion size={40} />
             <p style={{ textAlign: "center", width: "100%" }}>No games found.<br />Please click the " + Add Game " button to create a new game.</p>
