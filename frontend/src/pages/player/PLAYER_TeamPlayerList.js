@@ -118,7 +118,6 @@ useEffect(() => {
               <tr>
                 <th>Player</th>
                 <th>Course</th>  
-                <th>Event</th>
                 <th>Sport</th>
               </tr>
             </thead>
@@ -127,7 +126,6 @@ useEffect(() => {
                 <tr key={player._id}>
                   <td>{player.playerName}</td>
                   <td>{player.course || "N/A"}</td>
-                  <td>{player.eventName}</td>
                   <td>{Array.isArray(player.game) ? player.game.join(", ") : player.game || "N/A"}</td>
                 </tr>
               ))}
