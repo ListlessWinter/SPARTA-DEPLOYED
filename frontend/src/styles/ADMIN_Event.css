@@ -442,3 +442,56 @@
   width: 100%;
   cursor: pointer
 }
+
+/* Skeleton styles for loading placeholder */
+.event-item.skeleton {
+  cursor: default;
+  pointer-events: none;
+  opacity: 0.95;
+  user-select: none;
+}
+
+.event-item.skeleton .event-color {
+  background: linear-gradient(90deg, #e6e6e6 25%, #f4f4f4 50%, #e6e6e6 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.1s linear infinite;
+  border-radius: 6px;
+  width: 100%;
+  height: 60px;
+  min-height: 60px;
+}
+
+.event-name .skeleton-line {
+  height: 12px;
+  margin: 8px 0;
+  background: linear-gradient(90deg, #e6e6e6 25%, #f4f4f4 50%, #e6e6e6 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.1s linear infinite;
+  border-radius: 6px;
+}
+
+.skeleton-title {
+  width: 70%;
+  height: 16px;
+  margin-top: 8px;
+}
+
+.skeleton-sub {
+  width: 45%;
+}
+
+@keyframes shimmer {
+  from {
+    background-position: 200% 0;
+  }
+  to {
+    background-position: -200% 0;
+  }
+}
+
+/* Slightly tune spacing to align placeholders with actual layout
+.event-list {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(4, 1fr);
+} */

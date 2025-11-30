@@ -12,6 +12,7 @@ const Event = () => {
 
   const navigate = useNavigate();
   const [events, setEvents] = useState([]);
+  const [loading, setLoading] = useState(true); // <-- new loading state
   const [searchQuery, setSearchQuery] = useState("");
   const [menuOpen, setMenuOpen] = useState(null);
   const [editEvent, setEditEvent] = useState(null);
@@ -23,9 +24,16 @@ const Event = () => {
   // Fetch events
   useEffect(() => {
     const fetchEvents = async () => {
-      const response = await fetch(`https://sparta-deployed.onrender.com/api/active-events?institution=${user?.institution}&email=${user.email}&role=${user.role}`);
-      const data = await response.json();
-      setEvents(data);
+      setLoading(true); // show skeleton
+      try {
+        const response = await fetch(`https://sparta-deployed.onrender.com/api/active-events?institution=${user?.institution}&email=${user.email}&role=${user.role}`);
+        const data = await response.json();
+        setEvents(data);
+      } catch (err) {
+        console.error("Failed to fetch events:", err);
+      } finally {
+        setLoading(false); // hide skeleton
+      }
     }; 
     fetchEvents();
   }, [user?.institution, user.email, user.role]);
@@ -108,7 +116,20 @@ const Event = () => {
           )}
         </div>
       
-        {events.length === 0 ? (
+        {loading ? (
+          // Skeleton loader grid while loading
+          <div className="event-list">
+            {Array.from({ length: 8 }).map((_, i) => (
+              <div key={i} className="event-item skeleton">
+                <div className="event-color skeleton-block" />
+                <div className="event-name">
+                  <div className="skeleton-line skeleton-title" />
+                  <div className="skeleton-line skeleton-sub" />
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : events.length === 0 ? (
           <div className="no-events">
             <MdEventNote size={"50"}/>
             <p>No on-going events found. {user.role === "admin" && "Click 'New Event' to create one."}</p>
