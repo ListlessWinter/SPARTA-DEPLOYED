@@ -210,7 +210,7 @@ const Breadcrumbs = () => {
             </Link>
           )}
           {index < breadcrumbs.length - 1 && (
-            <span className="breadcrumb-separator">›</span>
+            <span className="breadcrumb-separator"> ›</span>
           )}
         </span>
       ))}
