@@ -33,7 +33,7 @@ router.post('/auth/register/:role', async (req, res) => {
     if (existing) return res.status(409).json({ message: 'Email already in use' });
 
     const hashed = await bcrypt.hash(password, 10);
-    const user = new Model({ email, password: hashed, institution, ...(role === 'player' && { eventName }) });
+    const user = new Model({ email, password: hashed, institution, ...(role === 'player' && { eventName }), ...(role === 'admin' && { ok: false }) });
     await user.save();
 
     res.status(201).json({ message: `${role} registered successfully` });
@@ -59,6 +59,9 @@ router.post('/auth/login/:role', async (req, res) => {
 
     // Check ADMIN password
     if (role === 'admin') {
+      if (!user.ok) {
+        return res.status(403).json({ message: 'Admin account not approved yet.' });
+      }
       const passwordMatch = await bcrypt.compare(password, user.password);
       if (!passwordMatch) return res.status(401).json({ message: 'Invalid password' });
     }
@@ -84,6 +87,7 @@ router.post('/auth/login/:role', async (req, res) => {
     res.status(500).json({ message: 'Login failed', error: err.message });
   }
 });
+
 
 
 // Get INSTITUTIONS
