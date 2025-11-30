@@ -7,6 +7,7 @@ import { BiSolidBaseball, BiBaseball } from "react-icons/bi";
 import { FaCircleQuestion } from "react-icons/fa6";
 import { IoMdClose } from "react-icons/io";
 import '../../styles/ADMIN_Games.css';
+import "../../styles/skeleton.css";
 
 const Game = () => {
   const { eventName } = useParams();
