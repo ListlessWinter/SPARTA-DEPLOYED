@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import { VscSearchStop } from "react-icons/vsc";
 import { MoreVertical } from "lucide-react";
 import "../../styles/ADMIN_Teams.css";
-import "../../styles/skeletons.css";
+import "../../styles/skeleton.css";
 
 const Teams = () => {
 
