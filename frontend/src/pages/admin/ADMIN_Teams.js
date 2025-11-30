@@ -1,9 +1,10 @@
 import MainLayout from "../../components/MainLayout";
 import { useNavigate, useParams } from "react-router-dom";
 import React, { useEffect, useState } from "react";
-import "../../styles/ADMIN_Teams.css";
 import { VscSearchStop } from "react-icons/vsc";
 import { MoreVertical } from "lucide-react";
+import "../../styles/ADMIN_Teams.css";
+import "../../styles/skeletons.css";
 
 const Teams = () => {
 
@@ -13,6 +14,7 @@ const Teams = () => {
   const decodedName = decodeURIComponent(eventName);
   const navigate = useNavigate();
   const [teams, setTeams] = useState([]);
+  const [loading, setLoading] = useState(true); // <-- add loading state
   const [searchQuery, setSearchQuery] = useState("");
   const [menuOpen, setMenuOpen] = useState(null); 
   const [editTeam, setEditTeam] = useState(null); 
@@ -59,12 +61,15 @@ const Teams = () => {
   // Fetch teams
   useEffect(() => {
     const fetchTeams = async () => {
+      setLoading(true); // show skeleton while fetching
       try {
         const response = await fetch(`https://sparta-deployed.onrender.com/api/teams?institution=${encodeURIComponent(user?.institution)}&event=${encodeURIComponent(decodedName)}`);
         const data = await response.json();
         setTeams(data);
       } catch (error) {
         console.error("Error fetching teams:", error);
+      } finally {
+        setLoading(false); // hide skeleton after fetching
       }
     };
 
@@ -72,7 +77,7 @@ const Teams = () => {
       fetchTeams();
     }
   }, [user?.institution, decodedName]);
-
+  
   // Fetch Games
   useEffect(() => {
     const fetchGames = async () => {
@@ -194,7 +199,26 @@ const Teams = () => {
         </div>
 
         <div className="teams-event">
-          {filteredTeams.length === 0 ? (
+          {loading ? (
+            // Teams-specific skeleton placeholders
+            <ul className="team-list teams-skeleton-list" aria-live="polite" aria-busy="true">
+              {Array.from({ length: 6 }).map((_, idx) => (
+                <li key={`teams-skel-${idx}`} className="team-item teams-skeleton-item">
+                  <div className="team-card">
+                    <button
+                      className="team-btn teams-skeleton-btn"
+                      aria-hidden="true"
+                    >
+                      <span className="teams-skeleton-overlay" />
+                    </button>
+
+                    {/* keep layout but hide menu while loading */}
+                    <div className="team-menu-container" style={{ opacity: 0, pointerEvents: 'none' }} />
+                  </div>
+                </li>
+              ))}
+            </ul>
+          ) : filteredTeams.length === 0 ? (
             <div className="no-teams-found">
               <VscSearchStop size={48} />
               <p>No teams found.</p>
@@ -209,9 +233,7 @@ const Teams = () => {
                       onClick={() => handleSelectTeam(team.teamName)}
                       style={{
                         backgroundColor: team.teamColor || "#A96B24",
-                        backgroundImage: team.teamIcon
-                          ? `url(${team.teamIcon})`
-                          : "none",
+                        backgroundImage: team.teamIcon ? `url(${team.teamIcon})` : "none",
                         backgroundSize: "cover",
                         backgroundPosition: "center",
                         color: "#fff",
@@ -234,18 +256,16 @@ const Teams = () => {
                       {menuOpen === team._id && (
                         <div className="menu-dropdown">
                           <button
-                      className="dropdown-item"
-                      onClick={() => {
-                        const normalizedCoordinators = (team.coordinators || []).map((coord) =>
-                          typeof coord === "string"
-                            ? coordinators.find((c) => c._id === coord) || { _id: coord, name: coord }
-                            : coord
-                        );
-                        setEditTeam({ ...team, coordinators: normalizedCoordinators });
-                      }}
-                    >
-                      Edit
-                    </button>
+                            className="dropdown-item"
+                            onClick={() => {
+                              const normalizedCoordinators = (team.coordinators || []).map((coord) =>
+                                typeof coord === "string" ? coordinators.find((c) => c._id === coord) || { _id: coord, name: coord } : coord
+                              );
+                              setEditTeam({ ...team, coordinators: normalizedCoordinators });
+                            }}
+                          >
+                            Edit
+                          </button>
                           <button className="dropdown-item delete" onClick={() => handleDelete(team)}>
                             Delete
                           </button>
