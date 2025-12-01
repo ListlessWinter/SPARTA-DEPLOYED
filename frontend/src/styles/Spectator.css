@@ -26,10 +26,22 @@
     margin-top: 20px;
   }
 
+  .spectator-specific-event-container > .event-header {
+    width: 85vw;
+    height: 5vh;
+    font-size: 14px;
+  }
+
   .spectator-event-details {
-    width: 74.5vw;
+    width: 85vw;
     height: 10vh;
-    gap: 5vw;
+    gap: 2vw;
+  }
+
+  .spectator-event-details > .organizer-box,
+  .spectator-event-details > .date-box,
+  .spectator-event-details > .location-box {
+    min-width: 115px;
   }
 
   .spectator-event-details h3{
@@ -280,7 +292,6 @@ body {
   height: fit-content;
   box-shadow: 0 2px 12px rgba(30, 42, 73, 0.08);
   border: none;
-  border-radius: 100px;
   color: #000;
   font-size: 20px;
   margin: 5px;
