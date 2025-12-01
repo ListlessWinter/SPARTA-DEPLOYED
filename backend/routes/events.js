@@ -288,7 +288,7 @@ router.put('/event/:id', async (req, res) => {
           await newCoord.save();
 
 
-          const msg = ({
+          const msg = {
             from: `"SPARTA ADMIN" <${process.env.SMTP_USER}>`,
             to: coord.email,
             subject: `Invitation to ${updatedEvent.eventName}`,
@@ -318,7 +318,7 @@ router.put('/event/:id', async (req, res) => {
               </p>
             </div>
            `,
-          });
+          };
            await sgMail.send(msg);
           coordinatorInvites.push({ email: coord.email, accessKey });
         }
