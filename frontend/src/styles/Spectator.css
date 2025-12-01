@@ -26,9 +26,27 @@
     margin-top: 20px;
   }
 
+  .spectator-event-details {
+    width: 74.5vw;
+    height: 10vh;
+    gap: 5vw;
+  }
+
+  .spectator-event-details h3{
+    font-size: 14px;
+  }
+
+  .spectator-event-details p {
+    font-size: 12px;
+  }
+
   .spectator-event-item {
     width: 60vw;
     box-shadow: 0 2px 12px rgba(30, 42, 73, 0.08);
+  }
+
+  .game-bracket-info h1 {
+    font-size: 25px;
   }
 
 }
@@ -58,6 +76,10 @@
     flex-direction: row;
     gap: 10vh;
     margin-top: 50px;
+  }
+
+  .event-header {
+    height: 5vh;
   }
 
 }
