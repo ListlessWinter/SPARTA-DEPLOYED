@@ -82,6 +82,12 @@
     height: 5vh;
   }
 
+  .spectator-event-details {
+    width: 55vw;
+    height: 15vh;
+    gap: 120px;
+  }
+
 }
 
 body {
@@ -262,9 +268,6 @@ body {
   align-items: center;
   display: flex;
   flex-direction: row;
-  gap: 120px;
-  width: 55vw;
-  height: 15vh;
   justify-content: center;
   border: 1px solid #ccc;
   border-radius: 0px 0px 10px 10px;
