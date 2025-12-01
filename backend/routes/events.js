@@ -287,13 +287,8 @@ router.put('/event/:id', async (req, res) => {
           });
           await newCoord.save();
 
-          // Send email CO-ORGANIZER INVITATION
-          const transporter = nodemailer.createTransport({
-            service: "gmail",
-            auth: { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS },
-          });
 
-          await transporter.sendMail({
+          const msg = ({
             from: `"SPARTA ADMIN" <${process.env.SMTP_USER}>`,
             to: coord.email,
             subject: `Invitation to ${updatedEvent.eventName}`,
@@ -324,7 +319,7 @@ router.put('/event/:id', async (req, res) => {
             </div>
            `,
           });
-
+           await sgMail.send(msg);
           coordinatorInvites.push({ email: coord.email, accessKey });
         }
       }
