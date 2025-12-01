@@ -69,7 +69,7 @@ const SpectatorSpecificEvent = () => {
                     <h2>{decodedName}</h2>
                 </div>
                 
-                <div className="event-details">
+                <div className="spectator-event-details">
 
                     <div className="organizer-box">
                         <h3>Organizer Details</h3>

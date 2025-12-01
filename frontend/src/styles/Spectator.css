@@ -194,7 +194,6 @@ body {
 
 .spectator-event-list {
     display: flex;
-    flex-direction: row;
     align-items: center;
     justify-content: center;
     width: 100vw;
@@ -237,13 +236,13 @@ body {
   padding: 10px 20px;
 }
 
-.event-details {
+.spectator-event-details {
+  align-items: center;
   display: flex;
   flex-direction: row;
   gap: 120px;
   width: 55vw;
-  height: 20vh;
-  align-items: center;
+  height: 15vh;
   justify-content: center;
   border: 1px solid #ccc;
   border-radius: 0px 0px 10px 10px;
