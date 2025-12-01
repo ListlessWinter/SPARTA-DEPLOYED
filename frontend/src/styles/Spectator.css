@@ -15,9 +15,13 @@
     height: 50px;
   }
 
-  .spectator-event-specifics {
-    display: flex;
+  .spectator-event-list {
     flex-direction: column;
+  }
+
+  .spectator-event-specifics {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
     gap: 20px;
     margin-top: 20px;
   }
@@ -44,6 +48,16 @@
   .spectator-logo{
     width: 75px;
     height: 75px;
+  }
+
+}
+
+@media (min-width: 1273px) {
+  .spectator-event-specifics {
+    display: flex;
+    flex-direction: row;
+    gap: 10vh;
+    margin-top: 50px;
   }
 
 }
@@ -180,7 +194,7 @@ body {
 
 .spectator-event-list {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
     justify-content: center;
     width: 100vw;
@@ -239,21 +253,18 @@ body {
 }
 
 .spectator-event-item {
-  width: 15vw;
+  height: fit-content;
   box-shadow: 0 2px 12px rgba(30, 42, 73, 0.08);
+  border: none;
+  border-radius: 100px;
+  color: #000;
+  font-size: 20px;
+  margin: 5px;
 }
 
 p {
   color: black;
   font-size: 13px;
-}
-
-.spectator-event-specifics {
-  display: flex;
-  flex-direction: row;
-  gap: 10vh;
-  margin-top: 50px;
-
 }
 
 .spectator-event-specifics button {

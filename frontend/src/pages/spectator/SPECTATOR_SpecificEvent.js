@@ -91,8 +91,8 @@ const SpectatorSpecificEvent = () => {
                 <div className="spectator-event-specifics">
 
                     <button className="btn-team" 
-                    // onClick={handleTeamClick}
-                    style={{backgroundColor: "gray"}}
+                    onClick={handleTeamClick}
+                    style={{backgroundColor: "#1a2a49"}}
                     >
                       <div className="btn-content">
                         <TiGroupOutline size={48} /> {/* Larger icon */}
@@ -100,7 +100,7 @@ const SpectatorSpecificEvent = () => {
                       </div>
                     </button>
 
-                    <button className="btn-game" onClick={handleGameClick}>
+                    <button className="btn-game" onClick={handleGameClick} style={{backgroundColor: "#ce892c"}}>
                       <div className="btn-content">
                         <LuSwords size={48} /> {/* Larger icon */}
                         <span>Game</span>
@@ -108,7 +108,7 @@ const SpectatorSpecificEvent = () => {
                     </button>
 
                     <button className="btn-score" 
-                    // onClick={handleScoreClick}
+                    onClick={handleScoreClick}
                     style={{backgroundColor: "gray"}}
                     >
                       <div className="btn-content">
