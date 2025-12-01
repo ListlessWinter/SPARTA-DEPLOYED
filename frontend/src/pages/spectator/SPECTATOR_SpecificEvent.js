@@ -88,7 +88,7 @@ const SpectatorSpecificEvent = () => {
                     </div>
                 </div>
 
-                <div className="event-specifics">
+                <div className="spectator-event-specifics">
 
                     <button className="btn-team" 
                     // onClick={handleTeamClick}
