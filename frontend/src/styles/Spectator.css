@@ -95,7 +95,7 @@
   }
 
   .spectator-event-details {
-    width: 55vw;
+    width: 50vw;
     height: 15vh;
     gap: 120px;
   }
@@ -299,6 +299,7 @@ body {
   color: #000;
   font-size: 20px;
   margin: 5px;
+  width: 300px;
 }
 
 p {
