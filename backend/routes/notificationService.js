@@ -23,7 +23,6 @@ const checkAndSendMatchNotifications = async () => {
   const tomorrowStart = new Date(todayPHT.getTime() + (24 * 60 * 60 * 1000)); 
   const tomorrowEnd = new Date(todayPHT.getTime() + (2 * 24 * 60 * 60 * 1000)); 
 
-  // for chech debbug
   console.log(`Querying for matches between: ${tomorrowStart.toISOString()} AND ${tomorrowEnd.toISOString()}`);
 
   try {

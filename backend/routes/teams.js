@@ -5,7 +5,7 @@ const Player = require("../models/Player");
 const Coordinator = require("../models/Coordinator")
 
 const multer = require("multer");
-const upload = multer({ storage: multer.memoryStorage() }); 
+const upload = multer({ storage: multer.memoryStorage() });
 const path = require("path");
 const supabase = require("./supabaseClient");
 
@@ -33,7 +33,7 @@ router.post("/team", upload.single("teamIcon"), async (req, res) => {
       const fileName = `teamIcon-${Date.now()}${fileExt}`;
 
       const { data, error } = await supabase.storage
-        .from("teams") 
+        .from("teams")
         .upload(fileName, req.file.buffer, {
           cacheControl: "3600",
           upsert: false,
@@ -47,11 +47,11 @@ router.post("/team", upload.single("teamIcon"), async (req, res) => {
 
       // Save url
       const { data: publicData } = supabase.storage
-      .from("teams")
-      .getPublicUrl(fileName);
-    
-    teamIconUrl = publicData.publicUrl;
-    
+        .from("teams")
+        .getPublicUrl(fileName);
+
+      teamIconUrl = publicData.publicUrl;
+
     }
 
     const team = new Team({
@@ -119,32 +119,33 @@ router.get("/teams/scores", async (req, res) => {
 
     const teams = await Team.find({ institution, eventName: event });
 
-    // Calculate grandTotal (medal score) and medal counts for each team
+    // Calculate grandTotal for each team
     const teamsWithTally = teams.map(team => {
       let grandTotal = 0;
       let gold = 0;
       let silver = 0;
       let bronze = 0;
 
+      // Points
       team.medals.forEach(medal => {
         if (medal.medal === 'gold') {
-          grandTotal += 3; // 3 points for gold
+          grandTotal += 3; 
           gold++;
         } else if (medal.medal === 'silver') {
-          grandTotal += 2; // 2 points for silver
+          grandTotal += 2; 
           silver++;
         } else if (medal.medal === 'bronze') {
-          grandTotal += 1; // 1 point for bronze
+          grandTotal += 1; 
           bronze++;
         }
       });
-      
-      const teamObject = team.toObject(); // Get a plain JS object
+
+      const teamObject = team.toObject();
       teamObject.grandTotal = grandTotal;
       teamObject.gold = gold;
       teamObject.silver = silver;
       teamObject.bronze = bronze;
-      
+
       return teamObject;
     });
 
@@ -232,10 +233,10 @@ router.put("/team/:id", upload.single("teamIcon"), async (req, res) => {
     }
 
     if (updates.coordinators) {
-        try {
-            updates.coordinators = JSON.parse(updates.coordinators);
-        } catch (e) {
-        }
+      try {
+        updates.coordinators = JSON.parse(updates.coordinators);
+      } catch (e) {
+      }
     }
 
     Object.assign(team, updates);
@@ -280,7 +281,7 @@ router.delete("/team/:id", async (req, res) => {
   }
 });
 
-// New endpoint: aggregated player counts per event/team
+// player counts per event/team
 router.get("/teams/player-counts", async (req, res) => {
   try {
     const { institution, event, approved } = req.query;

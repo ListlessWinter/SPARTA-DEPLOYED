@@ -6,7 +6,7 @@ import { TbCalendarQuestion } from "react-icons/tb";
 
 const LiveScores = () => {
 
-  useEffect(() => {document.title = "SPARTA | Live Scores";},[]);
+  useEffect(() => { document.title = "SPARTA | Live Scores"; }, []);
 
   const { eventName } = useParams();
   const decodedEvent = decodeURIComponent(eventName);
@@ -19,18 +19,18 @@ const LiveScores = () => {
       try {
         const response = await fetch(`https://sparta-deployed.onrender.com/api/teams/scores?institution=${encodeURIComponent(user?.institution)}&event=${encodeURIComponent(decodedEvent)}`);
         const data = await response.json();
-        // Data is already sorted by the backend
+
         setTeams(data);
       } catch (error) {
         console.error("Error fetching teams:", error);
       }
     };
-  
+
     if (user?.institution && decodedEvent) {
       fetchTeams();
     }
-  }, [user?.institution, decodedEvent]); 
-  
+  }, [user?.institution, decodedEvent]);
+
   const rankedTeams = teams;
 
   // Adding ordinals in ranking 
@@ -42,11 +42,11 @@ const LiveScores = () => {
 
   return (
     <MainLayout>
-      
+
       <div className="live-scores-header">
         <h1>LiveScores for {decodedEvent}</h1>
       </div>
-      
+
       <div className="live-scores-main-div">
         <div className="live-scores-container">
           {rankedTeams.length === 0 ? (
@@ -59,7 +59,7 @@ const LiveScores = () => {
             </div>
           ) : (
             <div className="teams-list">
-              
+
               {rankedTeams.map((team, idx) => (
                 <div
                   className="team-score"
@@ -79,7 +79,7 @@ const LiveScores = () => {
                     {(team.gold === 0 && team.silver === 0 && team.bronze === 0) && (
                       <span>-</span>
                     )}
-                  </span>        
+                  </span>
                   <span>{team.grandTotal ?? 0}</span>
                 </div>
               ))}

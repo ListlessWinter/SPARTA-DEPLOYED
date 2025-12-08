@@ -115,19 +115,16 @@ const GameBracket = () => {
         for (let r = 1; r <= maxRound; r++) {
           let seeds = matches
             .filter((m) => m.round === r)
-            // --- FIX: Strict Filter ---
-            // Hide match if Both teams are "No Opponent"
-            // OR if one is "No Opponent" and the other is still "TBD" (waiting for a ghost)
             .filter(m => {
-               const t1 = m.teams[0].name;
-               const t2 = m.teams[1].name;
-               
-               if (t1 === "No Opponent" && t2 === "No Opponent") return false;
-               if (t1 === "No Opponent" && t2 === "TBD") return false;
-               if (t1 === "TBD" && t2 === "No Opponent") return false;
-               
-               return true;
-            })            .map((m) => ({
+              const t1 = m.teams[0].name;
+              const t2 = m.teams[1].name;
+
+              if (t1 === "No Opponent" && t2 === "No Opponent") return false;
+              if (t1 === "No Opponent" && t2 === "TBD") return false;
+              if (t1 === "TBD" && t2 === "No Opponent") return false;
+
+              return true;
+            }).map((m) => ({
               id: m._id,
               date: m.date ? new Date(m.date) : null,
               teams: m.teams.map((t) => ({
@@ -150,10 +147,8 @@ const GameBracket = () => {
 
       const wbRounds = makeBracketRounds(wbMatches);
 
-      // Get raw LB rounds
+      // Get LB rounds
       const rawLBRounds = makeBracketRounds(lbMatches, false);
-
-      // Renumber LB rounds so they're sequential (start at 1)
       const lbRounds = rawLBRounds.map((round, idx) => ({
         ...round,
         title: `Round ${idx + 1}`,
@@ -175,7 +170,7 @@ const GameBracket = () => {
           (m) => m.bracket === "LB" && m.finalizeWinner && m.round === Math.max(...lbRounds.map(r => parseInt(r.title.split(" ")[1])))
         );
 
-        // Render GF only when WB and LB are both done
+        // Render GF when WB and LB are both done
         if (wbFinalDone && lbFinalDone) {
           rounds.push({
             title: "Grand Final",
@@ -193,7 +188,7 @@ const GameBracket = () => {
             ],
           });
 
-          //  Show Champion only AFTER GF is finalized
+          // Show Champion only if GF is done
           if (gf.finalizeWinner && gf.winner) {
             rounds.push({
               title: "Champion",
@@ -238,7 +233,7 @@ const GameBracket = () => {
         rounds.push({ title: `Round ${r}`, seeds });
       }
 
-      // Only calculate Champion if ALL matches are finalized
+      // Only show Champion if all matches are done
       const allMatchesDone = rrMatches.every((m) => m.finalizeWinner);
       if (allMatchesDone) {
         const winCount = {};
@@ -248,7 +243,7 @@ const GameBracket = () => {
           }
         });
 
-        // Find team(s) with max wins
+        // Find teams with max wins
         const maxWins = Math.max(...Object.values(winCount));
         const champions = Object.entries(winCount)
           .filter(([_, wins]) => wins === maxWins)
@@ -273,50 +268,50 @@ const GameBracket = () => {
       }
     }
     if (game.bracketType === "ADNU") {
-      // Helper to build rounds
+      // Build rounds
       const buildBracketRounds = (matches, namePrefix) => {
-         if(!matches.length) return [];
-         const maxRound = Math.max(...matches.map(m => m.round));
-         const rounds = [];
-         for(let r=1; r<=maxRound; r++) {
-            const seeds = matches.filter(m => m.round === r).map(m => ({
-               id: m._id,
-               date: m.date ? new Date(m.date) : null,
-               teams: m.teams.map(t => ({ 
-                 name: t.name, score: t.score, winner: m.finalizeWinner && t.name === m.winner 
-               })),
-               finalizeWinner: m.finalizeWinner
-            }));
-            rounds.push({ title: `Round ${r}`, seeds });
-         }
-         return rounds;
+        if (!matches.length) return [];
+        const maxRound = Math.max(...matches.map(m => m.round));
+        const rounds = [];
+        for (let r = 1; r <= maxRound; r++) {
+          const seeds = matches.filter(m => m.round === r).map(m => ({
+            id: m._id,
+            date: m.date ? new Date(m.date) : null,
+            teams: m.teams.map(t => ({
+              name: t.name, score: t.score, winner: m.finalizeWinner && t.name === m.winner
+            })),
+            finalizeWinner: m.finalizeWinner
+          }));
+          rounds.push({ title: `Round ${r}`, seeds });
+        }
+        return rounds;
       };
 
-      // 1. Groups
+      // Category
       rounds.push({ title: "Category A", rounds: buildBracketRounds(game.matches.filter(m => m.bracket === "Group A"), "A") });
       rounds.push({ title: "Category B", rounds: buildBracketRounds(game.matches.filter(m => m.bracket === "Group B"), "B") });
 
-      // 2. Playoffs (Semi -> Final -> Champion)
+      // Playoffs 
       const sfMatches = game.matches.filter(m => m.bracket === "SF");
       const finalMatch = game.matches.find(m => m.bracket === "Championship");
-      
+
       const playoffRounds = [
-         { 
-           title: "Semi-Finals", 
-           seeds: sfMatches.map(m => ({
-               id: m._id, date: m.date ? new Date(m.date) : null,
-               teams: m.teams.map(t => ({ name: t.name, score: t.score, winner: m.finalizeWinner && t.name === m.winner })),
-               finalizeWinner: m.finalizeWinner
-           }))
-         },
-         { 
-           title: "Championship", 
-           seeds: finalMatch ? [{
-               id: finalMatch._id, date: finalMatch.date ? new Date(finalMatch.date) : null,
-               teams: finalMatch.teams.map(t => ({ name: t.name, score: t.score, winner: finalMatch.finalizeWinner && t.name === finalMatch.winner })),
-               finalizeWinner: finalMatch.finalizeWinner
-           }] : []
-         }
+        {
+          title: "Semi-Finals",
+          seeds: sfMatches.map(m => ({
+            id: m._id, date: m.date ? new Date(m.date) : null,
+            teams: m.teams.map(t => ({ name: t.name, score: t.score, winner: m.finalizeWinner && t.name === m.winner })),
+            finalizeWinner: m.finalizeWinner
+          }))
+        },
+        {
+          title: "Championship",
+          seeds: finalMatch ? [{
+            id: finalMatch._id, date: finalMatch.date ? new Date(finalMatch.date) : null,
+            teams: finalMatch.teams.map(t => ({ name: t.name, score: t.score, winner: finalMatch.finalizeWinner && t.name === finalMatch.winner })),
+            finalizeWinner: finalMatch.finalizeWinner
+          }] : []
+        }
       ];
 
       // Add Champion Column if Final is done
@@ -330,22 +325,22 @@ const GameBracket = () => {
           }]
         });
       }
-      
+
       rounds.push({ title: "Playoffs", rounds: playoffRounds });
 
-      // 3. 3rd Place
+      // 3rd Place
       const third = game.matches.find(m => m.bracket === "3rd Place");
-      if(third) {
-        rounds.push({ 
-          title: "3rd Place", 
+      if (third) {
+        rounds.push({
+          title: "3rd Place",
           seeds: [{
-             id: third._id, date: third.date ? new Date(third.date) : null,
-             teams: third.teams.map(t => ({ name: t.name, score: t.score, winner: third.finalizeWinner && t.name === third.winner })),
-             finalizeWinner: third.finalizeWinner
+            id: third._id, date: third.date ? new Date(third.date) : null,
+            teams: third.teams.map(t => ({ name: t.name, score: t.score, winner: third.finalizeWinner && t.name === third.winner })),
+            finalizeWinner: third.finalizeWinner
           }]
         });
       }
-   }
+    }
     return rounds;
   };
 
@@ -376,39 +371,37 @@ const GameBracket = () => {
     }
   };
 
- // Finalized Scoring
- const saveScores = async () => {
-  if (!selectedMatch) return;
-  try {
-    const response = await fetch(
-      `https://sparta-deployed.onrender.com/api/games/${gameId}/matches/${selectedMatch.id}`,
-      {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          score1: tempScores[0],
-          score2: tempScores[1],
-          finalizeWinner: true,
-        }),
+  // Finalized Scoring
+  const saveScores = async () => {
+    if (!selectedMatch) return;
+    try {
+      const response = await fetch(
+        `https://sparta-deployed.onrender.com/api/games/${gameId}/matches/${selectedMatch.id}`,
+        {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            score1: tempScores[0],
+            score2: tempScores[1],
+            finalizeWinner: true,
+          }),
+        }
+      );
+
+      const updatedGame = await response.json();
+
+      if (!response.ok) {
+        console.error("Error finalizing match:", updatedGame.message);
+        alert(`Failed to save: ${updatedGame.message || 'Server error'}`);
+        return;
       }
-    );
+      setGame(updatedGame);
 
-    // Get full game data
-    const updatedGame = await response.json();
-
-    if (!response.ok) {
-      // Handle errors
-      console.error("Error finalizing match:", updatedGame.message);
-      alert(`Failed to save: ${updatedGame.message || 'Server error'}`);
-      return;
+      setSelectedMatch(null);
+    } catch (err) {
+      console.error("Error finalizing match:", err);
     }
-    setGame(updatedGame);
-
-    setSelectedMatch(null);
-  } catch (err) {
-    console.error("Error finalizing match:", err);
-  }
-};
+  };
 
   // Medal tally
   const calculateMedalTally = () => {
@@ -455,17 +448,17 @@ const GameBracket = () => {
         tally.silver = sortedTeams[1] ? sortedTeams[1][0] : null;
         tally.bronze = sortedTeams[2] ? sortedTeams[2][0] : null;
       }
-      // --- FIX: ADNU Medal Logic ---
+      // ADNU Medal Logic
       else if (bracketType === "ADNU") {
-        // Find the Championship match
+        // Championship match
         const finalMatch = matches.find(m => m.bracket === "Championship");
-        
-        // Find the 3rd Place match
+
+        // 3rd Place match
         const thirdPlaceMatch = matches.find(m => m.bracket === "3rd Place");
 
         if (finalMatch && finalMatch.finalizeWinner) {
           tally.gold = finalMatch.winner;
-          // The silver medalist is the loser of the Championship match
+          // Silver medal is the loser of the Championship match
           tally.silver = finalMatch.teams.find(t => t.name !== finalMatch.winner)?.name;
         }
 
@@ -491,71 +484,68 @@ const GameBracket = () => {
   const renderSeed = (props) => {
     // Check if match is scheduled
     const isScheduled = !!props.seed.date;
-    
-    // Helper to check for "No Opponent"
+
+    // Check for "No Opponent"
     const hasNoOpponent = props.seed.teams.some(t => t.name === "No Opponent");
 
     return (
-    <Seed
-      {...props}
-      style={{ fontSize: "14px", cursor: props.seed.id === "champion" ? "default" : "pointer" }}
-      onClick={() => {
-         // ... existing click logic ...
-      }}
-    >
-      <SeedItem className="seed-item">
-        {props.seed.teams.map((team, idx) => {
-          // LOGIC: If this match has "No Opponent" AND this specific team IS NOT "No Opponent", show "Auto"
-          // Otherwise, show the actual score or "-"
-          let displayScore = team.score ?? "-";
-          if (hasNoOpponent && team.name !== "No Opponent") {
-             displayScore = "Auto";
-          }
-          
-          return (
-            <SeedTeam key={idx} className="seed-team">
-              {team.name} <span className="score-box">{displayScore}</span>
-            </SeedTeam>
-          );
-        })}
+      <Seed
+        {...props}
+        style={{ fontSize: "14px", cursor: props.seed.id === "champion" ? "default" : "pointer" }}
+        onClick={() => {
+        }}
+      >
+        <SeedItem className="seed-item">
+          {props.seed.teams.map((team, idx) => {
+            let displayScore = team.score ?? "-";
+            if (hasNoOpponent && team.name !== "No Opponent") {
+              displayScore = "Auto";
+            }
 
-        {/* Hide buttons for Champion column*/}
-        {props.seed.id !== "champion" && (
-          <div className="match-actions">
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                const fullMatch = game.matches.find(m => m._id === props.seed.id);
-                setSelectedMatch({
-                  ...fullMatch,
-                  id: fullMatch._id,
-                  type: "schedule",
-                  date: fullMatch.date ? formatForInput(fullMatch.date) : "",
-                  location: fullMatch.location || "",
-                });
-              }}
-            >
-              Schedule
-            </button>
+            return (
+              <SeedTeam key={idx} className="seed-team">
+                {team.name} <span className="score-box">{displayScore}</span>
+              </SeedTeam>
+            );
+          })}
 
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
+          {/* Hide buttons for Champion column*/}
+          {props.seed.id !== "champion" && (
+            <div className="match-actions">
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  const fullMatch = game.matches.find(m => m._id === props.seed.id);
+                  setSelectedMatch({
+                    ...fullMatch,
+                    id: fullMatch._id,
+                    type: "schedule",
+                    date: fullMatch.date ? formatForInput(fullMatch.date) : "",
+                    location: fullMatch.location || "",
+                  });
+                }}
+              >
+                Schedule
+              </button>
 
-                if (!isScheduled) {
-                  alert("Please schedule the match first.");
-                  return;
-                }
-                setSelectedMatch({ ...props.seed, type: "scores" });
-                setTempScores(props.seed.teams.map((t) => t.score ?? 0));
-              }}
-            >
-              Scores
-            </button>
-          </div>
-        )}
-      </SeedItem>
-    </Seed>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+
+                  if (!isScheduled) {
+                    alert("Please schedule the match first.");
+                    return;
+                  }
+                  setSelectedMatch({ ...props.seed, type: "scores" });
+                  setTempScores(props.seed.teams.map((t) => t.score ?? 0));
+                }}
+              >
+                Scores
+              </button>
+            </div>
+          )}
+        </SeedItem>
+      </Seed>
     );
   };
 
@@ -608,13 +598,13 @@ const GameBracket = () => {
   };
 
   let isGameFinished = false;
-  const roundsData = makeRoundsFromMatches(); // Call this once to use result
-  
+  const roundsData = makeRoundsFromMatches();
+
   if (game.bracketType === "ADNU") {
-     const champRound = roundsData.find(r => r.title === "Playoffs")?.rounds?.find(sub => sub.title === "Champion");
-     isGameFinished = !!champRound;
+    const champRound = roundsData.find(r => r.title === "Playoffs")?.rounds?.find(sub => sub.title === "Champion");
+    isGameFinished = !!champRound;
   } else {
-     isGameFinished = roundsData.some(r => r.title === "Champion");
+    isGameFinished = roundsData.some(r => r.title === "Champion");
   }
 
   return (
@@ -625,7 +615,7 @@ const GameBracket = () => {
         <p><b>Schedule:</b> {new Date(game.startDate).toLocaleString()} - {new Date(game.endDate).toLocaleString()}</p>
         <p><b>Bracket Type:</b> {game.bracketType}</p>
 
-         {/*Vid button*/}
+        {/*Vid button*/}
         {game.videoLink && (
           <p>
             <a href={game.videoLink} target="_blank" rel="noopener noreferrer">
@@ -722,7 +712,7 @@ const GameBracket = () => {
         {game.bracketType === "Round Robin" && (
           <div className="round-robin bracket-container">
             <h2>Round Robin</h2>
-            <div style={{display: "grid", gridTemplateColumns: "repeat(4, 1fr)"}}>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)" }}>
               {roundsData.map((round, rIndex) => (
                 <div key={rIndex} className="rr-round">
                   <h3 className="rr-title">{round.title}</h3>
@@ -739,48 +729,46 @@ const GameBracket = () => {
           </div>
         )}
 
-{game.bracketType === "ADNU" && (
-          <div className="rr-knockout-container" style={{display:'flex', flexDirection:'column', gap:'40px'}}>
-             
-             {/* Groups Area - MANUALLY RENDER AS GRID */}
-             <div style={{display:'flex', gap:'30px', justifyContent:'center', flexWrap:'wrap', width: '100%'}}>
-                {roundsData.filter(r => r.title.startsWith("Category")).map((group, gIdx) => (
-                   <div key={gIdx} className="group-stage" style={{backgroundColor: '#f9f9f9', padding: '15px', borderRadius: '8px', border: '1px solid #ddd'}}>
-                      <h3 style={{textAlign: 'center', margin: '0 0 15px 0', borderBottom: '2px solid #181b59', paddingBottom: '5px'}}>{group.title}</h3>
-                      
-                      <div style={{display:'flex', gap:'20px'}}>
-                        {/* Iterate over rounds inside the group */}
-                        {group.rounds.map((round, rIdx) => (
-                          <div key={rIdx} style={{display:'flex', flexDirection:'column', gap:'10px'}}>
-                             <h4 style={{fontSize: '14px', textAlign:'center', color: '#666', margin: '0'}}>{round.title}</h4>
-                             {round.seeds.map((seed, sIdx) => (
-                                <div key={sIdx} style={{marginBottom: '5px'}}>
-                                   {renderSeed({seed, breakpoint: 0})} 
-                                </div>
-                             ))}
+        {game.bracketType === "ADNU" && (
+          <div className="rr-knockout-container" style={{ display: 'flex', flexDirection: 'column', gap: '40px' }}>
+
+            <div style={{ display: 'flex', gap: '30px', justifyContent: 'center', flexWrap: 'wrap', width: '100%' }}>
+              {roundsData.filter(r => r.title.startsWith("Category")).map((group, gIdx) => (
+                <div key={gIdx} className="group-stage" style={{ backgroundColor: '#f9f9f9', padding: '15px', borderRadius: '8px', border: '1px solid #ddd' }}>
+                  <h3 style={{ textAlign: 'center', margin: '0 0 15px 0', borderBottom: '2px solid #181b59', paddingBottom: '5px' }}>{group.title}</h3>
+
+                  <div style={{ display: 'flex', gap: '20px' }}>
+                    {group.rounds.map((round, rIdx) => (
+                      <div key={rIdx} style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                        <h4 style={{ fontSize: '14px', textAlign: 'center', color: '#666', margin: '0' }}>{round.title}</h4>
+                        {round.seeds.map((seed, sIdx) => (
+                          <div key={sIdx} style={{ marginBottom: '5px' }}>
+                            {renderSeed({ seed, breakpoint: 0 })}
                           </div>
                         ))}
                       </div>
-                   </div>
-                ))}
-             </div>
-
-             {/* Knockout Area */}
-             <div style={{borderTop:'2px solid #ccc', paddingTop:'20px', textAlign: 'center'}}>
-                <h2>Playoffs</h2>
-                <Bracket 
-                  rounds={roundsData.find(r => r.title === "Playoffs")?.rounds || []} 
-                  renderSeedComponent={renderSeed} 
-                />
-                
-                {/* 3rd Place */}
-                <div style={{marginTop:'30px', display:'flex', flexDirection:'column', alignItems:'center'}}>
-                   <h4>3rd Place Match</h4>
-                   {roundsData.find(r => r.title === "3rd Place")?.seeds?.map((seed, i) => (
-                      <div key={i}>{renderSeed({seed})}</div>
-                   ))}
+                    ))}
+                  </div>
                 </div>
-             </div>
+              ))}
+            </div>
+
+            {/* Knockout Area */}
+            <div style={{ borderTop: '2px solid #ccc', paddingTop: '20px', textAlign: 'center' }}>
+              <h2>Playoffs</h2>
+              <Bracket
+                rounds={roundsData.find(r => r.title === "Playoffs")?.rounds || []}
+                renderSeedComponent={renderSeed}
+              />
+
+              {/* 3rd Place */}
+              <div style={{ marginTop: '30px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                <h4>3rd Place Match</h4>
+                {roundsData.find(r => r.title === "3rd Place")?.seeds?.map((seed, i) => (
+                  <div key={i}>{renderSeed({ seed })}</div>
+                ))}
+              </div>
+            </div>
           </div>
         )}
       </div>

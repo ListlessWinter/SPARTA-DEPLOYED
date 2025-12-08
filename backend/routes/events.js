@@ -117,7 +117,6 @@ router.post('/event', async (req, res) => {
   }
 });
 
-
 // GET all events for institution
 router.get('/events', async (req, res) => {
   try {
@@ -131,7 +130,7 @@ router.get('/events', async (req, res) => {
   }
 });
 
-// get single event info
+// Get single event info
 router.get('/specific-event', async (req, res) => {
   try {
     const { eventName } = req.query;
@@ -154,7 +153,6 @@ router.get('/event', async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 });
-
 
 // GET all active events by Institution 
 router.get("/active-events", async (req, res) => {
@@ -198,8 +196,6 @@ router.get("/active-events", async (req, res) => {
   }
 });
 
-
-
 // GET all past events by Institution
 router.get('/past-events', async (req, res) => {
   try {
@@ -212,7 +208,6 @@ router.get('/past-events', async (req, res) => {
     res.status(500).json({ message: 'Failed to fetch events', error: err.message });
   }
 });
-
 
 // UPDATE event
 router.put('/event/:id', async (req, res) => {
@@ -251,10 +246,10 @@ router.put('/event/:id', async (req, res) => {
         ...eventData,
         coordinators: Array.isArray(coordinators)
           ? coordinators.map(c => ({
-              name: c.name,
-              email: c.email,
-              role: c.role || "co-organizer"
-            }))
+            name: c.name,
+            email: c.email,
+            role: c.role || "co-organizer"
+          }))
           : []
       },
       { new: true }
@@ -319,7 +314,7 @@ router.put('/event/:id', async (req, res) => {
             </div>
            `,
           };
-           await sgMail.send(msg);
+          await sgMail.send(msg);
           coordinatorInvites.push({ email: coord.email, accessKey });
         }
       }
@@ -333,7 +328,6 @@ router.put('/event/:id', async (req, res) => {
     res.status(500).json({ message: "Failed to update event", error: err.message });
   }
 });
-
 
 // DELETE event
 router.delete('/event/:id', async (req, res) => {

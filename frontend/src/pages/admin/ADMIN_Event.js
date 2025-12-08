@@ -9,15 +9,15 @@ import "../../styles/skeleton.css";
 
 const Event = () => {
 
-  useEffect(() => {document.title = "SPARTA | Event";},[]);
+  useEffect(() => { document.title = "SPARTA | Event"; }, []);
 
   const navigate = useNavigate();
   const [events, setEvents] = useState([]);
-  const [loading, setLoading] = useState(true); // <-- new loading state
+  const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [menuOpen, setMenuOpen] = useState(null);
   const [editEvent, setEditEvent] = useState(null);
-  const [, setNewSubOrganizer] = useState(""); 
+  const [, setNewSubOrganizer] = useState("");
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState(null);
   const user = JSON.parse(localStorage.getItem("auth"));
@@ -35,7 +35,7 @@ const Event = () => {
       } finally {
         setLoading(false); // hide skeleton
       }
-    }; 
+    };
     fetchEvents();
   }, [user?.institution, user.email, user.role]);
 
@@ -111,12 +111,12 @@ const Event = () => {
             onChange={(e) => setSearchQuery(e.target.value)}
           />
           {user.role === "admin" && (
-          <button className="new-event-btn" onClick={handleAddEvent}>
-            + New Event
-          </button>
+            <button className="new-event-btn" onClick={handleAddEvent}>
+              + New Event
+            </button>
           )}
         </div>
-      
+
         {loading ? (
           // Skeleton loader grid while loading
           <div className="event-list">
@@ -132,278 +132,278 @@ const Event = () => {
           </div>
         ) : events.length === 0 ? (
           <div className="no-events">
-            <MdEventNote size={"50"}/>
+            <MdEventNote size={"50"} />
             <p>No on-going events found. {user.role === "admin" && "Click 'New Event' to create one."}</p>
           </div>
         ) : (
           <div className="event-list">
-          {filteredEvents.map((event) => (
-            <div key={event._id} className="event-item">
-              <div className="event-color" style={{ background: event.eventColor || "#A96B24" }}         
-              >
-                {/* Menu button */}
-                {user.role === "admin" && (
-                  <div className="menu-container">
-                    <MoreVertical
-                      size={20}
-                      className="menu-icon"
-                      onClick={() => setMenuOpen(menuOpen === event._id ? null : event._id)}
-                    />
+            {filteredEvents.map((event) => (
+              <div key={event._id} className="event-item">
+                <div className="event-color" style={{ background: event.eventColor || "#A96B24" }}
+                >
+                  {/* Menu button */}
+                  {user.role === "admin" && (
+                    <div className="menu-container">
+                      <MoreVertical
+                        size={20}
+                        className="menu-icon"
+                        onClick={() => setMenuOpen(menuOpen === event._id ? null : event._id)}
+                      />
 
-                    {menuOpen === event._id && (
-                      <div className="dropdown-menu">
-                        <div className="dropdown-item" onClick={() => setEditEvent(event)}>
-                          Edit
+                      {menuOpen === event._id && (
+                        <div className="dropdown-menu">
+                          <div className="dropdown-item" onClick={() => setEditEvent(event)}>
+                            Edit
+                          </div>
+                          <div className="dropdown-item delete" onClick={() => { setMenuOpen(null); openDeleteModal(event); }}>
+                            Delete
+                          </div>
                         </div>
-                        <div className="dropdown-item delete" onClick={() => { setMenuOpen(null); openDeleteModal(event); }}>
-                          Delete
-                        </div>
-                      </div>
-                    )}
-                  </div>  
-                )}
-              </div>
+                      )}
+                    </div>
+                  )}
+                </div>
 
-              <div className="event-name" onClick={() => handleEventClick(event)}>
-                {event.eventName}
-                <p>
-                  {event?.eventStartDate
-                    ? new Date(event.eventStartDate).toLocaleDateString()
-                    : "Loading..."}{" "}
-                  -{" "}
-                  {event?.eventEndDate
-                    ? new Date(event.eventEndDate).toLocaleDateString()
-                    : "Loading..."}
-                </p>
+                <div className="event-name" onClick={() => handleEventClick(event)}>
+                  {event.eventName}
+                  <p>
+                    {event?.eventStartDate
+                      ? new Date(event.eventStartDate).toLocaleDateString()
+                      : "Loading..."}{" "}
+                    -{" "}
+                    {event?.eventEndDate
+                      ? new Date(event.eventEndDate).toLocaleDateString()
+                      : "Loading..."}
+                  </p>
+                </div>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
         )}
       </div>
 
-      
-        {/* Edit Modal */}
-        {editEvent && (
-          <div className="modal-event-overlay">
-            <div className="event-modal">
-              <h2>EDIT EVENT</h2>
-              <form
-                className="event-forms-modal"
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  handleEditSave();
-                }}
-              >
-                <label>
-                  Event Name:
-                  <input
-                    type="text"
-                    value={editEvent.eventName}
-                    onChange={(e) =>
-                      setEditEvent({ ...editEvent, eventName: e.target.value })
-                    }
-                    required
-                  />
-                </label>
 
-                <label>
-                  Event Duration:
-                  <div className="event-duration-inputs">
-                    <input
-                      type="date"
-                      value={editEvent.eventStartDate?.substring(0, 10)}
-                      onChange={(e) =>
-                        setEditEvent({
-                          ...editEvent,
-                          eventStartDate: e.target.value,
-                        })
-                      }
-                      required
-                    />
-                    <span> to </span>
-                    <input
-                      type="date"
-                      value={editEvent.eventEndDate?.substring(0, 10)}
-                      onChange={(e) =>
-                        setEditEvent({
-                          ...editEvent,
-                          eventEndDate: e.target.value,
-                        })
-                      }
-                      required
-                    />
-                  </div>
-                </label>
-
-                <label>
-                  Location:
-                  <input
-                    type="text"
-                    value={editEvent.location || ""}
-                    onChange={(e) =>
-                      setEditEvent({ ...editEvent, location: e.target.value })
-                    }
-                    required
-                  />
-                </label>
-
-                <label className="color-picker">
-                  Event Color:
-                  <input
-                    type="color"
-                    value={editEvent.eventColor}
-                    onChange={(e) =>
-                      setEditEvent({ ...editEvent, eventColor: e.target.value })
-                    }
-                    required
-                  />
-                </label>
-
-                <label>
-                  Description:
-                  <textarea
-                    value={editEvent.description || ""}
-                    onChange={(e) =>
-                      setEditEvent({ ...editEvent, description: e.target.value })
-                    }
-                    rows="4"
-                    required
-                  />
-                </label>
-
-                {/* Co & Sub-organizers just like CreateEvent */}
-                <hr />
-                <div style={{display: "flex", flexDirection: "row", gap:"5px", alignItems: "center", justifyContent: "center"}}>
-                  <h4>CO & SUB-ORGANIZERS</h4>
-                  <div className="info-icon" tabIndex={0} aria-describedby="coord-types-tooltip">
-                    <IoIosInformationCircleOutline />
-                      <div className="hover-modal" role="tooltip" id="coord-types-tooltip">
-                        <strong>Coordinator Types</strong>
-                          <ul style={{listStyle: "none", textAlign: "left"}}>
-                            <li>
-                              <b>Co-Organizer</b> — can create teams and games, accepts players into institutions and teams and can access scoreboard. They can also view player data such as the player's submitted requirements.
-                            </li>
-                            <li>
-                              <b>Sub-Organizer</b> — can manage teams and players within an event and game. However, they aren't allowed to create events and games.
-                            </li>
-                        </ul>
-                      </div>
-                    </div>
-                  </div>
-                <p style={{ color: "#3E64AF", fontSize: "10px" }}>
-                  *You may add multiple Co & Sub-organizers*
-                </p>
-                <button
-                  type="button"
-                  className="add-coordinator-btn"
-                  onClick={() =>
-                    setEditEvent({
-                      ...editEvent,
-                      coordinators: [
-                        ...(editEvent.coordinators || []),
-                        { name: "", email: "", role: "co-organizer" },
-                      ],
-                    })
+      {/* Edit Modal */}
+      {editEvent && (
+        <div className="modal-event-overlay">
+          <div className="event-modal">
+            <h2>EDIT EVENT</h2>
+            <form
+              className="event-forms-modal"
+              onSubmit={(e) => {
+                e.preventDefault();
+                handleEditSave();
+              }}
+            >
+              <label>
+                Event Name:
+                <input
+                  type="text"
+                  value={editEvent.eventName}
+                  onChange={(e) =>
+                    setEditEvent({ ...editEvent, eventName: e.target.value })
                   }
-                >
-                  + ADD COORDINATOR
-                </button>
+                  required
+                />
+              </label>
 
-                <div>
-                  {(editEvent.coordinators || []).map((coord, idx) => (
-                    <div
-                      key={idx}
-                      className="coordinator-row"
-                    >
-                      <label>
-                        Role:
-                        <select
-                          value={coord.role}
-                          onChange={(e) => {
-                            const updated = [...editEvent.coordinators];
-                            updated[idx].role = e.target.value;
-                            setEditEvent({ ...editEvent, coordinators: updated });
-                          }}
-                        >
-                          <option value="co-organizer">Co-Organizer</option>
-                          <option value="sub-organizer">Sub-Organizer</option>
-                        </select>
-                      </label>
+              <label>
+                Event Duration:
+                <div className="event-duration-inputs">
+                  <input
+                    type="date"
+                    value={editEvent.eventStartDate?.substring(0, 10)}
+                    onChange={(e) =>
+                      setEditEvent({
+                        ...editEvent,
+                        eventStartDate: e.target.value,
+                      })
+                    }
+                    required
+                  />
+                  <span> to </span>
+                  <input
+                    type="date"
+                    value={editEvent.eventEndDate?.substring(0, 10)}
+                    onChange={(e) =>
+                      setEditEvent({
+                        ...editEvent,
+                        eventEndDate: e.target.value,
+                      })
+                    }
+                    required
+                  />
+                </div>
+              </label>
 
-                      <label>
-                        Email:
-                        <input
-                          type="email"
-                          value={coord.email}
-                          onChange={(e) => {
-                            const updated = [...editEvent.coordinators];
-                            updated[idx].email = e.target.value;
-                            setEditEvent({ ...editEvent, coordinators: updated });
-                          }}
-                        />
-                      </label>
+              <label>
+                Location:
+                <input
+                  type="text"
+                  value={editEvent.location || ""}
+                  onChange={(e) =>
+                    setEditEvent({ ...editEvent, location: e.target.value })
+                  }
+                  required
+                />
+              </label>
 
-                      <label>
-                        Full Name:
-                        <input
-                          type="text"
-                          value={coord.name}
-                          onChange={(e) => {
-                            const updated = [...editEvent.coordinators];
-                            updated[idx].name = e.target.value;
-                            setEditEvent({ ...editEvent, coordinators: updated });
-                          }}
-                        />
-                      </label>
+              <label className="color-picker">
+                Event Color:
+                <input
+                  type="color"
+                  value={editEvent.eventColor}
+                  onChange={(e) =>
+                    setEditEvent({ ...editEvent, eventColor: e.target.value })
+                  }
+                  required
+                />
+              </label>
 
-                      <button
-                        type="button"
-                        style={{
-                          background: "#d32f2f",
-                          color: "white",
-                          borderRadius: "6px",
-                          padding: "6px 12px",
-                          border: "none",
-                          cursor: "pointer",
-                        }}
-                        onClick={() => {
-                          const updated = editEvent.coordinators.filter(
-                            (_, i) => i !== idx
-                          );
+              <label>
+                Description:
+                <textarea
+                  value={editEvent.description || ""}
+                  onChange={(e) =>
+                    setEditEvent({ ...editEvent, description: e.target.value })
+                  }
+                  rows="4"
+                  required
+                />
+              </label>
+
+              {/* Co & Sub-organizers just like CreateEvent */}
+              <hr />
+              <div style={{ display: "flex", flexDirection: "row", gap: "5px", alignItems: "center", justifyContent: "center" }}>
+                <h4>CO & SUB-ORGANIZERS</h4>
+                <div className="info-icon" tabIndex={0} aria-describedby="coord-types-tooltip">
+                  <IoIosInformationCircleOutline />
+                  <div className="hover-modal" role="tooltip" id="coord-types-tooltip">
+                    <strong>Coordinator Types</strong>
+                    <ul style={{ listStyle: "none", textAlign: "left" }}>
+                      <li>
+                        <b>Co-Organizer</b> — can create teams and games, accepts players into institutions and teams and can access scoreboard. They can also view player data such as the player's submitted requirements.
+                      </li>
+                      <li>
+                        <b>Sub-Organizer</b> — can manage teams and players within an event and game. However, they aren't allowed to create events and games.
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+              <p style={{ color: "#3E64AF", fontSize: "10px" }}>
+                *You may add multiple Co & Sub-organizers*
+              </p>
+              <button
+                type="button"
+                className="add-coordinator-btn"
+                onClick={() =>
+                  setEditEvent({
+                    ...editEvent,
+                    coordinators: [
+                      ...(editEvent.coordinators || []),
+                      { name: "", email: "", role: "co-organizer" },
+                    ],
+                  })
+                }
+              >
+                + ADD COORDINATOR
+              </button>
+
+              <div>
+                {(editEvent.coordinators || []).map((coord, idx) => (
+                  <div
+                    key={idx}
+                    className="coordinator-row"
+                  >
+                    <label>
+                      Role:
+                      <select
+                        value={coord.role}
+                        onChange={(e) => {
+                          const updated = [...editEvent.coordinators];
+                          updated[idx].role = e.target.value;
                           setEditEvent({ ...editEvent, coordinators: updated });
                         }}
                       >
-                        Delete
-                      </button>
-                    </div>
-                  ))}
-                </div>
+                        <option value="co-organizer">Co-Organizer</option>
+                        <option value="sub-organizer">Sub-Organizer</option>
+                      </select>
+                    </label>
 
-                <div className="event-modal-actions">
-                  <button className="modal-cancel-btn" type="button" onClick={() => setEditEvent(null)}>
-                    Cancel
-                  </button>
-                  <button className="modal-save-btn" type="submit">Save</button>
-                </div>
-              </form>
-            </div>
-          </div>
-        )}
-        {/* Delete Confirmation Modal */}
-        {deleteModalOpen && deleteTarget && (
-          <div className="modal-event-overlay" onClick={cancelDelete}>
-            <div className="event-modal" onClick={(e) => e.stopPropagation()}>
-              <h2>Confirm Delete</h2>
-              <p>Are you sure you want to delete the event "<strong>{deleteTarget.eventName}</strong>"? This action cannot be undone.</p>
-              <div style={{ display: "flex", justifyContent: "center", gap: 12, marginTop: 12 }}>
-                <button className="modal-cancel-btn" type="button" onClick={cancelDelete}>Cancel</button>
-                <button className="modal-save-btn" type="button" onClick={performDelete} style={{ background: "#d32f2f" }}>Delete</button>
+                    <label>
+                      Email:
+                      <input
+                        type="email"
+                        value={coord.email}
+                        onChange={(e) => {
+                          const updated = [...editEvent.coordinators];
+                          updated[idx].email = e.target.value;
+                          setEditEvent({ ...editEvent, coordinators: updated });
+                        }}
+                      />
+                    </label>
+
+                    <label>
+                      Full Name:
+                      <input
+                        type="text"
+                        value={coord.name}
+                        onChange={(e) => {
+                          const updated = [...editEvent.coordinators];
+                          updated[idx].name = e.target.value;
+                          setEditEvent({ ...editEvent, coordinators: updated });
+                        }}
+                      />
+                    </label>
+
+                    <button
+                      type="button"
+                      style={{
+                        background: "#d32f2f",
+                        color: "white",
+                        borderRadius: "6px",
+                        padding: "6px 12px",
+                        border: "none",
+                        cursor: "pointer",
+                      }}
+                      onClick={() => {
+                        const updated = editEvent.coordinators.filter(
+                          (_, i) => i !== idx
+                        );
+                        setEditEvent({ ...editEvent, coordinators: updated });
+                      }}
+                    >
+                      Delete
+                    </button>
+                  </div>
+                ))}
               </div>
+
+              <div className="event-modal-actions">
+                <button className="modal-cancel-btn" type="button" onClick={() => setEditEvent(null)}>
+                  Cancel
+                </button>
+                <button className="modal-save-btn" type="submit">Save</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+      {/* Delete Confirmation Modal */}
+      {deleteModalOpen && deleteTarget && (
+        <div className="modal-event-overlay" onClick={cancelDelete}>
+          <div className="event-modal" onClick={(e) => e.stopPropagation()}>
+            <h2>Confirm Delete</h2>
+            <p>Are you sure you want to delete the event "<strong>{deleteTarget.eventName}</strong>"? This action cannot be undone.</p>
+            <div style={{ display: "flex", justifyContent: "center", gap: 12, marginTop: 12 }}>
+              <button className="modal-cancel-btn" type="button" onClick={cancelDelete}>Cancel</button>
+              <button className="modal-save-btn" type="button" onClick={performDelete} style={{ background: "#d32f2f" }}>Delete</button>
             </div>
           </div>
-        )}
-    
+        </div>
+      )}
+
     </MainLayout>
   );
 };

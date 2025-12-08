@@ -6,14 +6,14 @@ import { LiaGhostSolid } from "react-icons/lia";
 
 const TeamPlayers = () => {
 
-  useEffect(() => {document.title = "SPARTA | " + decodedTeam + " Players";},[]);
+  useEffect(() => { document.title = "SPARTA | " + decodedTeam + " Players"; }, []);
 
   const { eventName, teamName } = useParams();
   const decodedEvent = decodeURIComponent(eventName);
   const decodedTeam = decodeURIComponent(teamName);
   const navigate = useNavigate();
 
-  const user = JSON.parse(localStorage.getItem("auth")); 
+  const user = JSON.parse(localStorage.getItem("auth"));
 
   const [players, setPlayers] = useState([]);
   const [teamColor, setTeamColor] = useState("#808080");
@@ -58,7 +58,6 @@ const TeamPlayers = () => {
     fetchTeamDetails();
   }, [user?.institution, decodedEvent, decodedTeam]);
 
-
   // Fetch team scores then turn it in to rank
   useEffect(() => {
     const fetchTeamRankings = async () => {
@@ -90,7 +89,7 @@ const TeamPlayers = () => {
     }
   }, [user?.institution, decodedEvent, decodedTeam]);
 
-  // fetch pending players count for this team (polls every 30s)
+  // fetch pending players count per team
   useEffect(() => {
     let mounted = true;
     const fetchPendingCount = async () => {
@@ -111,7 +110,7 @@ const TeamPlayers = () => {
     };
 
     fetchPendingCount();
-    const id = setInterval(fetchPendingCount, 30000); // every 30s
+    const id = setInterval(fetchPendingCount, 30000);
     return () => {
       mounted = false;
       clearInterval(id);
@@ -130,20 +129,20 @@ const TeamPlayers = () => {
 
         <div className='team-players-header'>
           <div className='team-players-team' style={{ background: teamColor }}>
-              <h2>{decodedTeam}</h2>
+            <h2>{decodedTeam}</h2>
+          </div>
+
+          <div className="team-stats">
+            <div className='team-players-total'>
+              <h3 style={{ textDecoration: "underline" }}> TOTAL PLAYERS </h3>
+              <h1> {players.length} </h1>
             </div>
 
-            <div className="team-stats">
-              <div className='team-players-total'>
-                <h3 style={{ textDecoration: "underline" }}> TOTAL PLAYERS </h3>
-                <h1> {players.length} </h1>
-              </div>
-
-              <div className='team-ranking-event'>
-                <h3 style={{ textDecoration: "underline" }}>{decodedEvent} RANK</h3>
-                <h1>{teamRank ? getOrdinal(teamRank) : "N/A"}</h1>
-              </div>
+            <div className='team-ranking-event'>
+              <h3 style={{ textDecoration: "underline" }}>{decodedEvent} RANK</h3>
+              <h1>{teamRank ? getOrdinal(teamRank) : "N/A"}</h1>
             </div>
+          </div>
         </div>
 
         <div className='team-pending-players'>

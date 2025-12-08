@@ -88,8 +88,6 @@ router.post('/auth/login/:role', async (req, res) => {
   }
 });
 
-
-
 // Get INSTITUTIONS
 router.get('/institutions', async (req, res) => {
   try {
@@ -121,14 +119,11 @@ router.post('/send-request', upload.single('attachment'), async (req, res) => {
       });
     }
 
-    // Define the SendGrid message object
+    // Messege
     const msg = {
-      to: process.env.SMTP_USER, // The admin's email (where you receive the request)
-      
-      // IMPORTANT: This 'from' email MUST be the one you verified in SendGrid
-      from: process.env.SENDGRID_VERIFIED_SENDER, // e.g., the same as SMTP_USER
-      
-      replyTo: email, // The user's email
+      to: process.env.SMTP_USER,
+      from: process.env.SENDGRID_VERIFIED_SENDER,
+      replyTo: email,
       subject: 'New Institution Request from SPARTA Service Page',
       html: `
         <h2>New Service Request</h2>
@@ -149,12 +144,11 @@ router.post('/send-request', upload.single('attachment'), async (req, res) => {
 
   } catch (err) {
     console.error('Error sending service request email:', err);
-    
-    // SendGrid can return detailed errors
+
     if (err.response) {
       console.error(err.response.body);
     }
-    
+
     res.status(500).json({ message: 'An error occurred on the server. Please try again.' });
   }
 });

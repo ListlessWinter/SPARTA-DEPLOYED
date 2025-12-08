@@ -1,7 +1,7 @@
 import MainLayout from "../../components/MainLayout";
 import { useNavigate, useParams } from "react-router-dom";
 import React, { useEffect, useState } from "react";
-import { GiBasketballBall, GiSoccerBall, GiTennisRacket, GiChessKnight, GiTennisBall} from "react-icons/gi";
+import { GiBasketballBall, GiSoccerBall, GiTennisRacket, GiChessKnight, GiTennisBall } from "react-icons/gi";
 import { MdSportsVolleyball, MdSportsKabaddi } from "react-icons/md";
 import { BiSolidBaseball, BiBaseball } from "react-icons/bi";
 import { FaCircleQuestion } from "react-icons/fa6";
@@ -12,11 +12,11 @@ import "../../styles/skeleton.css";
 const Game = () => {
   const { eventName } = useParams();
   const decodedName = decodeURIComponent(eventName);
-  useEffect(() => {document.title = "SPARTA | " + decodedName + " Games";},[decodedName]);
+  useEffect(() => { document.title = "SPARTA | " + decodedName + " Games"; }, [decodedName]);
 
   const navigate = useNavigate();
   const [gamesByType, setGamesByType] = useState({});
-  const [loading, setLoading] = useState(true); // add loading state
+  const [loading, setLoading] = useState(true); 
   const user = JSON.parse(localStorage.getItem("auth"));
   const userInstitution = user?.institution;
 
@@ -46,7 +46,7 @@ const Game = () => {
   // Fetch Games
   useEffect(() => {
     const fetchGames = async () => {
-      setLoading(true); // start loading
+      setLoading(true);
       try {
         const response = await fetch(
           `https://sparta-deployed.onrender.com/api/games?institution=${encodeURIComponent(userInstitution)}&eventName=${encodeURIComponent(decodedName)}`
@@ -66,7 +66,7 @@ const Game = () => {
       } catch (error) {
         console.error("Error fetching games:", error);
       } finally {
-        setLoading(false); // end loading
+        setLoading(false);
       }
     };
 
@@ -78,16 +78,15 @@ const Game = () => {
     navigate(`/admin/event/${encodeURIComponent(decodedName)}/addgame`);
   };
 
-  // show confirmation modal
+  // Delete modal
   const handleDeleteGame = (gameId) => {
-    // find a friendly name for the game
     const game = Object.values(gamesByType).flat().find(g => g._id === gameId);
     const name = game ? `${game.category} ${game.gameType}` : "this game";
     setGameToDelete({ id: gameId, name });
     setShowDeleteModal(true);
   };
 
-  // perform delete after confirmation
+  // Confirm Delete
   const confirmDeleteGame = async () => {
     if (!gameToDelete) return;
     try {
@@ -96,7 +95,6 @@ const Game = () => {
       });
 
       if (res.ok) {
-        // Remove from local state
         const updatedGames = { ...gamesByType };
         for (const key in updatedGames) {
           updatedGames[key] = updatedGames[key].filter(game => game._id !== gameToDelete.id);
@@ -135,106 +133,106 @@ const Game = () => {
 
   return (
     <MainLayout>
-    <>
-      <div className="game-header">
-        <h2>All Games for {eventName}</h2>
-      </div>
+      <>
+        <div className="game-header">
+          <h2>All Games for {eventName}</h2>
+        </div>
 
-      <div className="game-header-row">
-        <input
-          type="text"
-          className="game-search-bar"
-          placeholder="Search for a game..."
-          value={searchQuery}
-          onChange={e => setSearchQuery(e.target.value)}
-        />
-        {(user.role === "admin" || user.role === "co-organizer") && (
-        <button className="new-game-btn" onClick={handleAddGame}> + Add Game </button>
-        )}
-      </div>
+        <div className="game-header-row">
+          <input
+            type="text"
+            className="game-search-bar"
+            placeholder="Search for a game..."
+            value={searchQuery}
+            onChange={e => setSearchQuery(e.target.value)}
+          />
+          {(user.role === "admin" || user.role === "co-organizer") && (
+            <button className="new-game-btn" onClick={handleAddGame}> + Add Game </button>
+          )}
+        </div>
 
-      <div className="game-main-div">
-        {loading ? (
-          // Skeleton placeholders while loading
-          Array.from({ length: 8 }).map((_, idx) => (
-            <div style={{ margin: "1rem" }} key={`skeleton-${idx}`}>
-              <div style={{ width: "100%", display: "flex", justifyContent: "flex-end" }}>
-                {/* Hide delete stub while loading */}
-              </div>
-              <div className="game-button-container">
-                <button className="game-button games-skeleton" aria-hidden="true">
-                  <span className="games-skeleton-circle" />
-                  <span className="games-skeleton-lines">
-                    <span className="games-skeleton-line games-skeleton-title" />
-                    <span className="games-skeleton-line games-skeleton-sub" />
-                  </span>
-                </button>
-              </div>
-            </div>
-          ))
-        ) : filteredGames.length === 0 ? (
-          <div className="no-games-found">
-            <FaCircleQuestion size={40} />
-            <p style={{ textAlign: "center", width: "100%" }}>No games found.<br />Please click the " + Add Game " button to create a new game.</p>
-          </div>
-        ) : (
-          filteredGames.map(([combinedType, games]) => {
-            const gameType = games[0]?.gameType || "Default";
-            const icon = gameIcons[gameType] || gameIcons.Default;
-          
-            return (
-            <div style={{margin: "1rem"}} key={combinedType}>
-                <div style={{width: "100%", display: "flex", justifyContent: "flex-end"}}>
-                    {(user.role === "admin" || user.role === "co-organizer") && (
-                    <button className="delete-game-btn" onClick={() => handleDeleteGame(games[0]._id)}>
-                      <IoMdClose />
-                    </button>
-                    )}
+        <div className="game-main-div">
+          {loading ? (
+            // Skeleton placeholders while loading
+            Array.from({ length: 8 }).map((_, idx) => (
+              <div style={{ margin: "1rem" }} key={`skeleton-${idx}`}>
+                <div style={{ width: "100%", display: "flex", justifyContent: "flex-end" }}>
+                  {/* Hide delete stub while loading */}
                 </div>
-
                 <div className="game-button-container">
-                
-                  <button
-                    className="game-button"
-                    onClick={() =>
-                      navigate(
-                        `/admin/event/${encodeURIComponent(decodedName)}/game/${games[0]._id}`
-                      )
-                    }
-                    style={{ display: "flex", alignItems: "center", gap: "8px" }}
-                  >
-                    {icon && React.createElement(icon, { size: 50 })}
-                    {combinedType}
+                  <button className="game-button games-skeleton" aria-hidden="true">
+                    <span className="games-skeleton-circle" />
+                    <span className="games-skeleton-lines">
+                      <span className="games-skeleton-line games-skeleton-title" />
+                      <span className="games-skeleton-line games-skeleton-sub" />
+                    </span>
                   </button>
-
                 </div>
               </div>
-            );
-          })
-        )}
-      </div>
+            ))
+          ) : filteredGames.length === 0 ? (
+            <div className="no-games-found">
+              <FaCircleQuestion size={40} />
+              <p style={{ textAlign: "center", width: "100%" }}>No games found.<br />Please click the " + Add Game " button to create a new game.</p>
+            </div>
+          ) : (
+            filteredGames.map(([combinedType, games]) => {
+              const gameType = games[0]?.gameType || "Default";
+              const icon = gameIcons[gameType] || gameIcons.Default;
 
-      {/* Delete confirmation modal */}
-      {showDeleteModal && gameToDelete && (
-        <div className="confirm-modal-overlay">
-          <div className="confirm-modal">
-            <h3>Confirm Delete</h3>
-            <p>Are you sure you want to delete <b>{gameToDelete.name}</b>?</p>
-            <div className="confirm-modal-actions">
-              <button className="btn cancel" onClick={cancelDelete}>Cancel</button>
-              <button className="btn confirm" onClick={confirmDeleteGame}>Delete</button>
+              return (
+                <div style={{ margin: "1rem" }} key={combinedType}>
+                  <div style={{ width: "100%", display: "flex", justifyContent: "flex-end" }}>
+                    {(user.role === "admin" || user.role === "co-organizer") && (
+                      <button className="delete-game-btn" onClick={() => handleDeleteGame(games[0]._id)}>
+                        <IoMdClose />
+                      </button>
+                    )}
+                  </div>
+
+                  <div className="game-button-container">
+
+                    <button
+                      className="game-button"
+                      onClick={() =>
+                        navigate(
+                          `/admin/event/${encodeURIComponent(decodedName)}/game/${games[0]._id}`
+                        )
+                      }
+                      style={{ display: "flex", alignItems: "center", gap: "8px" }}
+                    >
+                      {icon && React.createElement(icon, { size: 50 })}
+                      {combinedType}
+                    </button>
+
+                  </div>
+                </div>
+              );
+            })
+          )}
+        </div>
+
+        {/* Delete confirmation modal */}
+        {showDeleteModal && gameToDelete && (
+          <div className="confirm-modal-overlay">
+            <div className="confirm-modal">
+              <h3>Confirm Delete</h3>
+              <p>Are you sure you want to delete <b>{gameToDelete.name}</b>?</p>
+              <div className="confirm-modal-actions">
+                <button className="btn cancel" onClick={cancelDelete}>Cancel</button>
+                <button className="btn confirm" onClick={confirmDeleteGame}>Delete</button>
+              </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
 
-      {/* Toast */}
-      {showToast && (
-        <div className="toast-bottom-right" role="status" aria-live="polite">
-          {toastMessage}
-        </div>
-      )}
-    </>
+        {/* Toast */}
+        {showToast && (
+          <div className="toast-bottom-right" role="status" aria-live="polite">
+            {toastMessage}
+          </div>
+        )}
+      </>
     </MainLayout>
   );
 };

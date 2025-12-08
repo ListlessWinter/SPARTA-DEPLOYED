@@ -8,16 +8,16 @@ import "../../styles/skeleton.css";
 
 const Teams = () => {
 
-  useEffect(() => {document.title = "SPARTA | " + decodedName + " Teams";},[]);
+  useEffect(() => { document.title = "SPARTA | " + decodedName + " Teams"; }, []);
 
   const { eventName } = useParams();
   const decodedName = decodeURIComponent(eventName);
   const navigate = useNavigate();
   const [teams, setTeams] = useState([]);
-  const [loading, setLoading] = useState(true); // <-- add loading state
+  const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
-  const [menuOpen, setMenuOpen] = useState(null); 
-  const [editTeam, setEditTeam] = useState(null); 
+  const [menuOpen, setMenuOpen] = useState(null);
+  const [editTeam, setEditTeam] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [teamToDelete, setTeamToDelete] = useState(null);
   const [showToast, setShowToast] = useState(false);
@@ -30,6 +30,7 @@ const Teams = () => {
   const [search, setSearch] = useState("");
   const [showDropdown, setShowDropdown] = useState(false);
   const [gamesExist, setGamesExist] = useState(false);
+
   // Fetch Coords
   useEffect(() => {
     const fetchCoordinators = async () => {
@@ -52,7 +53,6 @@ const Teams = () => {
   const filteredCoordinators = coordinators.filter((c) => {
     const matchesSearch = c.name.toLowerCase().includes(search.toLowerCase());
     const alreadySelected = !!editTeam?.coordinators?.some((sel) =>
-      // sel can be either an id string or a coordinator object
       typeof sel === "string" ? sel === c._id : sel?._id === c._id
     );
     return matchesSearch && !alreadySelected;
@@ -77,7 +77,7 @@ const Teams = () => {
       fetchTeams();
     }
   }, [user?.institution, decodedName]);
-  
+
   // Fetch Games
   useEffect(() => {
     const fetchGames = async () => {
@@ -85,10 +85,10 @@ const Teams = () => {
         const response = await fetch(`https://sparta-deployed.onrender.com/api/games?institution=${encodeURIComponent(user?.institution)}&eventName=${encodeURIComponent(decodedName)}`);
         const games = await response.json();
 
-     // If any game exists for this event, set to true
-     if (games.length > 0) {
-      setGamesExist(true);
-    } 
+        // If any game exists for this event, set to true
+        if (games.length > 0) {
+          setGamesExist(true);
+        }
       } catch (error) {
         console.error("Error fetching games:", error);
       }
@@ -112,7 +112,7 @@ const Teams = () => {
     setTeamToDelete(team);
     setShowDeleteModal(true);
   };
-  
+
   // Confirm delete
   const confirmDeleteTeam = async () => {
     if (!teamToDelete) return;
@@ -150,27 +150,27 @@ const Teams = () => {
       formData.append("managerEmail", editTeam.managerEmail || "");
       formData.append("teamColor", editTeam.teamColor || "");
       formData.append("coordinators", JSON.stringify(editTeam.coordinators || []));
-  
+
       if (editTeam.newIcon) {
         formData.append("teamIcon", editTeam.newIcon);
       }
-  
+
       const res = await fetch(`https://sparta-deployed.onrender.com/api/team/${editTeam._id}`, {
         method: "PUT",
         body: formData,
       });
-  
+
       if (!res.ok) {
         throw new Error("Failed to update team");
       }
-      const { team: updatedTeam } = await res.json(); 
+      const { team: updatedTeam } = await res.json();
       setTeams(teams.map((t) => (t._id === updatedTeam._id ? updatedTeam : t)));
       setEditTeam(null);
     } catch (err) {
       console.error("Update failed:", err);
     }
   };
-  
+
   return (
     <MainLayout>
       <div className="teams-main-container">
@@ -190,9 +190,9 @@ const Teams = () => {
               style={{ marginRight: "16px" }}
             />
             {(user.role === "admin" || user.role === "co-organizer") && (
-            <button className="new-team-btn" onClick={handleAddTeam} disabled={gamesExist} title={gamesExist ? "Games are in progress. New teams cannot be added." : "Add a new team"}>
-              + New Team
-            </button>
+              <button className="new-team-btn" onClick={handleAddTeam} disabled={gamesExist} title={gamesExist ? "Games are in progress. New teams cannot be added." : "Add a new team"}>
+                + New Team
+              </button>
             )}
           </div>
 
@@ -279,12 +279,12 @@ const Teams = () => {
           )}
         </div>
       </div>
-      
+
       {/* Edit Modal */}
       {editTeam && (
         <div className="modal-overlay">
           <div className="team-edit-modal">
-            <h2 style={{paddingBottom: "10px", textAlign: "center"}}>EDIT TEAM</h2>
+            <h2 style={{ paddingBottom: "10px", textAlign: "center" }}>EDIT TEAM</h2>
             <form
               className="team-edit-form"
               onSubmit={(e) => {
@@ -337,7 +337,7 @@ const Teams = () => {
 
               {/* Team Color */}
               <div className="teamedit-form-group">
-                <label style={{fontFamily: "Montserrat, sans-serif", fontSize: "14px", color: "black"}} className="color-picker">
+                <label style={{ fontFamily: "Montserrat, sans-serif", fontSize: "14px", color: "black" }} className="color-picker">
                   Team Color:
                   <input
                     type="color"
@@ -349,26 +349,25 @@ const Teams = () => {
                 </label>
               </div>
 
-              
               {/* Team Icon */}
 
-              <label style={{fontWeight: "600"}}> Team Icon: </label>
-                <div className="file-upload" style={{width: "80%", margin: "5px auto"}}>
+              <label style={{ fontWeight: "600" }}> Team Icon: </label>
+              <div className="file-upload" style={{ width: "80%", margin: "5px auto" }}>
 
-                  <input
-                    id="file-upload"
-                    name="file-upload"
-                    type="file"
-                    accept="image/*"
-                    style={{display: "none"}}
-                    onChange={(e) =>
-                      setEditTeam({ ...editTeam, newIcon: e.target.files[0] })
-                    }
-                    />
-                  <label htmlFor="file-upload" className="upload-btn">
-                    Upload Attachment
-                  </label>
-                </div>
+                <input
+                  id="file-upload"
+                  name="file-upload"
+                  type="file"
+                  accept="image/*"
+                  style={{ display: "none" }}
+                  onChange={(e) =>
+                    setEditTeam({ ...editTeam, newIcon: e.target.files[0] })
+                  }
+                />
+                <label htmlFor="file-upload" className="upload-btn">
+                  Upload Attachment
+                </label>
+              </div>
 
               {/* Sub-organizers */}
               <div className="teamedit-form-group" style={{ marginTop: "20px" }}>
@@ -413,38 +412,38 @@ const Teams = () => {
                       )}
                   </div>
 
-                <div className="selected-tags">
-                  {editTeam.coordinators?.map((c) => {
-                    // support both object and id-string shapes
-                    const id = typeof c === "string" ? c : c?._id;
-                    const label = (typeof c === "string" ? (coordinators.find(x => x._id === c)?.name || c) : c?.name) || id;
-                    return (
-                      <span key={id} className="tag">
-                        {label}
-                        <button
-                          type="button"
-                          onClick={() =>
-                            setEditTeam({
-                              ...editTeam,
-                              coordinators: editTeam.coordinators.filter((co) =>
-                                typeof co === "string" ? co !== id : co?._id !== id
-                              ),
-                            })
-                          }
-                        >
+                  <div className="selected-tags">
+                    {editTeam.coordinators?.map((c) => {
+                      // support both object and id-string shapes
+                      const id = typeof c === "string" ? c : c?._id;
+                      const label = (typeof c === "string" ? (coordinators.find(x => x._id === c)?.name || c) : c?.name) || id;
+                      return (
+                        <span key={id} className="tag">
+                          {label}
+                          <button
+                            type="button"
+                            onClick={() =>
+                              setEditTeam({
+                                ...editTeam,
+                                coordinators: editTeam.coordinators.filter((co) =>
+                                  typeof co === "string" ? co !== id : co?._id !== id
+                                ),
+                              })
+                            }
+                          >
                             ×
-                        </button>
-                      </span>
-                    );
-                  })}
-                </div>
+                          </button>
+                        </span>
+                      );
+                    })}
+                  </div>
 
                 </div>
               </div>
 
               {/* Modal actions */}
               <div className="teamedit-modal-actions">
-                
+
                 <button type="button" onClick={() => setEditTeam(null)}>
                   Cancel
                 </button>
@@ -455,26 +454,26 @@ const Teams = () => {
         </div>
       )}
 
-        {/* Delete Confirmation Modal */}
-        {showDeleteModal && teamToDelete && (
-          <div className="confirm-modal-overlay" role="dialog" aria-modal="true">
-            <div className="confirm-modal" onClick={(e) => e.stopPropagation()}>
-              <h3>CONFIRM DELETE</h3>
-              <p>Are you sure you want to delete <strong>{teamToDelete.teamName}</strong>?</p>
-              <div className="confirm-modal-actions">
-                <button className="btn cancel" onClick={cancelDelete}>Cancel</button>
-                <button className="btn confirm" onClick={confirmDeleteTeam}>Delete</button>
-              </div>
+      {/* Delete Confirmation Modal */}
+      {showDeleteModal && teamToDelete && (
+        <div className="confirm-modal-overlay" role="dialog" aria-modal="true">
+          <div className="confirm-modal" onClick={(e) => e.stopPropagation()}>
+            <h3>CONFIRM DELETE</h3>
+            <p>Are you sure you want to delete <strong>{teamToDelete.teamName}</strong>?</p>
+            <div className="confirm-modal-actions">
+              <button className="btn cancel" onClick={cancelDelete}>Cancel</button>
+              <button className="btn confirm" onClick={confirmDeleteTeam}>Delete</button>
             </div>
           </div>
-        )}
+        </div>
+      )}
 
-        {/* Toast (matches Register.js classes) */}
-        {showToast && (
-          <div className={`toast ${toastType === "success" ? "toast-success" : "toast-error"}`}>
-            {toastMessage}
-          </div>
-        )}
+      {/* Toast (matches Register.js classes) */}
+      {showToast && (
+        <div className={`toast ${toastType === "success" ? "toast-success" : "toast-error"}`}>
+          {toastMessage}
+        </div>
+      )}
     </MainLayout>
   );
 };

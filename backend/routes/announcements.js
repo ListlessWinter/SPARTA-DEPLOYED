@@ -1,5 +1,5 @@
 const express = require("express");
-const Announcement = require("../models/Announcement"); // Renamed from Feedback
+const Announcement = require("../models/Announcement");
 
 const router = express.Router();
 
