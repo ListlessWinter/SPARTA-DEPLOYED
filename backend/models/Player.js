@@ -32,6 +32,7 @@ const playerSchema = new mongoose.Schema({
   age: { type: Number },
   weight: { type: Number },
   height: { type: Number },
+  medicalHistory: { type: String },
   profilePic: { type: String, default: null }
 }, { timestamps: true });
 
