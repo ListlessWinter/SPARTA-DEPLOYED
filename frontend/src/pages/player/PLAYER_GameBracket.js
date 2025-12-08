@@ -6,7 +6,7 @@ import "../../styles/bracket.css";
 
 const PlayerGameBracket = () => {
 
-  useEffect(() => {document.title = "SPARTA | Game Bracket";},[]);
+  useEffect(() => { document.title = "SPARTA | Game Bracket"; }, []);
 
   const { eventName, game: gameId } = useParams();
   const decodedEvent = decodeURIComponent(eventName);
@@ -15,7 +15,7 @@ const PlayerGameBracket = () => {
   const [, setSelectedMatch] = useState(null);
   const [, setTempScores] = useState([]);
 
-  const [showRulesModal, setShowRulesModal] = useState(false); 
+  const [showRulesModal, setShowRulesModal] = useState(false);
 
   // Fetch Game details
   useEffect(() => {
@@ -129,7 +129,7 @@ const PlayerGameBracket = () => {
       };
 
       const wbRounds = makeBracketRounds(wbMatches);
-      const lbRounds = makeBracketRounds(lbMatches, true); 
+      const lbRounds = makeBracketRounds(lbMatches, true);
 
       rounds.push({ title: "WB", rounds: wbRounds });
       rounds.push({ title: "LB", rounds: lbRounds });

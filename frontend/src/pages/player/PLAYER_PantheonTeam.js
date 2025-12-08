@@ -6,7 +6,7 @@ import { LiaGhostSolid } from "react-icons/lia";
 
 const PlayerPantheonTeam = () => {
 
-  useEffect(() => {document.title = "SPARTA | Pantheon Team";},[]);
+    useEffect(() => { document.title = "SPARTA | Pantheon Team"; }, []);
 
     const { eventName, teamName } = useParams();
     const decodedEvent = decodeURIComponent(eventName);
@@ -50,42 +50,40 @@ const PlayerPantheonTeam = () => {
     // Fetch team ranking
     useEffect(() => {
         const fetchTeamRankings = async () => {
-          try {
-            const res = await fetch(`https://sparta-deployed.onrender.com/api/teams/scores?institution=${encodeURIComponent(user?.institution)}&event=${encodeURIComponent(decodedEvent)}`);
-            const data = await res.json();
-      
-            // Sort descending by totalScore / grandTotal
-            const sortedTeams = data.sort(
-              (a, b) => (b.grandTotal || b.totalScore || 0) - (a.grandTotal || a.totalScore || 0)
-            );
-      
-            // Find this team’s index
-            const rankIndex = sortedTeams.findIndex(
-              (t) => t.teamName === decodedTeam
-            );
-      
-            if (rankIndex !== -1) {
-              setTeamRank(rankIndex + 1);
-            } else {
-              setTeamRank(null);
-            }
-          } catch (error) {
-            console.error("Error fetching team rankings:", error);
-          }
-        };
-      
-        if (user?.institution && decodedEvent && decodedTeam) {
-          fetchTeamRankings();
-        }
-      }, [user?.institution, decodedEvent, decodedTeam]);
+            try {
+                const res = await fetch(`https://sparta-deployed.onrender.com/api/teams/scores?institution=${encodeURIComponent(user?.institution)}&event=${encodeURIComponent(decodedEvent)}`);
+                const data = await res.json();
 
-      function getOrdinal(n) {
+                // Sort descending by totalScore / grandTotal
+                const sortedTeams = data.sort(
+                    (a, b) => (b.grandTotal || b.totalScore || 0) - (a.grandTotal || a.totalScore || 0)
+                );
+
+                // Find this team’s index
+                const rankIndex = sortedTeams.findIndex(
+                    (t) => t.teamName === decodedTeam
+                );
+
+                if (rankIndex !== -1) {
+                    setTeamRank(rankIndex + 1);
+                } else {
+                    setTeamRank(null);
+                }
+            } catch (error) {
+                console.error("Error fetching team rankings:", error);
+            }
+        };
+
+        if (user?.institution && decodedEvent && decodedTeam) {
+            fetchTeamRankings();
+        }
+    }, [user?.institution, decodedEvent, decodedTeam]);
+
+    function getOrdinal(n) {
         const s = ["th", "st", "nd", "rd"];
         const v = n % 100;
         return n + (s[(v - 20) % 10] || s[v] || s[0]);
-      }
-      
-      
+    }
 
     return (
         <PlayerMainLayout>

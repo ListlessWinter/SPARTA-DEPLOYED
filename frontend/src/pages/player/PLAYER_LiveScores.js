@@ -1,12 +1,12 @@
 import PlayerMainLayout from "../../components/P_MainLayout";
-import {useParams} from "react-router-dom";
-import React, {useState, useEffect} from "react";
+import { useParams } from "react-router-dom";
+import React, { useState, useEffect } from "react";
 import "../../styles/LiveScores.css";
-import {TbCalendarQuestion} from "react-icons/tb";
+import { TbCalendarQuestion } from "react-icons/tb";
 
 const PlayerLiveScores = () => {
 
-  useEffect(() => {document.title = "SPARTA | Live Scores";},[]);
+  useEffect(() => { document.title = "SPARTA | Live Scores"; }, []);
 
   const { eventName } = useParams();
   const decodedEvent = decodeURIComponent(eventName);
@@ -14,23 +14,23 @@ const PlayerLiveScores = () => {
 
   const user = JSON.parse(localStorage.getItem('auth'));
 
- // Fetch teams with scores
- useEffect(() => {
-  const fetchTeams = async () => {
-    try {
-      const response = await fetch(`https://sparta-deployed.onrender.com/api/teams/scores?institution=${encodeURIComponent(user?.institution)}&event=${encodeURIComponent(decodedEvent)}` );
-      const data = await response.json();
-      // Sort by grandTotal
-      setTeams(data.sort((a, b) => b.grandTotal - a.grandTotal));
-    } catch (error) {
-      console.error("Error fetching teams:", error);
-    }
-  };
+  // Fetch teams with scores
+  useEffect(() => {
+    const fetchTeams = async () => {
+      try {
+        const response = await fetch(`https://sparta-deployed.onrender.com/api/teams/scores?institution=${encodeURIComponent(user?.institution)}&event=${encodeURIComponent(decodedEvent)}`);
+        const data = await response.json();
+        // Sort by grandTotal
+        setTeams(data.sort((a, b) => b.grandTotal - a.grandTotal));
+      } catch (error) {
+        console.error("Error fetching teams:", error);
+      }
+    };
 
-  if (user?.institution && decodedEvent) {
-    fetchTeams();
-  }
-}, [user?.institution, decodedEvent]);
+    if (user?.institution && decodedEvent) {
+      fetchTeams();
+    }
+  }, [user?.institution, decodedEvent]);
 
   // Teams are already sorted by backend, but just in case
   const rankedTeams = [...teams].sort(
@@ -46,7 +46,7 @@ const PlayerLiveScores = () => {
 
   return (
     <PlayerMainLayout>
-      
+
       <div className="live-scores-header">
         <h1>Live Scores for {decodedEvent}</h1>
       </div>
@@ -59,22 +59,22 @@ const PlayerLiveScores = () => {
               <p>Come back again soon for updates</p>
             </div>
           ) : (
-              <div className="teams-list">
-                {rankedTeams.map((team, idx) => (
-                  <div
-                    className="team-score"
-                    key={team._id || idx}
-                    style={{ backgroundColor: team.teamColor || "#A96B24" }}
-                  >
-                    <span className="rank-team">
-                      <span>{getOrdinal(idx + 1)}</span>
-                      <span>{team.teamName}</span>
-                    </span>
-                    <span>{team.grandTotal ?? 0}</span>
-                  </div>
-                ))}
-              </div>
-              )}
+            <div className="teams-list">
+              {rankedTeams.map((team, idx) => (
+                <div
+                  className="team-score"
+                  key={team._id || idx}
+                  style={{ backgroundColor: team.teamColor || "#A96B24" }}
+                >
+                  <span className="rank-team">
+                    <span>{getOrdinal(idx + 1)}</span>
+                    <span>{team.teamName}</span>
+                  </span>
+                  <span>{team.grandTotal ?? 0}</span>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </PlayerMainLayout>

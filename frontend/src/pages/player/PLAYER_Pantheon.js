@@ -4,9 +4,9 @@ import { useNavigate } from "react-router-dom";
 
 const PlayerPantheon = () => {
 
-  useEffect(() => {document.title = "SPARTA | Pantheon";},[]);
+  useEffect(() => { document.title = "SPARTA | Pantheon"; }, []);
 
-  const navigate= useNavigate();
+  const navigate = useNavigate();
   const [events, setEvents] = useState([]);
   const user = JSON.parse(localStorage.getItem('auth'));
 
@@ -28,30 +28,30 @@ const PlayerPantheon = () => {
   return (
     <PlayerMainLayout>
       <div className="event-list">
-          {events.map((event) => (
-            <div key={event._id} className="event-item">
-              <div
-                className="event-color"
-                style={{
-                  background: event.eventColor ? event.eventColor : "#A96B24",
-                }}
-              ></div>
+        {events.map((event) => (
+          <div key={event._id} className="event-item">
+            <div
+              className="event-color"
+              style={{
+                background: event.eventColor ? event.eventColor : "#A96B24",
+              }}
+            ></div>
 
-              <div className="event-name" onClick={() => handleClickEvent(event)}>
-                {event.eventName}
-                <p>
-                  {event?.eventStartDate
-                    ? new Date(event.eventStartDate).toLocaleDateString()
-                    : "Loading..."}{" "}
-                  -{" "}
-                  {event?.eventEndDate
-                    ? new Date(event.eventEndDate).toLocaleDateString()
-                    : "Loading..."}
-                </p>
-              </div>
+            <div className="event-name" onClick={() => handleClickEvent(event)}>
+              {event.eventName}
+              <p>
+                {event?.eventStartDate
+                  ? new Date(event.eventStartDate).toLocaleDateString()
+                  : "Loading..."}{" "}
+                -{" "}
+                {event?.eventEndDate
+                  ? new Date(event.eventEndDate).toLocaleDateString()
+                  : "Loading..."}
+              </p>
             </div>
-          ))}
-       
+          </div>
+        ))}
+
       </div>
     </PlayerMainLayout>
 

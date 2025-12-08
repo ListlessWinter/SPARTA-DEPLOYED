@@ -6,15 +6,15 @@ import "../../styles/LiveScores.css";
 
 const PlayerPantheonRanks = () => {
 
-  useEffect(() => {document.title = "SPARTA | Pantheon Ranks";},[]);
+  useEffect(() => { document.title = "SPARTA | Pantheon Ranks"; }, []);
 
   const navigate = useNavigate();
   const { eventName } = useParams();
   const decodedEvent = decodeURIComponent(eventName);
   const [teams, setTeams] = useState([]);
- 
+
   const user = JSON.parse(localStorage.getItem("auth"));
-  
+
 
   // Fetch teams with scores
   useEffect(() => {
@@ -49,45 +49,45 @@ const PlayerPantheonRanks = () => {
     navigate(`/pantheon/${encodeURIComponent(decodedEvent)}/${encodeURIComponent(teamName)}/players`);
   };
 
-    return (
-        <PlayerMainLayout>
-            <div className="live-scores-header">
-                    <h1>FINAL RANK FOR {decodedEvent}</h1>
-                </div>
-                
-                <div className="live-scores-main-div">
+  return (
+    <PlayerMainLayout>
+      <div className="live-scores-header">
+        <h1>FINAL RANK FOR {decodedEvent}</h1>
+      </div>
 
-                    <div className="live-scores-container">
-                    {rankedTeams.length === 0 ? (
-                        <div className="no-matches-found">
-                        <TbCalendarQuestion size={48} />
-                        <p>
-                            OOPS! <br /> There are no ongoing matches found under {decodedEvent}{" "}
-                            <br /> Please come back again soon :)
-                        </p>
-                        </div>
-                    ) : (
-                        <div className="teams-list">
-                        {rankedTeams.map((team, idx) => (
-                            <div
-                            className="team-score"
-                            key={team._id || idx}
-                            style={{ backgroundColor: team.teamColor || "#A96B24" }}
-                            onClick={() => handleSelectTeam(team.teamName)}
-                            >
-                            <span className="rank-team">
-                                <span>{getOrdinal(idx + 1)}</span>
-                                <span>{team.teamName}</span>
-                            </span>
-                            <span>{team.grandTotal ?? 0}</span>
-                            </div>
-                        ))}
-                        </div>
-                    )}
-                    </div>
+      <div className="live-scores-main-div">
+
+        <div className="live-scores-container">
+          {rankedTeams.length === 0 ? (
+            <div className="no-matches-found">
+              <TbCalendarQuestion size={48} />
+              <p>
+                OOPS! <br /> There are no ongoing matches found under {decodedEvent}{" "}
+                <br /> Please come back again soon :)
+              </p>
+            </div>
+          ) : (
+            <div className="teams-list">
+              {rankedTeams.map((team, idx) => (
+                <div
+                  className="team-score"
+                  key={team._id || idx}
+                  style={{ backgroundColor: team.teamColor || "#A96B24" }}
+                  onClick={() => handleSelectTeam(team.teamName)}
+                >
+                  <span className="rank-team">
+                    <span>{getOrdinal(idx + 1)}</span>
+                    <span>{team.teamName}</span>
+                  </span>
+                  <span>{team.grandTotal ?? 0}</span>
                 </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
     </PlayerMainLayout>
-    );
+  );
 };
 
 export default PlayerPantheonRanks;

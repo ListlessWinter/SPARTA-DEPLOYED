@@ -9,7 +9,7 @@ import "../../styles/ADMIN_Games.css";
 
 const PlayerGame = () => {
 
-  useEffect(() => {document.title = "SPARTA | " + decodedName + " Games";},[]);
+  useEffect(() => { document.title = "SPARTA | " + decodedName + " Games"; }, []);
 
   const user = JSON.parse(localStorage.getItem("auth"));
   const { eventName } = useParams();
@@ -136,8 +136,8 @@ const PlayerGame = () => {
 
       const data = await res.json();
       if (res.ok) {
-          setShowSuccessModal(true);
-          setModalOpen(false);
+        setShowSuccessModal(true);
+        setModalOpen(false);
       } else {
         alert(data.message || "Registration failed");
       }
@@ -256,7 +256,7 @@ const PlayerGame = () => {
                 </select>
               </div>
 
-              <div style={{display: "flex", flexDirection: "column", alignItems: "flex-start"}}>
+              <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start" }}>
                 <label className="form-label">Games:</label>
                 {games
                   .filter((g) => {
@@ -313,7 +313,7 @@ const PlayerGame = () => {
                         type="file"
                         className="req-input"
                         accept=".pdf,.jpg,.jpeg,.png"
-                        onChange={(e) => setRequirementFiles((prev) => ({ ...prev, [req]: e.target.files[0],}))
+                        onChange={(e) => setRequirementFiles((prev) => ({ ...prev, [req]: e.target.files[0], }))
                         }
                         required
                       />
@@ -335,7 +335,7 @@ const PlayerGame = () => {
         <div className="game-register-overlay">
           <div className="game-register-content">
             <h2 style={{ color: "#1A2A49" }}>REGISTRATION SUCCESSFUL!</h2>
-            <p style={{ margin: "18px 0" }}>You have successfully registered for the game. <br/ > Please check your email for updates regarding your registration.</p>
+            <p style={{ margin: "18px 0" }}>You have successfully registered for the game. <br /> Please check your email for updates regarding your registration.</p>
             <button
               className="game-register-button"
               style={{ marginTop: "12px" }}

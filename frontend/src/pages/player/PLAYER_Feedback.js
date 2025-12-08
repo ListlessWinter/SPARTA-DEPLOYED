@@ -6,7 +6,7 @@ import "../../styles/ADMIN_Feedback.css";
 
 const PlayerFeedback = () => {
 
-  useEffect(() => {document.title = "SPARTA | Feedback";},[]);
+  useEffect(() => { document.title = "SPARTA | Feedback"; }, []);
 
   const { eventName } = useParams();
   const decodedEvent = decodeURIComponent(eventName);
@@ -33,7 +33,7 @@ const PlayerFeedback = () => {
         if (!userId) return;
         const res = await fetch(`https://sparta-deployed.onrender.com/api/players/${userId?._id}`);
         const data = await res.json();
-        setUser(data); 
+        setUser(data);
       } catch (err) {
         console.error("Error fetching user:", err);
       }
@@ -152,9 +152,8 @@ const PlayerFeedback = () => {
       {/* Toast Notification */}
       {showToast.show && (
         <div
-          className={`toast-notification ${
-            showToast.type === "success" ? "toast-success" : "toast-error"
-          }`}
+          className={`toast-notification ${showToast.type === "success" ? "toast-success" : "toast-error"
+            }`}
         >
           {showToast.message}
         </div>
