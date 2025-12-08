@@ -38,7 +38,7 @@ const SpecificEvent = () => {
     useEffect(() => {
       const fetchTeamCount = async () => {
           try {
-              const res = await fetch(`http://localhost:5000/api/teams?institution=${encodeURIComponent(user?.institution)}&event=${decodedName}`);
+              const res = await fetch(`https://sparta-deployed.onrender.com/api/teams?institution=${encodeURIComponent(user?.institution)}&event=${decodedName}`);
               const data = await res.json();
               
               if (Array.isArray(data)) {
