@@ -46,6 +46,8 @@ import AllEvent from "./pages/spectator/SPECTATOR_Events";
 import SpectatorSpecificEvent from "./pages/spectator/SPECTATOR_SpecificEvent";
 import SpectatorGame from "./pages/spectator/SPECTATOR_Game";
 import SpectatorGameBracket from "./pages/spectator/SPECTATOR_GameBracket";
+import SpectatorScore from "./pages/spectator/SPECTATOR_LiveScore";
+import SpectatorTeams from "./pages/spectator/SPECTATOR_Teams";
 
 export default function App() {
   return (
@@ -90,6 +92,8 @@ export default function App() {
         {/*Spectator*/}
         <Route path="/spectator/institution" element={<LandingPage />} />
         <Route path="/spectator/:institution" element={<AllEvent />} />
+        <Route path="/spectator/:institution/:eventName/teams" element={ <SpectatorTeams />} />
+        <Route path="/spectator/:institution/:eventName/liveScores" element={ <SpectatorScore />} />
         <Route path="/spectator/:institution/:eventName" element={<SpectatorSpecificEvent />} />
         <Route path="/spectator/:institution/:eventName/game" element={<SpectatorGame />} />
         <Route path="/spectator/:institution/:eventName/game/:game" element={<SpectatorGameBracket />} />
