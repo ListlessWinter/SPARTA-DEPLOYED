@@ -14,6 +14,8 @@ const PlayerUserProfile = () => {
   const [showToast, setShowToast] = useState(false);
   const [medicalFormat, setMedicalFormat] = useState("paragraph"); // "paragraph" or "bullet"
 
+    const [previewSrc, setPreviewSrc] = useState(null);
+
   // Fetch user dertails
   useEffect(() => {
     const fetchProfile = async () => {
@@ -21,6 +23,7 @@ const PlayerUserProfile = () => {
         const res = await fetch(`https://sparta-deployed.onrender.com/api/players/${userId}`);
         const data = await res.json();
         setPlayer(data);
+        setPreviewSrc(data.profilePic || data.profilePicture || "/default-pfp.jpg"); 
       } catch (err) {
         console.error("Error fetching player profile:", err);
       }
@@ -75,10 +78,10 @@ const PlayerUserProfile = () => {
           <div className="player-main-card">
 
             <div className="profile-pic">
-              <img
-                src={player.profilePicture || "/default-pfp.jpg"}
+                  <img
+                src={previewSrc}
                 alt="Profile"
-                onError={(e) => { e.target.src = "default-pic.png"; }}
+                onError={(e) => { e.target.src = "/default-pfp.jpg"; }}
               />
               <p><b>{player.playerName || "N/A"}</b></p>
               <p>{player.institution}</p>
