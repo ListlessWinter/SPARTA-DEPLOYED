@@ -130,19 +130,20 @@ const TeamPlayers = () => {
 
         <div className='team-players-header'>
           <div className='team-players-team' style={{ background: teamColor }}>
-            <h2>{decodedTeam}</h2>
-          </div>
+              <h2>{decodedTeam}</h2>
+            </div>
 
-          <div className='team-players-total'>
-            <h3 style={{ textDecoration: "underline" }}> TOTAL PLAYERS </h3>
-            <h1> {players.length} </h1>
-          </div>
+            <div className="team-stats">
+              <div className='team-players-total'>
+                <h3 style={{ textDecoration: "underline" }}> TOTAL PLAYERS </h3>
+                <h1> {players.length} </h1>
+              </div>
 
-          <div className='team-ranking-event'>
-            <h3 style={{ textDecoration: "underline" }}>{decodedEvent} RANK</h3>
-            <h1>{teamRank ? getOrdinal(teamRank) : "N/A"}</h1>
-          </div>
-
+              <div className='team-ranking-event'>
+                <h3 style={{ textDecoration: "underline" }}>{decodedEvent} RANK</h3>
+                <h1>{teamRank ? getOrdinal(teamRank) : "N/A"}</h1>
+              </div>
+            </div>
         </div>
 
         <div className='team-pending-players'>
