@@ -130,8 +130,8 @@ const PlayerUserProfile = () => {
                   { label: "Course", value: player.course || "N/A", name: "course", editable: true },
                   { label: "Contact", value: player.contactNumber || "N/A", name: "contactNumber", type: "number" },
                   { label: "Address", value: player.permanentAddress || "N/A", name: "permanentAddress", className: "address-field" },
-                  { label: "Weight (kg)", value: player.weight ? `${player.weight} kg` : "N/A", type: "number" },
-                  { label: "Height (ft.)", value: player.height ? `${player.height} ft.` : "N/A", type: "number" },
+                  { label: "Weight (kg)", value: player.weight ? `${player.weight} kg` : "N/A", name: "weight", type: "number" },
+                  { label: "Height (ft.)", value: player.height ? `${player.height} ft.` : "N/A", name: "height", type: "number" },
                 ].map((field, idx) => (
                   <div className={`profile-field ${field.className || ""}`} key={idx}>
                     <span className="profile-label">{field.label}</span>
