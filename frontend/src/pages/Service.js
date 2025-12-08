@@ -7,7 +7,7 @@ export default function ServicePage() {
   const [email, setEmail] = useState("");
   const [body, setBody] = useState("");
   const [file, setFile] = useState(null);
-  
+
   // State for loading and feedback 
   const [status, setStatus] = useState("idle");
   const [message, setMessage] = useState("");
@@ -27,7 +27,7 @@ export default function ServicePage() {
     formData.append("email", email);
     formData.append("body", body);
     if (file) {
-      formData.append("attachment", file); 
+      formData.append("attachment", file);
     }
 
     try {
@@ -72,49 +72,49 @@ export default function ServicePage() {
         </div>
       </div>
 
-    <div className="service-page-wrapper">
-      <div className="instructions-section">
-        <h2>How to Add a New Institution</h2>
-        <p>
-          Follow these steps to request a new institution to be added to the
-          SPARTA platform. Our team will review your request and add it to the
-          system.
-        </p>
+      <div className="service-page-wrapper">
+        <div className="instructions-section">
+          <h2>How to Add a New Institution</h2>
+          <p>
+            Follow these steps to request a new institution to be added to the
+            SPARTA platform. Our team will review your request and add it to the
+            system.
+          </p>
 
-        <ol className="instructions-list">
-          <li>
-            <strong>Your Email:</strong> Fill in your contact email so we can
-            notify you of updates.
-          </li>
-          <li>
-            <strong>Message Body:</strong> Please provide the following details
-            about the institution:
-            <ul>
-              <li>Full official name of the institution.</li>
-              <li>Address (City, State/Province, Country).</li>
-              <li>Official website or a primary contact person (if known).</li>
-              <li>Any other relevant details.</li>
-            </ul>
-          </li>
-          <li>
-            <strong>Upload Attachment (Optional):</strong> You can attach a
-            supporting document, such as an official letter, logo, or brochure.
-          </li>
-          <li>
-            <strong>Submit:</strong> Click "Send Request" and our admin team
-            will begin the verification process.
-          </li>
-        </ol>
+          <ol className="instructions-list">
+            <li>
+              <strong>Your Email:</strong> Fill in your contact email so we can
+              notify you of updates.
+            </li>
+            <li>
+              <strong>Message Body:</strong> Please provide the following details
+              about the institution:
+              <ul>
+                <li>Full official name of the institution.</li>
+                <li>Address (City, State/Province, Country).</li>
+                <li>Official website or a primary contact person (if known).</li>
+                <li>Any other relevant details.</li>
+              </ul>
+            </li>
+            <li>
+              <strong>Upload Attachment (Optional):</strong> You can attach a
+              supporting document, such as an official letter, logo, or brochure.
+            </li>
+            <li>
+              <strong>Submit:</strong> Click "Send Request" and our admin team
+              will begin the verification process.
+            </li>
+          </ol>
 
-      <p>Please expect to receive a confirmation email within 3-5 business days.</p>
-      <hr />
-      <p>For further assistance, please contact our support team at <b>sparta.capstoneproject@gmail.com</b></p>
-      </div>
+          <p>Please expect to receive a confirmation email within 3-5 business days.</p>
+          <hr />
+          <p>For further assistance, please contact our support team at <b>sparta.capstoneproject@gmail.com</b></p>
+        </div>
 
         <div className="form-section">
           <h2>Service Request Form</h2>
           <form className="service-form" onSubmit={handleSubmit}>
-            
+
             {/* Email Field  */}
             <div className="service-form-group">
               <label htmlFor="email">Your Contact Email</label>
@@ -142,14 +142,14 @@ export default function ServicePage() {
             </div>
 
             <div className="service-form-group">
-              
-              <div className="file-upload" style={{width: "80%", margin: "5px auto"}}>
+
+              <div className="file-upload" style={{ width: "80%", margin: "5px auto" }}>
                 <input
                   id="file-upload"
                   name="file-upload"
                   type="file"
                   onChange={(e) => setFile(e.target.files[0])}
-                  style={{display: "none"}}
+                  style={{ display: "none" }}
                 />
 
                 <span>{file ? file.name : "No file chosen"}</span>

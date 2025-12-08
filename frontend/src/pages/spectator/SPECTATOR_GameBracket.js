@@ -6,7 +6,7 @@ import "../../styles/bracket.css";
 
 const SpectatorGameBracket = () => {
 
-  useEffect(() => {document.title = "SPARTA | Game Bracket";},[]);
+  useEffect(() => { document.title = "SPARTA | Game Bracket"; }, []);
 
   const { eventName, game: gameId } = useParams();
   const decodedEvent = decodeURIComponent(eventName);
@@ -34,10 +34,10 @@ const SpectatorGameBracket = () => {
 
   if (!game) {
     return (
-        <div className="loading-screen">
-          <div className="spinner"></div>
-          <p>Loading bracket...</p>
-        </div>
+      <div className="loading-screen">
+        <div className="spinner"></div>
+        <p>Loading bracket...</p>
+      </div>
     );
   }
 
@@ -126,7 +126,7 @@ const SpectatorGameBracket = () => {
       };
 
       const wbRounds = makeBracketRounds(wbMatches);
-      const lbRounds = makeBracketRounds(lbMatches, true); 
+      const lbRounds = makeBracketRounds(lbMatches, true);
 
       rounds.push({ title: "WB", rounds: wbRounds });
       rounds.push({ title: "LB", rounds: lbRounds });
@@ -259,7 +259,7 @@ const SpectatorGameBracket = () => {
 
       <div className="spectator-header">
         <div className="header-text">
-         SPARTA SPECTATOR LIVE VIEWING
+          SPARTA SPECTATOR LIVE VIEWING
         </div>
       </div>
 
@@ -333,7 +333,7 @@ const SpectatorGameBracket = () => {
           </div>
         )}
       </div>
-      </>
+    </>
   );
 };
 

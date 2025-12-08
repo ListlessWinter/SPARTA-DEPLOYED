@@ -4,7 +4,7 @@ import '../styles/Login.css';
 
 export default function LoginPage() {
   const [role, setRole] = useState('admin');
-  const [showAdminRoles, setShowAdminRoles] = useState(false); 
+  const [showAdminRoles, setShowAdminRoles] = useState(false);
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -52,182 +52,180 @@ export default function LoginPage() {
         // alert(`Login successful as ${role}`);
         setShowLoginSuccess(true);
         localStorage.setItem('auth', JSON.stringify(data.user));
-        
+
         setTimeout(() => {
-        if (['admin', 'co-organizer', 'sub-organizer'].includes(role)) {
-          navigate('/admin/dashboard');
-        } else if (role === 'player') {
-          navigate('/dashboard');
+          if (['admin', 'co-organizer', 'sub-organizer'].includes(role)) {
+            navigate('/admin/dashboard');
+          } else if (role === 'player') {
+            navigate('/dashboard');
           }
-          }, 3000);
+        }, 3000);
       } else {
         setErrorMessage(data.message || "Login failed. Please try again.");
         setShowLoginFailed(true);
       }
     } catch (error) {
-      
+
       console.error('Login error:', error);
       alert('Something went wrong!');
     }
   };
 
   return (
-
     <>
-    {/* Success Modal */}
-    {showLoginSuccess && (
-      <div className="modal-overlay">
-        <div className="modal">
-          <h2>LOGIN SUCCESSFUL!</h2>
-          <p>Welcome back!</p>
-          <button onClick={() => setShowLoginSuccess(false)}>Continue</button>
+      {/* Success Modal */}
+      {showLoginSuccess && (
+        <div className="modal-overlay">
+          <div className="modal">
+            <h2>LOGIN SUCCESSFUL!</h2>
+            <p>Welcome back!</p>
+            <button onClick={() => setShowLoginSuccess(false)}>Continue</button>
+          </div>
         </div>
-      </div>
-    )}
+      )}
 
-    {/* Failure Modal */}
-    {showLoginFailed && (
-      <div className="modal-overlay">
-        <div className="modal">
-          <h3>Login Failed</h3>
-          <p>{errorMessage}</p>
-          <button onClick={() => setShowLoginFailed(false)}>Close</button>
+      {/* Failure Modal */}
+      {showLoginFailed && (
+        <div className="modal-overlay">
+          <div className="modal">
+            <h3>Login Failed</h3>
+            <p>{errorMessage}</p>
+            <button onClick={() => setShowLoginFailed(false)}>Close</button>
+          </div>
         </div>
-      </div>
-    )}
+      )}
 
-    <div className="login-container">
-      <div className="login-box">
-        <div className="login-left">
-          <div className="role-buttons">
-            {/* Admin button with dropdown */}
-            <button
-              onClick={() => setShowAdminRoles(!showAdminRoles)}
-              type="button"
-              className={`role-button admin ${
-                ['admin', 'co-organizer', 'sub-organizer'].includes(role) ? 'active' : 'inactive'
-              }`}
-            >
-              Admin <span className={`arrow ${showAdminRoles ? 'open' : ''}`}>▼</span>
-              
-            </button>
+      <div className="login-container">
+        <div className="login-box">
+          <div className="login-left">
+            <div className="role-buttons">
+              {/* Admin button with dropdown */}
+              <button
+                onClick={() => setShowAdminRoles(!showAdminRoles)}
+                type="button"
+                className={`role-button admin ${['admin', 'co-organizer', 'sub-organizer'].includes(role) ? 'active' : 'inactive'
+                  }`}
+              >
+                Admin <span className={`arrow ${showAdminRoles ? 'open' : ''}`}>▼</span>
 
-           <div className={`admin-role-options ${showAdminRoles ? "open" : "closed"}`}>
-              <button type="button" 
-                onClick={() => {
-                  setRole('admin');
-                  setShowAdminRoles(false);
-                }}
-              > Main Admin </button>
+              </button>
 
-              <button type="button" 
-                onClick={() => {
-                  setRole('co-organizer');
-                  setShowAdminRoles(false);
-                }}
-              > Co-Organizer </button>
+              <div className={`admin-role-options ${showAdminRoles ? "open" : "closed"}`}>
+                <button type="button"
+                  onClick={() => {
+                    setRole('admin');
+                    setShowAdminRoles(false);
+                  }}
+                > Main Admin </button>
 
-              <button type="button" 
-                onClick={() => {
-                  setRole('sub-organizer');
-                  setShowAdminRoles(false);
-                }}
-              > Sub-Organizer </button>
+                <button type="button"
+                  onClick={() => {
+                    setRole('co-organizer');
+                    setShowAdminRoles(false);
+                  }}
+                > Co-Organizer </button>
+
+                <button type="button"
+                  onClick={() => {
+                    setRole('sub-organizer');
+                    setShowAdminRoles(false);
+                  }}
+                > Sub-Organizer </button>
+              </div>
+
+              {/* Player button */}
+              <button
+                onClick={() => setRole('player')}
+                type="button"
+                className={`role-button player ${role === 'player' ? 'active' : 'inactive'}`}
+              >
+                Player
+              </button>
             </div>
 
-            {/* Player button */}
-            <button
-              onClick={() => setRole('player')}
-              type="button"
-              className={`role-button player ${role === 'player' ? 'active' : 'inactive'}`}
-            >
-              Player
-            </button>
+            {/* Form */}
+            <form onSubmit={handleSubmit} className="login-form">
+              <div className="form-group" style={{ position: 'relative' }}>
+                <input
+                  type="email"
+                  name="email"
+                  placeholder=" "
+                  required
+                  value={formData.email}
+                  onChange={handleChange}
+                  style={{ margin: "0" }}
+                />
+                <label className="label-login" htmlFor="email">Email</label>
+              </div>
+
+              {/* Password only for Admin and Player */}
+              {(role === 'admin' || role === 'player') && (
+                <div className="form-group" style={{ position: 'relative' }}>
+                  <input
+                    type="password"
+                    name="password"
+                    placeholder=" "
+                    required
+                    value={formData.password}
+                    onChange={handleChange}
+                    style={{ margin: "0" }}
+                  />
+                  <label className="label-login" htmlFor="password">Password</label>
+                </div>
+              )}
+
+              {/* AccessKey only for Co/Sub Organizer */}
+              {(role === 'co-organizer' || role === 'sub-organizer') && (
+                <div className="form-group" style={{ position: 'relative' }}>
+                  <input
+                    type="text"
+                    name="accessKey"
+                    placeholder=" "
+                    required
+                    value={formData.accessKey}
+                    onChange={handleChange}
+                  />
+                  <label className="label-login" htmlFor="accessKey">Access Key</label>
+                </div>
+              )}
+
+              <button type="submit" className="login-button">
+                Login as {role.charAt(0).toUpperCase() + role.slice(1)}
+              </button>
+
+              <div style={{ textAlign: 'center', marginTop: '0px' }}>
+                <p>
+                  Don't have an account?
+                  <button
+                    type="button"
+                    className="switch-button"
+                    onClick={() => navigate('/register')}
+                  >
+                    Register Here
+                  </button>
+                </p>
+
+                <p>
+                  or continue as
+                  <button
+                    type="button"
+                    className="switch-button"
+                    style={{ marginTop: '0px' }}
+                    onClick={() => navigate('/spectator/institution')}
+                  >
+                    Spectator
+                  </button>
+                </p>
+              </div>
+
+            </form>
           </div>
 
-          {/* Form */}
-          <form onSubmit={handleSubmit} className="login-form">
-            <div className="form-group" style={{ position: 'relative' }}>
-              <input
-                type="email"
-                name="email"
-                placeholder=" "
-                required
-                value={formData.email}
-                onChange={handleChange}
-                style={{margin: "0"}}
-              />
-              <label className="label-login" htmlFor="email">Email</label>
-            </div>
-
-            {/* Password only for Admin and Player */}
-            {(role === 'admin' || role === 'player') && (
-              <div className="form-group" style={{ position: 'relative' }}>
-                <input
-                  type="password"
-                  name="password"
-                  placeholder=" "
-                  required
-                  value={formData.password}
-                  onChange={handleChange}
-                  style={{margin: "0"}}
-                />
-                <label className="label-login" htmlFor="password">Password</label>
-              </div>
-            )}
-
-            {/* AccessKey only for Co/Sub Organizer */}
-            {(role === 'co-organizer' || role === 'sub-organizer') && (
-              <div className="form-group" style={{ position: 'relative' }}>
-                <input
-                  type="text"
-                  name="accessKey"
-                  placeholder=" "
-                  required
-                  value={formData.accessKey}
-                  onChange={handleChange}
-                />
-                <label className="label-login" htmlFor="accessKey">Access Key</label>
-              </div>
-            )}
-
-            <button type="submit" className="login-button">
-              Login as {role.charAt(0).toUpperCase() + role.slice(1)}
-            </button>
-
-            <div style={{ textAlign: 'center', marginTop: '0px' }}>
-              <p>
-                Don't have an account?
-                    <button
-                      type="button"
-                      className="switch-button"
-                      onClick={() => navigate('/register')}
-                    >
-                      Register Here
-                    </button>
-              </p> 
-
-              <p>
-                or continue as
-                <button
-                  type="button"
-                  className="switch-button"
-                  style={{ marginTop: '0px' }}
-                  onClick={() => navigate('/spectator/institution')}
-                >
-                  Spectator
-                </button>
-              </p>
-            </div>
-
-          </form>
-        </div>
-
-        <div className="login-right">
-          <img src="./LoginIMG.png" alt="Login Illustration" className="login-image" />
+          <div className="login-right">
+            <img src="./LoginIMG.png" alt="Login Illustration" className="login-image" />
+          </div>
         </div>
       </div>
-    </div>
-  </>
+    </>
   );
 }

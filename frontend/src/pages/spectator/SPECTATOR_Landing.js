@@ -4,7 +4,7 @@ import "../../styles/Spectator.css";
 
 export default function LandingPage() {
 
-  useEffect(() => {document.title = "SPARTA | Spectator";},[]);
+    useEffect(() => { document.title = "SPARTA | Spectator"; }, []);
 
     const [institutions, setInstitutions] = useState([]);
     const navigate = useNavigate();
@@ -27,7 +27,7 @@ export default function LandingPage() {
 
     return (
         <div className="main-container">
-                
+
             <div className="spectator-header">
                 <div className="header-text">
                     SPARTA SPECTATOR LIVE VIEWING
@@ -43,16 +43,16 @@ export default function LandingPage() {
             <h3 className="page-title">Select Your Institution</h3>
 
             <div className="institution-list">
-    
+
                 {institutions.map((institution) => (
                     <button key={institution._id} className="institution-item"
-                    onClick={() => handleInstitutionClick(institution)}>
+                        onClick={() => handleInstitutionClick(institution)}>
                         <div className="institution-name">
                             {institution.name}
                         </div>
                     </button>
                 ))}
             </div>
-        </div>     
+        </div>
     );
 };

@@ -1,6 +1,6 @@
 import { useNavigate, useParams } from "react-router-dom";
 import React, { useEffect, useState } from "react";
-import { GiBasketballBall, GiSoccerBall, GiTennisRacket, GiChessKnight, GiTennisBall} from "react-icons/gi";
+import { GiBasketballBall, GiSoccerBall, GiTennisRacket, GiChessKnight, GiTennisBall } from "react-icons/gi";
 import { MdSportsVolleyball, MdSportsKabaddi } from "react-icons/md";
 import { BiSolidBaseball, BiBaseball } from "react-icons/bi";
 import { FaCircleQuestion } from "react-icons/fa6";
@@ -9,11 +9,11 @@ import '../../styles/ADMIN_Games.css';
 
 const SpectatorGame = () => {
 
-  useEffect(() => {document.title = "SPARTA | " + decodedName + " Games";},[]);
+  useEffect(() => { document.title = "SPARTA | " + decodedName + " Games"; }, []);
 
   const navigate = useNavigate();
   const [gamesByType, setGamesByType] = useState({});
-  
+
   const { institution, eventName } = useParams();
   const decodedName = decodeURIComponent(eventName);
   const decodedInstitution = decodeURIComponent(institution);
@@ -103,30 +103,30 @@ const SpectatorGame = () => {
           filteredGames.map(([combinedType, games]) => {
             const gameType = games[0]?.gameType || "Default";
             const icon = gameIcons[gameType] || gameIcons.Default;
-          
+
             return (
-            <div style={{margin: "1rem"}}>
-              <div style={{width: "100%", display: "flex", justifyContent: "flex-end"}}>
-             
-              </div>
+              <div style={{ margin: "1rem" }}>
+                <div style={{ width: "100%", display: "flex", justifyContent: "flex-end" }}>
 
-              <div className="game-button-container" key={combinedType}>
-              
-                <button
-                  className="game-button"
-                  onClick={() =>
-                    navigate(
-                      `/spectator/${encodeURIComponent(decodedInstitution)}/${encodeURIComponent(decodedName)}/game/${games[0]._id}`
-                    )
-                  }
-                  style={{ display: "flex", alignItems: "center", gap: "8px" }}
-                >
-                  {icon && React.createElement(icon, { size: 50 })}
-                  {combinedType}
-                </button>
+                </div>
 
+                <div className="game-button-container" key={combinedType}>
+
+                  <button
+                    className="game-button"
+                    onClick={() =>
+                      navigate(
+                        `/spectator/${encodeURIComponent(decodedInstitution)}/${encodeURIComponent(decodedName)}/game/${games[0]._id}`
+                      )
+                    }
+                    style={{ display: "flex", alignItems: "center", gap: "8px" }}
+                  >
+                    {icon && React.createElement(icon, { size: 50 })}
+                    {combinedType}
+                  </button>
+
+                </div>
               </div>
-            </div>
             );
           })
         )}

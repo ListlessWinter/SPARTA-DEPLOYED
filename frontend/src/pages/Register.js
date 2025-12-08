@@ -63,16 +63,16 @@ export default function RegisterPage() {
     const payload =
       role === 'admin'
         ? {
-            email: formData.email,
-            password: formData.password,
-            institution: formData.institution,
-          }
+          email: formData.email,
+          password: formData.password,
+          institution: formData.institution,
+        }
         : {
-            email: formData.email,
-            password: formData.password,
-            institution: formData.institution,
-            eventName: formData.eventName,
-          };
+          email: formData.email,
+          password: formData.password,
+          institution: formData.institution,
+          eventName: formData.eventName,
+        };
 
     try {
       const response = await fetch(`https://sparta-deployed.onrender.com/api/auth/register/${role}`, {
@@ -190,7 +190,6 @@ export default function RegisterPage() {
           </form>
         </div>
       </div>
-
 
       {toast.show && (
         <div className={`toast ${toast.type === 'success' ? 'toast-success' : 'toast-error'}`}>

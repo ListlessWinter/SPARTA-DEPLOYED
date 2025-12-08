@@ -35,7 +35,7 @@ import PlayerGame from "./pages/player/PLAYER_Games";
 import PlayerGameBracket from "./pages/player/PLAYER_GameBracket";
 import PlayerFeedback from "./pages/player/PLAYER_Feedback";
 import PlayerTeamPlayers from "./pages/player/PLAYER_TeamPlayerList";
-import PlayerLiveScores from "./pages/player/PLAYER_LiveScores"; 
+import PlayerLiveScores from "./pages/player/PLAYER_LiveScores";
 import PlayerPantheon from "./pages/player/PLAYER_Pantheon";
 import PlayerPantheonRanks from "./pages/player/PLAYER_PantheonRanks";
 import PlayerPantheonTeam from "./pages/player/PLAYER_PantheonTeam";
@@ -46,7 +46,6 @@ import AllEvent from "./pages/spectator/SPECTATOR_Events";
 import SpectatorSpecificEvent from "./pages/spectator/SPECTATOR_SpecificEvent";
 import SpectatorGame from "./pages/spectator/SPECTATOR_Game";
 import SpectatorGameBracket from "./pages/spectator/SPECTATOR_GameBracket";
-
 
 export default function App() {
   return (
@@ -89,11 +88,11 @@ export default function App() {
         <Route path="/pantheon/:eventName/ranking" element={<BlockRoute> <PlayerPantheonRanks /> </BlockRoute>} />
         <Route path="/pantheon/:eventName/:teamName/players" element={<BlockRoute> <PlayerPantheonTeam /> </BlockRoute>} />
         {/*Spectator*/}
-        <Route path="/spectator/institution" element={ <LandingPage />} />
-        <Route path="/spectator/:institution" element={ <AllEvent />} />
-        <Route path="/spectator/:institution/:eventName" element={ <SpectatorSpecificEvent />} />
-        <Route path="/spectator/:institution/:eventName/game" element={ <SpectatorGame />} />
-        <Route path="/spectator/:institution/:eventName/game/:game" element={ <SpectatorGameBracket />} />
+        <Route path="/spectator/institution" element={<LandingPage />} />
+        <Route path="/spectator/:institution" element={<AllEvent />} />
+        <Route path="/spectator/:institution/:eventName" element={<SpectatorSpecificEvent />} />
+        <Route path="/spectator/:institution/:eventName/game" element={<SpectatorGame />} />
+        <Route path="/spectator/:institution/:eventName/game/:game" element={<SpectatorGameBracket />} />
       </Routes>
     </Router>
   );

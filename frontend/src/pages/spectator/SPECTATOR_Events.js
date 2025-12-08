@@ -1,11 +1,11 @@
-import { useNavigate,useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import '../../styles/ADMIN_Event.css';
 import "../../styles/Spectator.css";
 
 const AllEvent = () => {
 
-  useEffect(() => {document.title = "SPARTA | Event List";},[]);
+  useEffect(() => { document.title = "SPARTA | Event List"; }, []);
 
   const navigate = useNavigate();
   const [events, setEvents] = useState([]);
@@ -21,7 +21,7 @@ const AllEvent = () => {
     };
     fetchEvents();
   }, [userInstitution]);
-  
+
   const handleEventClick = (event) => {
     navigate(`/spectator/${encodeURIComponent(userInstitution)}/${encodeURIComponent(event.eventName)}`);
   };
@@ -32,35 +32,35 @@ const AllEvent = () => {
   );
 
   return (
-<>
-    <div className="main-container">
+    <>
+      <div className="main-container">
 
-      <div className="spectator-header">
-        <div className="header-text">
-          SPARTA SPECTATOR LIVE VIEWING
+        <div className="spectator-header">
+          <div className="header-text">
+            SPARTA SPECTATOR LIVE VIEWING
+          </div>
         </div>
-      </div>
 
-      <div className="logo-div">
-        <div className="logo-container">
-          <img src="/SPARTA_Logo.png" alt="SPARTA Logo" className="spectator-logo" />
+        <div className="logo-div">
+          <div className="logo-container">
+            <img src="/SPARTA_Logo.png" alt="SPARTA Logo" className="spectator-logo" />
+          </div>
         </div>
-      </div>
 
-      <h2 className="page-title">Current Events in {userInstitution}</h2>
+        <h2 className="page-title">Current Events in {userInstitution}</h2>
 
-      <div className="spectator-main-header">
-        <input
-          type="text"
-          className="event-search-bar"
-          placeholder="Search events..."
-          value={searchQuery}
-          onChange={e => setSearchQuery(e.target.value)}
-          style={{ marginRight: "16px", padding: "8px 12px", borderRadius: "6px", border: "1px solid #ccc", fontSize: "16px" }}
-        />
-      </div>
+        <div className="spectator-main-header">
+          <input
+            type="text"
+            className="event-search-bar"
+            placeholder="Search events..."
+            value={searchQuery}
+            onChange={e => setSearchQuery(e.target.value)}
+            style={{ marginRight: "16px", padding: "8px 12px", borderRadius: "6px", border: "1px solid #ccc", fontSize: "16px" }}
+          />
+        </div>
 
-      {filteredEvents.length === 0 ? (
+        {filteredEvents.length === 0 ? (
           <div className="no-events-container">
             <p className="no-events-message"> There are no on-going events at {userInstitution}</p>
           </div>
@@ -68,7 +68,7 @@ const AllEvent = () => {
           <div className="spectator-event-list">
             {filteredEvents.map((event) => (
               <div className='spectator-event-item' key={event._id}>
-                <div className="event-color" style={{ background: event.eventColor ? event.eventColor : '#A96B24'}} onClick={() => handleEventClick(event)}>
+                <div className="event-color" style={{ background: event.eventColor ? event.eventColor : '#A96B24' }} onClick={() => handleEventClick(event)}>
                 </div>
                 <div className="event-name" onClick={() => handleEventClick(event)}>
                   {event.eventName}
@@ -77,9 +77,9 @@ const AllEvent = () => {
             ))}
           </div>
         )}
-    </div>
-    
-  </>
+      </div>
+
+    </>
   )
 };
 
