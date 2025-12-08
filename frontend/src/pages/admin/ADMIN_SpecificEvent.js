@@ -37,10 +37,6 @@ const SpecificEvent = () => {
      // Fetch Team numbers
     useEffect(() => {
       const fetchTeamCount = async () => {
-          // Need event ID to be safe, but if your API allows name, use that.
-          // Assuming your backend supports filtering by event ID or name.
-          if (!decodedName) return; 
-
           try {
               const res = await fetch(`http://localhost:5000/api/teams?institution=${encodeURIComponent(user?.institution)}&eventName=${decodedName}`);
               const data = await res.json();
