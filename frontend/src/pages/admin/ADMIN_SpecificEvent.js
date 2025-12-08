@@ -15,8 +15,10 @@ const SpecificEvent = () => {
     const navigate = useNavigate();
     const { eventName } = useParams();
     const decodedName = decodeURIComponent(eventName);
+    const user = JSON.parse(localStorage.getItem("auth"));
 
     const [event, setEventDetails] = useState(null);
+    const [teamCount, setTeamCount] = useState(0);
 
     // Fetch Event details
     useEffect(() => {
@@ -32,7 +34,27 @@ const SpecificEvent = () => {
       fetchEventDetails();
     }, [decodedName]);
 
+     // Fetch Team numbers
+    useEffect(() => {
+      const fetchTeamCount = async () => {
+          try {
+              const res = await fetch(`https://sparta-deployed.onrender.com/api/teams?institution=${encodeURIComponent(user?.institution)}&event=${decodedName}`);
+              const data = await res.json();
+              
+              if (Array.isArray(data)) {
+                  setTeamCount(data.length);
+              }
+          } catch (err) {
+              console.error("Error fetching teams count:", err);
+          }
+      };
 
+      if (event && user) {
+          fetchTeamCount();
+      }
+  }, [user, decodedName]);
+
+    const isGameDisabled = teamCount < 2;
     // Game button nav
     const handleGameClick = () => {
         navigate(`/admin/event/${encodeURIComponent(decodedName)}/game`);
@@ -88,7 +110,18 @@ const SpecificEvent = () => {
                       </div>
                     </button>
 
-                    <button className="btn-game" onClick={handleGameClick}>
+                    <button 
+                        className={`btn-game ${isGameDisabled ? "disabled" : ""}`} 
+                        onClick={handleGameClick}
+                        disabled={isGameDisabled}
+                        title={isGameDisabled ? "Need at least 2 teams to manage games" : ""}
+                        style={isGameDisabled ? { 
+                            backgroundColor: "#ccc", 
+                            cursor: "not-allowed", 
+                            opacity: 0.7,
+                            filter: "grayscale(100%)" 
+                        } : {}}
+                    >
                       <div className="btn-content">
                         <LuSwords size={48} /> 
                         <span>Game</span>
