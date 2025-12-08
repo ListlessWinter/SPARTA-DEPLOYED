@@ -200,7 +200,7 @@
 
 .team-btn.teams-skeleton-btn {
   width: 100%;
-  height: 120px; /* match the real team tile height visually */
+  height: 225px; /* match the real team tile height visually */
   border: none;
   border-radius: 8px;
   display: flex;
