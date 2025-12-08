@@ -22,7 +22,7 @@ function shuffleArray(array) {
   return arr;
 };
 
-// RR Round Generate
+// --- HELPER: Generate Round Robin Matches ---
 const generateRRMatches = (teams, bracketName) => {
   const matches = [];
   // If odd number of teams, add dummy "BLANK"
