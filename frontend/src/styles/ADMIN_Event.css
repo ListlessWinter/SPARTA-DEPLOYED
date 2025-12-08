@@ -36,7 +36,7 @@
   }
 
   .event-item {
-    min-width: 15vw;
+    width: 15vw;
     max-height: fit-content;
   }
 
