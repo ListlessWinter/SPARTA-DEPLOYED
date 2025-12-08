@@ -298,7 +298,7 @@
   }
 }
 
-@media (max-width: 1600px) {
+@media (min-width: 1600px) {
   .profile-actions {
     width: 60%;
     margin-bottom: 15px;
