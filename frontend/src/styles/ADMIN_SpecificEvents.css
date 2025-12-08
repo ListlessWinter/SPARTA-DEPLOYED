@@ -81,6 +81,12 @@
     gap: 45px;
   }
 
+  .event-specifics button {
+    height: 190px;
+    font-size: 14px;
+    width: 150px;
+  }
+
   .event-header, .event-details {
     width: 50vw;
   }
