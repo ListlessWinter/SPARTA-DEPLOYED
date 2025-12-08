@@ -252,11 +252,13 @@
   grid-template-columns: 1fr;
   gap: 12px;
 }
+
 @media (min-width: 600px) {
   .form-grid {
     grid-template-columns: 1fr 1fr;
   }
 }
+
 .form-actions {
   margin-top: 20px;
   display: flex;
@@ -288,7 +290,19 @@
   display: flex;
   gap: 10px;
   justify-content: flex-end;
-  width: 100%;
+}
+
+@media (min-width:770px) and (max-width: 1599px) {
+  .profile-actions {
+    width: 100%
+  }
+}
+
+@media (max-width: 1600px) {
+  .profile-actions {
+    width: 60%;
+    margin-bottom: 15px;
+  }
 }
 
 .btn {
