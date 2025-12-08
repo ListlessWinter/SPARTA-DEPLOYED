@@ -27,14 +27,14 @@ const Header = () => {
   const [showEditModal, setShowEditModal] = useState(false);
 
   // edit form state
-  const [nickname, setNickname] = useState(user?.playerName || '');
+  const [playerName, setplayerName] = useState(user?.playerName || '');
   const [photoFile, setPhotoFile] = useState(null);
   const [previewSrc, setPreviewSrc] = useState(user?.profilePic || null);
 
   const dropdownRef = useRef(null);
 
   useEffect(() => {
-    setNickname(user?.playerName || '');
+    setplayerName(user?.playerName || '');
     setPreviewSrc(user?.profilePic || null);
   }, [user]);
 
@@ -57,7 +57,7 @@ const Header = () => {
   const openEdit = () => {
     setDropdownOpen(false);
     setShowEditModal(true);
-    setNickname(user?.playerName || '');
+    setplayerName(user?.playerName || '');
     setPreviewSrc(user?.profilePic || null);
     setPhotoFile(null);
   };
@@ -69,18 +69,54 @@ const Header = () => {
     setPreviewSrc(URL.createObjectURL(f));
   };
 
+  // Update Name and pic
   const handleSave = async (e) => {
     e.preventDefault();
-    // TODO: Upload photoFile to server and get URL, then save nickname + profilePic via API.
-    // For now update localStorage so UI reflects changes immediately.
-    const updated = { ...user, playerName: nickname, profilePic: previewSrc };
-    localStorage.setItem('auth', JSON.stringify(updated));
-    setUser(updated);
-    setShowEditModal(false);
+    try {
+      // Formdata for files
+      const formData = new FormData();
+      formData.append('playerName', playerName);
+      
+      // Only append the file if the user actually selected a new one
+      if (photoFile) {
+        formData.append('profilePic', photoFile); 
+      }
+
+      // Send to Backend
+      const response = await fetch(`https://sparta-deployed.onrender.com/api/players/users/${user._id || user.id}`, {
+        method: 'PUT',
+        body: formData, 
+      });
+
+      if (response.ok) {
+        const updatedUserFromDB = await response.json();
+
+        // Update Local Storage
+        const newAuthData = { 
+          ...user, 
+          ...updatedUserFromDB,
+          playerName: updatedUserFromDB.playerName,
+          profilePic: updatedUserFromDB.profilePic 
+        };
+        
+        localStorage.setItem('auth', JSON.stringify(newAuthData));
+        setUser(newAuthData);
+        setShowEditModal(false);
+        
+        alert("Profile updated successfully!");
+      } else {
+        const errData = await response.json();
+        console.error("Failed to update profile:", errData);
+        alert(`Failed: ${errData.message}`);
+      }
+
+    } catch (error) {
+      console.error("Error updating profile:", error);
+    }
   };
 
   const avatarSrc = user?.profilePic || '/SPARTA_Logo.png';
-  const displayName = user?.playerName || user?.nickname || user?.email?.split('@')[0] || 'User';
+  const displayName = user?.playerName || user?.email?.split('@')[0] || 'User';
 
   return (
     <div className="header">
@@ -91,7 +127,7 @@ const Header = () => {
       <div className="user-box" ref={dropdownRef}>
         
         <div className="user-meta">
-          <div className="user-nick"> Hi, {displayName} !</div>
+          <div className="user-nick"> Hi, {displayName}!</div>
           <div className="user-role">{user.role?.toUpperCase()}</div>
         </div>
 
@@ -131,7 +167,7 @@ const Header = () => {
               </div>
 
               <label className="input-label">
-                <input type="text" placeholder='Enter nickname' value={nickname} onChange={(e) => setNickname(e.target.value)} />
+                <input type="text" placeholder='Enter nickname' value={playerName} onChange={(e) => setplayerName(e.target.value)} />
               </label>
 
               <div className="readonly-info">

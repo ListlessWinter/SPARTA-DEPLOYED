@@ -1,5 +1,6 @@
 const express = require("express");
 const Player = require("../models/Player");
+const Admin = require("../models/Admin");
 const Game = require("../models/Game");
 const mongoose = require("mongoose");
 
@@ -315,6 +316,73 @@ router.put("/players/:id/profile", async (req, res) => {
   const updatedPlayer = await Player.findByIdAndUpdate(req.params.id, req.body, { new: true });
   if (!updatedPlayer) return res.status(404).json({ message: "Player not found" });
   res.json(updatedPlayer);
+});
+
+// Update Name and pic
+router.put('/players/users/:id', upload.single('profilePic'), async (req, res) => {
+  try {
+    const { playerName } = req.body;
+    const id = req.params.id;
+    let profilePictureUrl = null;
+
+    // SUPABASE UPLOAD 
+    if (req.file) {
+      const fileExt = req.file.originalname.split('.').pop();
+      const uniqueFileName = `${id}_${Date.now()}.${fileExt}`;
+
+      // Upload
+      const { error } = await supabase.storage
+        .from("profilePics")
+        .upload(uniqueFileName, req.file.buffer, {
+          contentType: req.file.mimetype,
+          upsert: true,
+        });
+
+      if (error) {
+        console.error("Supabase upload error:", error);
+        return res.status(500).json({ message: "Failed to upload image" });
+      }
+
+      // Get Public URL
+      const { data: publicData } = supabase.storage
+        .from("profilePics")
+        .getPublicUrl(uniqueFileName);
+      
+      profilePictureUrl = publicData.publicUrl;
+    }
+
+    const updateData = { playerName };
+    
+    if (profilePictureUrl) {
+      updateData.profilePic = profilePictureUrl;
+    }
+
+    // Check Player First
+    let updatedUser = await Player.findByIdAndUpdate(
+      id, 
+      updateData, 
+      { new: true } 
+    );
+
+    // If not Player, Then Admin
+    if (!updatedUser) {
+      updatedUser = await Admin.findByIdAndUpdate(
+        id,
+        updateData, 
+        { new: true }
+      );
+    }
+
+    if (!updatedUser) {
+      return res.status(404).json({ message: "User not found in Players or Admins." });
+    }
+
+    res.json(updatedUser);
+
+  } catch (err) {
+    console.error("Update Error:", err);
+    res.status(500).json({ message: err.message });
+  }
 });
 
 // GET single player

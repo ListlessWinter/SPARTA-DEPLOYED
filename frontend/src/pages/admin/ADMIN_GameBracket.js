@@ -115,9 +115,21 @@ const GameBracket = () => {
         for (let r = 1; r <= maxRound; r++) {
           let seeds = matches
             .filter((m) => m.round === r)
-            .map((m) => ({
+            // --- FIX: Strict Filter ---
+            // Hide match if Both teams are "No Opponent"
+            // OR if one is "No Opponent" and the other is still "TBD" (waiting for a ghost)
+            .filter(m => {
+               const t1 = m.teams[0].name;
+               const t2 = m.teams[1].name;
+               
+               if (t1 === "No Opponent" && t2 === "No Opponent") return false;
+               if (t1 === "No Opponent" && t2 === "TBD") return false;
+               if (t1 === "TBD" && t2 === "No Opponent") return false;
+               
+               return true;
+            })            .map((m) => ({
               id: m._id,
-              date: game.startDate,
+              date: m.date ? new Date(m.date) : null,
               teams: m.teams.map((t) => ({
                 name: t?.name || "TBD",
                 score: t?.score ?? null,
@@ -126,12 +138,9 @@ const GameBracket = () => {
               finalizeWinner: m.finalizeWinner || false,
             }));
 
-          // Keep LB Round 1 even if it's empty — only skip rendering if there are truly no matches
           if (skipIncompleteFirstRound && r === 1) {
-            // If the round has zero matches, skip rendering it entirely
             if (seeds.length === 0) continue;
           }
-
 
           if (seeds.length) bracketRounds.push({ title: `Round ${r}`, seeds });
         }
@@ -218,7 +227,7 @@ const GameBracket = () => {
           .filter((m) => m.round === r)
           .map((m) => ({
             id: m._id,
-            date: game.startDate,
+            date: m.date ? new Date(m.date) : null,
             teams: m.teams.map((t) => ({
               name: t?.name || "TBD",
               score: t?.score ?? null,
@@ -263,6 +272,80 @@ const GameBracket = () => {
         });
       }
     }
+    if (game.bracketType === "ADNU") {
+      // Helper to build rounds
+      const buildBracketRounds = (matches, namePrefix) => {
+         if(!matches.length) return [];
+         const maxRound = Math.max(...matches.map(m => m.round));
+         const rounds = [];
+         for(let r=1; r<=maxRound; r++) {
+            const seeds = matches.filter(m => m.round === r).map(m => ({
+               id: m._id,
+               date: m.date ? new Date(m.date) : null,
+               teams: m.teams.map(t => ({ 
+                 name: t.name, score: t.score, winner: m.finalizeWinner && t.name === m.winner 
+               })),
+               finalizeWinner: m.finalizeWinner
+            }));
+            rounds.push({ title: `Round ${r}`, seeds });
+         }
+         return rounds;
+      };
+
+      // 1. Groups
+      rounds.push({ title: "Category A", rounds: buildBracketRounds(game.matches.filter(m => m.bracket === "Group A"), "A") });
+      rounds.push({ title: "Category B", rounds: buildBracketRounds(game.matches.filter(m => m.bracket === "Group B"), "B") });
+
+      // 2. Playoffs (Semi -> Final -> Champion)
+      const sfMatches = game.matches.filter(m => m.bracket === "SF");
+      const finalMatch = game.matches.find(m => m.bracket === "Championship");
+      
+      const playoffRounds = [
+         { 
+           title: "Semi-Finals", 
+           seeds: sfMatches.map(m => ({
+               id: m._id, date: m.date ? new Date(m.date) : null,
+               teams: m.teams.map(t => ({ name: t.name, score: t.score, winner: m.finalizeWinner && t.name === m.winner })),
+               finalizeWinner: m.finalizeWinner
+           }))
+         },
+         { 
+           title: "Championship", 
+           seeds: finalMatch ? [{
+               id: finalMatch._id, date: finalMatch.date ? new Date(finalMatch.date) : null,
+               teams: finalMatch.teams.map(t => ({ name: t.name, score: t.score, winner: finalMatch.finalizeWinner && t.name === finalMatch.winner })),
+               finalizeWinner: finalMatch.finalizeWinner
+           }] : []
+         }
+      ];
+
+      // Add Champion Column if Final is done
+      if (finalMatch && finalMatch.finalizeWinner) {
+        playoffRounds.push({
+          title: "Champion",
+          seeds: [{
+            id: "champion", date: game.endDate,
+            teams: [{ name: finalMatch.winner, score: "WIN", winner: true }],
+            finalizeWinner: true
+          }]
+        });
+      }
+      
+      rounds.push({ title: "Playoffs", rounds: playoffRounds });
+
+      // 3. 3rd Place
+      const third = game.matches.find(m => m.bracket === "3rd Place");
+      if(third) {
+        rounds.push({ 
+          title: "3rd Place", 
+          seeds: [{
+             id: third._id, date: third.date ? new Date(third.date) : null,
+             teams: third.teams.map(t => ({ name: t.name, score: t.score, winner: third.finalizeWinner && t.name === third.winner })),
+             finalizeWinner: third.finalizeWinner
+          }]
+        });
+      }
+   }
     return rounds;
   };
 
@@ -372,6 +455,24 @@ const GameBracket = () => {
         tally.silver = sortedTeams[1] ? sortedTeams[1][0] : null;
         tally.bronze = sortedTeams[2] ? sortedTeams[2][0] : null;
       }
+      // --- FIX: ADNU Medal Logic ---
+      else if (bracketType === "ADNU") {
+        // Find the Championship match
+        const finalMatch = matches.find(m => m.bracket === "Championship");
+        
+        // Find the 3rd Place match
+        const thirdPlaceMatch = matches.find(m => m.bracket === "3rd Place");
+
+        if (finalMatch && finalMatch.finalizeWinner) {
+          tally.gold = finalMatch.winner;
+          // The silver medalist is the loser of the Championship match
+          tally.silver = finalMatch.teams.find(t => t.name !== finalMatch.winner)?.name;
+        }
+
+        if (thirdPlaceMatch && thirdPlaceMatch.finalizeWinner) {
+          tally.bronze = thirdPlaceMatch.winner;
+        }
+      }
     } catch (e) {
       console.error("Error calculating medal tally:", e);
       return { gold: "Error", silver: "Error", bronze: "Error" };
@@ -387,23 +488,36 @@ const GameBracket = () => {
   };
 
   // Rendering Bracket
-  const renderSeed = (props) => (
+  const renderSeed = (props) => {
+    // Check if match is scheduled
+    const isScheduled = !!props.seed.date;
+    
+    // Helper to check for "No Opponent"
+    const hasNoOpponent = props.seed.teams.some(t => t.name === "No Opponent");
+
+    return (
     <Seed
       {...props}
       style={{ fontSize: "14px", cursor: props.seed.id === "champion" ? "default" : "pointer" }}
       onClick={() => {
-        if (props.seed.id !== "champion") {
-          setSelectedMatch({ ...props.seed, type: "scores" });
-          setTempScores(props.seed.teams.map((t) => t.score ?? 0));
-        }
+         // ... existing click logic ...
       }}
     >
       <SeedItem className="seed-item">
-        {props.seed.teams.map((team, idx) => (
-          <SeedTeam key={idx} className="seed-team">
-            {team.name} <span className="score-box">{team.score ?? "-"}</span>
-          </SeedTeam>
-        ))}
+        {props.seed.teams.map((team, idx) => {
+          // LOGIC: If this match has "No Opponent" AND this specific team IS NOT "No Opponent", show "Auto"
+          // Otherwise, show the actual score or "-"
+          let displayScore = team.score ?? "-";
+          if (hasNoOpponent && team.name !== "No Opponent") {
+             displayScore = "Auto";
+          }
+          
+          return (
+            <SeedTeam key={idx} className="seed-team">
+              {team.name} <span className="score-box">{displayScore}</span>
+            </SeedTeam>
+          );
+        })}
 
         {/* Hide buttons for Champion column*/}
         {props.seed.id !== "champion" && (
@@ -427,6 +541,11 @@ const GameBracket = () => {
             <button
               onClick={(e) => {
                 e.stopPropagation();
+
+                if (!isScheduled) {
+                  alert("Please schedule the match first.");
+                  return;
+                }
                 setSelectedMatch({ ...props.seed, type: "scores" });
                 setTempScores(props.seed.teams.map((t) => t.score ?? 0));
               }}
@@ -437,7 +556,8 @@ const GameBracket = () => {
         )}
       </SeedItem>
     </Seed>
-  );
+    );
+  };
 
   // Scheduling
   const saveSchedule = async () => {
@@ -487,8 +607,15 @@ const GameBracket = () => {
     }
   };
 
-  const roundsData = makeRoundsFromMatches();
-  const isGameFinished = roundsData.some(r => r.title === "Champion");
+  let isGameFinished = false;
+  const roundsData = makeRoundsFromMatches(); // Call this once to use result
+  
+  if (game.bracketType === "ADNU") {
+     const champRound = roundsData.find(r => r.title === "Playoffs")?.rounds?.find(sub => sub.title === "Champion");
+     isGameFinished = !!champRound;
+  } else {
+     isGameFinished = roundsData.some(r => r.title === "Champion");
+  }
 
   return (
     <MainLayout>
@@ -612,21 +739,48 @@ const GameBracket = () => {
           </div>
         )}
 
-        {game.bracketType === "Swiss" && (
-          <div className="swiss bracket-container">
-            <h2>Swiss Bracket</h2>
-            {roundsData.map((round, rIndex) => (
-              <div key={rIndex} className="swiss-round">
-                <h3 className="swiss-title">{round.title}</h3>
-                <div className="swiss-matches">
-                  {round.seeds.map((seed, sIndex) => (
-                    <React.Fragment key={sIndex}>
-                      {renderSeed({ seed })}
-                    </React.Fragment>
-                  ))}
+{game.bracketType === "ADNU" && (
+          <div className="rr-knockout-container" style={{display:'flex', flexDirection:'column', gap:'40px'}}>
+             
+             {/* Groups Area - MANUALLY RENDER AS GRID */}
+             <div style={{display:'flex', gap:'30px', justifyContent:'center', flexWrap:'wrap', width: '100%'}}>
+                {roundsData.filter(r => r.title.startsWith("Category")).map((group, gIdx) => (
+                   <div key={gIdx} className="group-stage" style={{backgroundColor: '#f9f9f9', padding: '15px', borderRadius: '8px', border: '1px solid #ddd'}}>
+                      <h3 style={{textAlign: 'center', margin: '0 0 15px 0', borderBottom: '2px solid #181b59', paddingBottom: '5px'}}>{group.title}</h3>
+                      
+                      <div style={{display:'flex', gap:'20px'}}>
+                        {/* Iterate over rounds inside the group */}
+                        {group.rounds.map((round, rIdx) => (
+                          <div key={rIdx} style={{display:'flex', flexDirection:'column', gap:'10px'}}>
+                             <h4 style={{fontSize: '14px', textAlign:'center', color: '#666', margin: '0'}}>{round.title}</h4>
+                             {round.seeds.map((seed, sIdx) => (
+                                <div key={sIdx} style={{marginBottom: '5px'}}>
+                                   {renderSeed({seed, breakpoint: 0})} 
+                                </div>
+                             ))}
+                          </div>
+                        ))}
+                      </div>
+                   </div>
+                ))}
+             </div>
+
+             {/* Knockout Area */}
+             <div style={{borderTop:'2px solid #ccc', paddingTop:'20px', textAlign: 'center'}}>
+                <h2>Playoffs</h2>
+                <Bracket 
+                  rounds={roundsData.find(r => r.title === "Playoffs")?.rounds || []} 
+                  renderSeedComponent={renderSeed} 
+                />
+                
+                {/* 3rd Place */}
+                <div style={{marginTop:'30px', display:'flex', flexDirection:'column', alignItems:'center'}}>
+                   <h4>3rd Place Match</h4>
+                   {roundsData.find(r => r.title === "3rd Place")?.seeds?.map((seed, i) => (
+                      <div key={i}>{renderSeed({seed})}</div>
+                   ))}
                 </div>
-              </div>
-            ))}
+             </div>
           </div>
         )}
       </div>
