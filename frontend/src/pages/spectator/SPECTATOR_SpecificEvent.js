@@ -22,7 +22,7 @@ const SpectatorSpecificEvent = () => {
     const fetchEventDetails = async () => {
       try {
         const response = await fetch(
-          `https://sparta-deployed.onrender.com/api/specific-event?eventName=${encodeURIComponent(decodedName)}`
+          `http://localhost:5000/api/specific-event?eventName=${encodeURIComponent(decodedName)}`
         );
         const data = await response.json();
         setEventDetails(data);
@@ -38,11 +38,15 @@ const SpectatorSpecificEvent = () => {
   };
 
   const handleTeamClick = () => {
-    navigate(`/event/${encodeURIComponent(decodedName)}/team/players`);
+    navigate(`/spectator/${encodeURIComponent(decodedInstitution)}/${encodeURIComponent(decodedName)}/teams`);
   };
 
   const handleScoreClick = () => {
-    navigate(`/event/${encodeURIComponent(decodedName)}/liveScores`);
+    navigate(`/spectator/${encodeURIComponent(decodedInstitution)}/${encodeURIComponent(decodedName)}/liveScores`);
+  };
+
+  const handleFeedbackClick = () => {
+    navigate(`/event/${encodeURIComponent(decodedName)}/feedback`);
   };
 
   return (
@@ -65,7 +69,7 @@ const SpectatorSpecificEvent = () => {
         <h2>{decodedName}</h2>
       </div>
 
-      <div className="spectator-event-details">
+      <div className="event-details">
 
         <div className="organizer-box">
           <h3>Organizer Details</h3>
@@ -84,31 +88,25 @@ const SpectatorSpecificEvent = () => {
         </div>
       </div>
 
-      <div className="spectator-event-specifics">
+      <div className="event-specifics">
 
-        <button className="btn-team"
-          // onClick={handleTeamClick}
-          style={{ backgroundColor: "gray" }}
-        >
+        <button className="btn-team" onClick={handleTeamClick}>
           <div className="btn-content">
-            <TiGroupOutline size={48} /> {/* Larger icon */}
+            <TiGroupOutline size={48} />
             <span>Team</span>
           </div>
         </button>
 
-        <button className="btn-game" onClick={handleGameClick} style={{ backgroundColor: "#ce892c" }}>
+        <button className="btn-game" onClick={handleGameClick}>
           <div className="btn-content">
             <LuSwords size={48} /> {/* Larger icon */}
             <span>Game</span>
           </div>
         </button>
 
-        <button className="btn-score"
-          // onClick={handleScoreClick}
-          style={{ backgroundColor: "gray" }}
-        >
+        <button className="btn-score" onClick={handleScoreClick}>
           <div className="btn-content">
-            <MdOutlineScoreboard size={48} /> {/* Larger icon */}
+            <MdOutlineScoreboard size={48} />
             <span>Live Score</span>
           </div>
         </button>
