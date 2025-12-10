@@ -434,8 +434,13 @@
 
 @media (min-width: 769px) and (max-width: 1272px) {
 
-  .dashboard-page-container {
+  .dashboard-main-content {
     flex-direction: row;
+    gap: 15px;
+  }
+
+  .dashboard-page-container {
+    flex-direction: column;
     align-items: flex-start;
   }
 

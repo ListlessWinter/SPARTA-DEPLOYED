@@ -5,9 +5,17 @@
   height: fit-content;
 }
 
-@media (min-width: 1272px) {
+@media (min-width:769px) and (max-width:1272px) {
   .main-content {
-    margin-left: 200px;
+    margin-left: 150px;
+    margin-top: 10vh;
+  }
+}
+
+
+@media (min-width: 1273px) {
+  .main-content {
+    margin-left: 5vw;
     margin-top: 15vh;
   }
 }
