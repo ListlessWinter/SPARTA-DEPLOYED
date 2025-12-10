@@ -42,6 +42,19 @@ const SpectatorScore = () => {
 
   return (
     <>
+      <div className="spectator-header">
+          <div className="header-text">
+            SPARTA SPECTATOR LIVE VIEWING
+          </div>
+        </div>
+
+        <div className="logo-div">
+          <div className="logo-container">
+            <img src="/SPARTA_Logo.png" alt="SPARTA Logo" className="spectator-logo" />
+          </div>
+        </div>
+
+
       <div className="live-scores-header">
         <h1>LiveScores for {decodedEvent}</h1>
       </div>

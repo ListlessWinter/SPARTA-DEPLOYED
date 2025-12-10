@@ -57,6 +57,19 @@ const SpectatorTeams = () => {
 
     return (
         <div className="teams-main-container">
+        
+        <div className="spectator-header">
+          <div className="header-text">
+            SPARTA SPECTATOR LIVE VIEWING
+          </div>
+        </div>
+
+        <div className="logo-div">
+          <div className="logo-container">
+            <img src="/SPARTA_Logo.png" alt="SPARTA Logo" className="spectator-logo" />
+          </div>
+        </div>
+
             <div className="teams-header-row">
                 <div>
                     <h3> TEAMS FOR {decodedName}</h3>
