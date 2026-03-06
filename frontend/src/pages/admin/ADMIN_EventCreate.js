@@ -54,19 +54,20 @@ const CreateEvent = () => {
       });
 
       if (response.ok) {
-        setModalMessage("Event Create and Event Invitaions have been sent!");
+        setModalMessage("Event Created and Event Invitations have been sent!");
         setShowModal(true);
         setTimeout(() => {
           setShowModal(false);
           navigate(-1);
         }, 5000)
       } else {
-        setModalMessage("There are still fields that needs to be filled-up.   ")
+        setModalMessage("Failed to create event. Please check your inputs and try again.")
         setShowModal(true);
       }
     } catch (error) {
       console.error("Error creating event:", error);
-      setModalMessage("Failed to create event.")
+      setModalMessage("Failed to create event. Please try again.")
+      setShowModal(true);
     }
   };
 
