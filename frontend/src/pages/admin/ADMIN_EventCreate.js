@@ -116,13 +116,14 @@ const CreateEvent = () => {
             <h1>Event Creation Form</h1>
           </div>
 
-          <form className="event-forms" onSubmit={handleCreate}>
-            <div className='event-form-container'>
-              <div className="event-form-left">
-                <div className="event-form-title">
-                  <h4> EVENT DETAILS </h4>
-                  <p style={{ color: 'red', fontSize: '10px' }}> *All Fields Are REQUIRED To Be Filled Up* </p>
-                </div>
+          <div className='event-form-container'>
+            <div className="event-form-left">
+              <div className="event-form-title">
+                <h4> EVENT DETAILS </h4>
+                <p style={{ color: 'red', fontSize: '10px' }}> *All Fields Are REQUIRED To Be Filled Up* </p>
+              </div>
+
+              <form className="event-forms" onSubmit={handleCreate}>
 
                 <label>
                   Event Name:
@@ -225,13 +226,16 @@ const CreateEvent = () => {
                     </div>
                   ))}
                 </div>
+              </form>
+            </div>
+
+            <div className="event-form-right" style={{ minHeight: `${220 + coordinators.length * 60}px` }}>
+              <div className="event-form-title">
+                <h4> ORGANIZER DETAILS </h4>
+                <p style={{ color: 'red'}}> *All Fields Are REQUIRED To Be Filled Up* </p>
               </div>
 
-              <div className="event-form-right" style={{ minHeight: `${220 + coordinators.length * 60}px` }}>
-                <div className="event-form-title">
-                  <h4> ORGANIZER DETAILS </h4>
-                  <p style={{ color: 'red'}}> *All Fields Are REQUIRED To Be Filled Up* </p>
-                </div>
+              <form className="event-forms" onSubmit={handleCreate}>
 
                 <label>
                   Organizer Name:
@@ -338,16 +342,16 @@ const CreateEvent = () => {
                   </p>
                 )}
 
-              </div>
+              </form>
             </div>
+          </div>
 
-            <div>
-                <div className="lower-buttons">
-                  <button type="button" onClick={handleCancel}>Cancel</button>
-                  <button type="submit">Create Event</button>
-                </div>
-            </div>
-          </form>
+          <div>
+              <div className="lower-buttons">
+                <button type="button" onClick={handleCancel}>Cancel</button>
+                <button type="submit" onClick={handleCreate}>Create Event</button>
+              </div>
+          </div>
           
         </div>
       </div>
