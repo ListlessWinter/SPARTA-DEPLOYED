@@ -6,11 +6,13 @@ import "../../styles/ADMIN_TeamPlayers.css"
 
 const PlayerTeamPlayers = () => {
 
-  useEffect(() => { document.title = "SPARTA | " + decodedTeam + " Players"; }, [decodedTeam]);
+
 
   const { eventName, teamName } = useParams();
   const decodedEvent = decodeURIComponent(eventName);
   const decodedTeam = decodeURIComponent(teamName);
+
+  useEffect(() => { document.title = "SPARTA | " + decodedTeam + " Players"; }, [decodedTeam]);
   const [teamColor, setTeamColor] = useState("#808080");
   const [teamRank, setTeamRank] = useState(null);
 

@@ -9,7 +9,7 @@ import '../../styles/ADMIN_Games.css';
 
 const SpectatorGame = () => {
 
-  useEffect(() => { document.title = "SPARTA | " + decodedName + " Games"; }, [decodedName]);
+
 
   const navigate = useNavigate();
   const [gamesByType, setGamesByType] = useState({});
@@ -17,6 +17,8 @@ const SpectatorGame = () => {
   const { institution, eventName } = useParams();
   const decodedName = decodeURIComponent(eventName);
   const decodedInstitution = decodeURIComponent(institution);
+
+  useEffect(() => { document.title = "SPARTA | " + decodedName + " Games"; }, [decodedName]);
 
   const [searchQuery, setSearchQuery] = useState("");
   const filteredGames = Object.entries(gamesByType).filter(([combinedType]) =>

@@ -2,13 +2,13 @@ import { RxDashboard } from "react-icons/rx";
 import { AiOutlineFire } from "react-icons/ai";
 import { GiGreekTemple } from "react-icons/gi";
 import { FaUserCircle } from "react-icons/fa";
-import { Link, useNavigate, useLocation } from "react-router-dom"; 
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 import "../styles/SideMenu.css";
 
 
 const PlayerSideMenu = () => {
-  const navigate = useNavigate();
+
   const location = useLocation();
   const [user, setUser] = useState(JSON.parse(localStorage.getItem("auth")));
 
@@ -22,12 +22,12 @@ const PlayerSideMenu = () => {
     };
     fetchUser();
   }, [user]);
-  
+
   return (
     <div className="sidemenu">
-      
+
       <div className="sidemenu-logo">
-        <img src="/SPARTA-Logo2.png" alt="Logo" className="logo-img"/>
+        <img src="/SPARTA-Logo2.png" alt="Logo" className="logo-img" />
       </div>
 
       <ul className="sidemenu-list">
@@ -47,7 +47,7 @@ const PlayerSideMenu = () => {
           <Link to="/pantheon"> <GiGreekTemple /> Pantheon </Link>
         </li>
       </ul>
-         
+
     </div>
   );
 };

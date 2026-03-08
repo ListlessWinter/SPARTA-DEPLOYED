@@ -8,12 +8,14 @@ import '../../styles/ADMIN_SpecificEvents.css';
 
 const SpectatorSpecificEvent = () => {
 
-  useEffect(() => { document.title = "SPARTA | " + decodedName }, [decodedName]);
+
 
   const navigate = useNavigate();
   const { institution, eventName } = useParams();
   const decodedName = decodeURIComponent(eventName);
   const decodedInstitution = decodeURIComponent(institution);
+
+  useEffect(() => { document.title = "SPARTA | " + decodedName }, [decodedName]);
 
   const [event, setEventDetails] = useState(null);
 

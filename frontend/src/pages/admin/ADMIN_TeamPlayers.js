@@ -6,12 +6,14 @@ import { LiaGhostSolid } from "react-icons/lia";
 
 const TeamPlayers = () => {
 
-  useEffect(() => { document.title = "SPARTA | " + decodedTeam + " Players"; }, [decodedTeam]);
+
 
   const { eventName, teamName } = useParams();
   const decodedEvent = decodeURIComponent(eventName);
   const decodedTeam = decodeURIComponent(teamName);
   const navigate = useNavigate();
+
+  useEffect(() => { document.title = "SPARTA | " + decodedTeam + " Players"; }, [decodedTeam]);
 
   const user = JSON.parse(localStorage.getItem("auth"));
 

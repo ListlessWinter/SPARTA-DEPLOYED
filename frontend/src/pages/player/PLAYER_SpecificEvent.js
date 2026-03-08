@@ -9,11 +9,13 @@ import '../../styles/ADMIN_SpecificEvents.css';
 
 const PlayerSpecificEvent = () => {
 
-  useEffect(() => { document.title = "SPARTA | " + decodedName + " Brackets"; }, [decodedName]);
+
 
   const navigate = useNavigate();
   const { eventName } = useParams();
   const decodedName = decodeURIComponent(eventName);
+
+  useEffect(() => { document.title = "SPARTA | " + decodedName + " Brackets"; }, [decodedName]);
 
   const [event, setEventDetails] = useState(null);
   const [player, setPlayer] = useState(null);

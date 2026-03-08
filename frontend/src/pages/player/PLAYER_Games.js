@@ -9,12 +9,14 @@ import "../../styles/ADMIN_Games.css";
 
 const PlayerGame = () => {
 
-  useEffect(() => { document.title = "SPARTA | " + decodedName + " Games"; }, [decodedName]);
+
 
   const user = JSON.parse(localStorage.getItem("auth"));
   const { eventName } = useParams();
   const decodedName = decodeURIComponent(eventName);
   const navigate = useNavigate();
+
+  useEffect(() => { document.title = "SPARTA | " + decodedName + " Games"; }, [decodedName]);
 
   const [gamesByType, setGamesByType] = useState({});
   const [searchQuery, setSearchQuery] = useState("");

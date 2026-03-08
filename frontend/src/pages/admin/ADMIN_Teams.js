@@ -8,11 +8,13 @@ import "../../styles/skeleton.css";
 
 const Teams = () => {
 
-  useEffect(() => { document.title = "SPARTA | " + decodedName + " Teams"; }, [decodedName]);
+
 
   const { eventName } = useParams();
   const decodedName = decodeURIComponent(eventName);
   const navigate = useNavigate();
+
+  useEffect(() => { document.title = "SPARTA | " + decodedName + " Teams"; }, [decodedName]);
   const [teams, setTeams] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");

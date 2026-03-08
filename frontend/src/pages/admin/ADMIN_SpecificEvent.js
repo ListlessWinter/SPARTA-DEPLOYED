@@ -10,11 +10,11 @@ import '../../styles/ADMIN_SpecificEvents.css';
 
 const SpecificEvent = () => {
 
-  useEffect(() => { document.title = "SPARTA | " + decodedName; }, [decodedName]);
 
   const navigate = useNavigate();
   const { eventName } = useParams();
   const decodedName = decodeURIComponent(eventName);
+  useEffect(() => { document.title = "SPARTA | " + decodedName; }, [decodedName]);
   const user = JSON.parse(localStorage.getItem("auth"));
 
   const [event, setEventDetails] = useState(null);
