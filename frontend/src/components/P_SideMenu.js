@@ -2,7 +2,7 @@ import { RxDashboard } from "react-icons/rx";
 import { AiOutlineFire } from "react-icons/ai";
 import { GiGreekTemple } from "react-icons/gi";
 import { FaUserCircle } from "react-icons/fa";
-import { Link, useNavigate, useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 import "../styles/SideMenu.css";
 
