@@ -7,12 +7,9 @@ import '../styles/SideMenu.css';
 
 const SideMenu = () => {
 
-  const navigate = useNavigate();
   const location = useLocation();
 
-  const user = JSON.parse(localStorage.getItem("auth"));
-
-   return (
+  return (
     <div className="sidemenu">
 
       <div className="sidemenu-logo">

@@ -8,7 +8,7 @@ import "../../styles/skeleton.css";
 
 const Teams = () => {
 
-  useEffect(() => { document.title = "SPARTA | " + decodedName + " Teams"; }, []);
+  useEffect(() => { document.title = "SPARTA | " + decodedName + " Teams"; }, [decodedName]);
 
   const { eventName } = useParams();
   const decodedName = decodeURIComponent(eventName);

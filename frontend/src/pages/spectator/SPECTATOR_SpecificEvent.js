@@ -3,12 +3,12 @@ import { useState, useEffect } from "react";
 import { TiGroupOutline } from "react-icons/ti";
 import { LuSwords } from "react-icons/lu";
 import { MdOutlineScoreboard } from "react-icons/md";
-import { MdOutlineFeedback } from "react-icons/md";
+
 import '../../styles/ADMIN_SpecificEvents.css';
 
 const SpectatorSpecificEvent = () => {
 
-  useEffect(() => { document.title = "SPARTA | " + decodedName }, []);
+  useEffect(() => { document.title = "SPARTA | " + decodedName }, [decodedName]);
 
   const navigate = useNavigate();
   const { institution, eventName } = useParams();
@@ -45,9 +45,7 @@ const SpectatorSpecificEvent = () => {
     navigate(`/spectator/${encodeURIComponent(decodedInstitution)}/${encodeURIComponent(decodedName)}/liveScores`);
   };
 
-  const handleFeedbackClick = () => {
-    navigate(`/event/${encodeURIComponent(decodedName)}/feedback`);
-  };
+
 
   return (
 

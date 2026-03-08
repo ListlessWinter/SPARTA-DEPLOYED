@@ -10,18 +10,18 @@ import '../../styles/ADMIN_SpecificEvents.css';
 
 const SpecificEvent = () => {
 
-    useEffect(() => {document.title = "SPARTA | " + decodedName;},[]);
+  useEffect(() => { document.title = "SPARTA | " + decodedName; }, [decodedName]);
 
-    const navigate = useNavigate();
-    const { eventName } = useParams();
-    const decodedName = decodeURIComponent(eventName);
-    const user = JSON.parse(localStorage.getItem("auth"));
+  const navigate = useNavigate();
+  const { eventName } = useParams();
+  const decodedName = decodeURIComponent(eventName);
+  const user = JSON.parse(localStorage.getItem("auth"));
 
-    const [event, setEventDetails] = useState(null);
-    const [teamCount, setTeamCount] = useState(0);
+  const [event, setEventDetails] = useState(null);
+  const [teamCount, setTeamCount] = useState(0);
 
-    // Fetch Event details
-    useEffect(() => {
+  // Fetch Event details
+  useEffect(() => {
     const fetchEventDetails = async () => {
       try {
         const response = await fetch(`https://sparta-deployed.onrender.com/api/specific-event?eventName=${encodeURIComponent(decodedName)}`);
@@ -29,122 +29,122 @@ const SpecificEvent = () => {
         setEventDetails(data);
       } catch (error) {
         console.error("Error fetching event details:", error);
-       }
-      };
-      fetchEventDetails();
-    }, [decodedName]);
-
-     // Fetch Team numbers
-    useEffect(() => {
-      const fetchTeamCount = async () => {
-          try {
-              const res = await fetch(`https://sparta-deployed.onrender.com/api/teams?institution=${encodeURIComponent(user?.institution)}&event=${decodedName}`);
-              const data = await res.json();
-              
-              if (Array.isArray(data)) {
-                  setTeamCount(data.length);
-              }
-          } catch (err) {
-              console.error("Error fetching teams count:", err);
-          }
-      };
-
-      if (event && user) {
-          fetchTeamCount();
       }
-  }, [user, decodedName]);
+    };
+    fetchEventDetails();
+  }, [decodedName]);
 
-    const isGameDisabled = teamCount < 2;
-    // Game button nav
-    const handleGameClick = () => {
-        navigate(`/admin/event/${encodeURIComponent(decodedName)}/game`);
-      };
+  // Fetch Team numbers
+  useEffect(() => {
+    const fetchTeamCount = async () => {
+      try {
+        const res = await fetch(`https://sparta-deployed.onrender.com/api/teams?institution=${encodeURIComponent(user?.institution)}&event=${decodedName}`);
+        const data = await res.json();
 
-    // Team button nav
-    const handleTeamClick = () => {
-        navigate(`/admin/event/${encodeURIComponent(decodedName)}/team`);
-      };  
+        if (Array.isArray(data)) {
+          setTeamCount(data.length);
+        }
+      } catch (err) {
+        console.error("Error fetching teams count:", err);
+      }
+    };
 
-    // Livescore button nav
-    const handleScoreClick = () => {
-        navigate(`/admin/event/${encodeURIComponent(decodedName)}/liveScores`);
-      };
+    if (event && user) {
+      fetchTeamCount();
+    }
+  }, [user, decodedName, event]);
 
-    // Feedback button nav
-    const handleFeedbackClick = () => {
-        navigate(`/admin/event/${encodeURIComponent(decodedName)}/feedback`);
-      };
+  const isGameDisabled = teamCount < 2;
+  // Game button nav
+  const handleGameClick = () => {
+    navigate(`/admin/event/${encodeURIComponent(decodedName)}/game`);
+  };
 
-    return (
-        <MainLayout>
-            <div className="specific-event-container">                  
-                <div className="event-header" >
-                    <h2>{decodedName}</h2>
-                </div>
-                
-                <div className="event-details">
+  // Team button nav
+  const handleTeamClick = () => {
+    navigate(`/admin/event/${encodeURIComponent(decodedName)}/team`);
+  };
 
-                    <div className="organizer-box">
-                        <h3>Organizer Details</h3>
-                        <p>Name: {event?.userName}</p>
+  // Livescore button nav
+  const handleScoreClick = () => {
+    navigate(`/admin/event/${encodeURIComponent(decodedName)}/liveScores`);
+  };
 
-                    </div>
-                    <div className="date-box">
-                        <h3>Event Date</h3>
-                        <p>Start: {event?.eventStartDate ? new Date(event.eventStartDate).toLocaleDateString() : "Loading..."}</p>
-                        <p>End: {event?.eventEndDate ? new Date(event.eventEndDate).toLocaleDateString() : "Loading..."}</p>
-                    </div>
+  // Feedback button nav
+  const handleFeedbackClick = () => {
+    navigate(`/admin/event/${encodeURIComponent(decodedName)}/feedback`);
+  };
 
-                    <div className="location-box">
-                        <h3>Event Location</h3>
-                        <p>Venue: {event?.location}</p>
-                    </div>
-                </div>
+  return (
+    <MainLayout>
+      <div className="specific-event-container">
+        <div className="event-header" >
+          <h2>{decodedName}</h2>
+        </div>
 
-                <div className="event-specifics">
+        <div className="event-details">
 
-                    <button className="btn-team" onClick={handleTeamClick}>
-                      <div className="btn-content">
-                        <TiGroupOutline size={48} /> 
-                        <span>Team</span>
-                      </div>
-                    </button>
+          <div className="organizer-box">
+            <h3>Organizer Details</h3>
+            <p>Name: {event?.userName}</p>
 
-                    <button 
-                        className={`btn-game ${isGameDisabled ? "disabled" : ""}`} 
-                        onClick={handleGameClick}
-                        disabled={isGameDisabled}
-                        title={isGameDisabled ? "Need at least 2 teams to manage games" : ""}
-                        style={isGameDisabled ? { 
-                            backgroundColor: "#ccc", 
-                            cursor: "not-allowed", 
-                            opacity: 0.7,
-                            filter: "grayscale(100%)" 
-                        } : {}}
-                    >
-                      <div className="btn-content">
-                        <LuSwords size={48} /> 
-                        <span>Game</span>
-                      </div>
-                    </button>
+          </div>
+          <div className="date-box">
+            <h3>Event Date</h3>
+            <p>Start: {event?.eventStartDate ? new Date(event.eventStartDate).toLocaleDateString() : "Loading..."}</p>
+            <p>End: {event?.eventEndDate ? new Date(event.eventEndDate).toLocaleDateString() : "Loading..."}</p>
+          </div>
 
-                    <button className="btn-score" onClick={handleScoreClick}>
-                      <div className="btn-content">
-                        <MdOutlineScoreboard size={48} />
-                        <span>Live Score</span>
-                      </div>
-                    </button>
+          <div className="location-box">
+            <h3>Event Location</h3>
+            <p>Venue: {event?.location}</p>
+          </div>
+        </div>
 
-                    <button className="btn-feedback" onClick={handleFeedbackClick}>
-                      <div className="btn-content">
-                        <MdOutlineFeedback size={42} /> 
-                        <span>Feedback</span>
-                      </div>
-                    </button>
-                </div>      
-            </div>  
-        </MainLayout>
-    );
+        <div className="event-specifics">
+
+          <button className="btn-team" onClick={handleTeamClick}>
+            <div className="btn-content">
+              <TiGroupOutline size={48} />
+              <span>Team</span>
+            </div>
+          </button>
+
+          <button
+            className={`btn-game ${isGameDisabled ? "disabled" : ""}`}
+            onClick={handleGameClick}
+            disabled={isGameDisabled}
+            title={isGameDisabled ? "Need at least 2 teams to manage games" : ""}
+            style={isGameDisabled ? {
+              backgroundColor: "#ccc",
+              cursor: "not-allowed",
+              opacity: 0.7,
+              filter: "grayscale(100%)"
+            } : {}}
+          >
+            <div className="btn-content">
+              <LuSwords size={48} />
+              <span>Game</span>
+            </div>
+          </button>
+
+          <button className="btn-score" onClick={handleScoreClick}>
+            <div className="btn-content">
+              <MdOutlineScoreboard size={48} />
+              <span>Live Score</span>
+            </div>
+          </button>
+
+          <button className="btn-feedback" onClick={handleFeedbackClick}>
+            <div className="btn-content">
+              <MdOutlineFeedback size={42} />
+              <span>Feedback</span>
+            </div>
+          </button>
+        </div>
+      </div>
+    </MainLayout>
+  );
 };
 
 export default SpecificEvent;

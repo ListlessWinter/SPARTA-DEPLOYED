@@ -23,11 +23,6 @@ const PlayerSideMenu = () => {
     fetchUser();
   }, [user]);
   
-  const handleLogout = () => {
-    localStorage.removeItem("auth");
-    navigate("/");
-  };
-
   return (
     <div className="sidemenu">
       

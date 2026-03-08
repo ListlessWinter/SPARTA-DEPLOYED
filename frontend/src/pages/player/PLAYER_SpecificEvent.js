@@ -9,7 +9,7 @@ import '../../styles/ADMIN_SpecificEvents.css';
 
 const PlayerSpecificEvent = () => {
 
-  useEffect(() => { document.title = "SPARTA | " + decodedName + " Brackets"; }, []);
+  useEffect(() => { document.title = "SPARTA | " + decodedName + " Brackets"; }, [decodedName]);
 
   const navigate = useNavigate();
   const { eventName } = useParams();

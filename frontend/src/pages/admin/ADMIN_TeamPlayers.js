@@ -6,7 +6,7 @@ import { LiaGhostSolid } from "react-icons/lia";
 
 const TeamPlayers = () => {
 
-  useEffect(() => { document.title = "SPARTA | " + decodedTeam + " Players"; }, []);
+  useEffect(() => { document.title = "SPARTA | " + decodedTeam + " Players"; }, [decodedTeam]);
 
   const { eventName, teamName } = useParams();
   const decodedEvent = decodeURIComponent(eventName);

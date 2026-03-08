@@ -6,7 +6,7 @@ import "../../styles/ADMIN_TeamPlayers.css"
 
 const PlayerTeamPlayers = () => {
 
-  useEffect(() => { document.title = "SPARTA | " + decodedTeam + " Players"; }, []);
+  useEffect(() => { document.title = "SPARTA | " + decodedTeam + " Players"; }, [decodedTeam]);
 
   const { eventName, teamName } = useParams();
   const decodedEvent = decodeURIComponent(eventName);

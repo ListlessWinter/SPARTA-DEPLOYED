@@ -9,7 +9,7 @@ import '../../styles/ADMIN_Games.css';
 
 const SpectatorGame = () => {
 
-  useEffect(() => { document.title = "SPARTA | " + decodedName + " Games"; }, []);
+  useEffect(() => { document.title = "SPARTA | " + decodedName + " Games"; }, [decodedName]);
 
   const navigate = useNavigate();
   const [gamesByType, setGamesByType] = useState({});
