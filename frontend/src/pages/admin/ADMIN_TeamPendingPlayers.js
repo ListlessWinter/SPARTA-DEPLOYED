@@ -3,6 +3,7 @@ import { useEffect, useState, useCallback } from "react";
 import { useParams } from "react-router-dom";
 import { LiaGhostSolid } from "react-icons/lia";
 import '../../styles/ADMIN_PlayerApproval.css';
+import { API_URL } from "../../config";
 
 const TeamPlayerApproval = () => {
 
@@ -18,7 +19,7 @@ const TeamPlayerApproval = () => {
   // Fetch pending players
   const fetchPlayers = useCallback(async () => {
     try {
-      const res = await fetch(`https://sparta-deployed.onrender.com/api/players/team-pending?institution=${user?.institution}&eventName=${encodeURIComponent(eventName)}&team=${encodeURIComponent(teamName)}`);
+      const res = await fetch(`${API_URL}/api/players/team-pending?institution=${user?.institution}&eventName=${encodeURIComponent(eventName)}&team=${encodeURIComponent(teamName)}`);
       const data = await res.json();
       setPlayers(data);
     } catch (err) {
@@ -41,7 +42,7 @@ const TeamPlayerApproval = () => {
   // Approve player
   const handleApprove = async (id) => {
     try {
-      const res = await fetch(`https://sparta-deployed.onrender.com/api/players/team-approve/${id}`, {
+      const res = await fetch(`${API_URL}/api/players/team-approve/${id}`, {
         method: "PUT",
       });
       if (res.ok) {
@@ -68,7 +69,7 @@ const TeamPlayerApproval = () => {
     const id = declineConfirm.playerId;
     closeDeclineConfirm();
     try {
-      const res = await fetch(`https://sparta-deployed.onrender.com/api/players/team-decline/${id}`, {
+      const res = await fetch(`${API_URL}/api/players/team-decline/${id}`, {
         method: "PUT",
       });
       if (res.ok) {

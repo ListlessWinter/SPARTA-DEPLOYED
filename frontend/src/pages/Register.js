@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../styles/Register.css';
+import { API_URL } from "../config";
 
 export default function RegisterPage() {
   const [role, setRole] = useState('admin');
@@ -24,7 +25,7 @@ export default function RegisterPage() {
   useEffect(() => {
     const fetchInstitutions = async () => {
       try {
-        const response = await fetch('https://sparta-deployed.onrender.com/api/institutions');
+        const response = await fetch(`${API_URL}/api/institutions`);
         const data = await response.json();
         setInstitutions(data);
       } catch (err) {
@@ -38,7 +39,7 @@ export default function RegisterPage() {
   useEffect(() => {
     if (role === 'player' && formData.institution) {
       fetch(
-        `https://sparta-deployed.onrender.com/api/events?institution=${encodeURIComponent(formData.institution)}`
+        `${API_URL}/api/events?institution=${encodeURIComponent(formData.institution)}`
       )
         .then((res) => res.json())
         .then((data) => setEvents(data))
@@ -75,7 +76,7 @@ export default function RegisterPage() {
         };
 
     try {
-      const response = await fetch(`https://sparta-deployed.onrender.com/api/auth/register/${role}`, {
+      const response = await fetch(`${API_URL}/api/auth/register/${role}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),

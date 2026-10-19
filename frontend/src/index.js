@@ -1,3 +1,4 @@
+import './mock/mockApi'; // offline demo data, must load before anything calls the API
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 //import './index.css';

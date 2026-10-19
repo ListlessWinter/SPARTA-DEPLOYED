@@ -2,6 +2,7 @@ import MainLayout from "../../components/MainLayout";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import "../../styles/PlayerProfile.css";
+import { API_URL } from "../../config";
 
 const PlayerProfile = () => {
 
@@ -16,7 +17,7 @@ const PlayerProfile = () => {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const res = await fetch(`https://sparta-deployed.onrender.com/api/players/${playerId}`);
+        const res = await fetch(`${API_URL}/api/players/${playerId}`);
         const data = await res.json();
         setPlayer(data);
       } catch (err) {

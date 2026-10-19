@@ -2,6 +2,7 @@ import MainLayout from "../../components/MainLayout";
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import '../../styles/ADMIN_GameCreate.css'
+import { API_URL } from "../../config";
 
 const CreateGame = () => {
   useEffect(() => { document.title = "SPARTA | Create Game"; }, []);
@@ -45,7 +46,7 @@ const CreateGame = () => {
       if (!user?.institution || !decodedEventName) return;
       
       try {
-        const response = await fetch(`https://sparta-deployed.onrender.com/api/events?institution=${encodeURIComponent(user.institution)}&name=${encodeURIComponent(decodedEventName)}`);
+        const response = await fetch(`${API_URL}/api/events?institution=${encodeURIComponent(user.institution)}&name=${encodeURIComponent(decodedEventName)}`);
         
         if (!response.ok) {
           const errData = await response.json();
@@ -79,7 +80,7 @@ const CreateGame = () => {
   useEffect(() => {
     const fetchTeams = async () => {
       try {
-        const response = await fetch(`https://sparta-deployed.onrender.com/api/teams?institution=${encodeURIComponent(user?.institution)}&event=${encodeURIComponent(decodedEventName)}`);
+        const response = await fetch(`${API_URL}/api/teams?institution=${encodeURIComponent(user?.institution)}&event=${encodeURIComponent(decodedEventName)}`);
         const data = await response.json();
         setAvailableTeams(data);
       } catch (error) {
@@ -121,7 +122,7 @@ const CreateGame = () => {
       if (rulesFile) formData.append("rulesFile", rulesFile);
       formData.append("rulesText", rulesText);
 
-      const response = await fetch("https://sparta-deployed.onrender.com/api/games", {
+      const response = await fetch(`${API_URL}/api/games`, {
         method: "POST",
         body: formData,
       });
@@ -149,7 +150,7 @@ const CreateGame = () => {
   useEffect(() => {
     const fetchCoordinators = async () => {
       try {
-        const res = await fetch(`https://sparta-deployed.onrender.com/api/coordinators?institution=${user?.institution}&event=${decodedEventName}`);
+        const res = await fetch(`${API_URL}/api/coordinators?institution=${user?.institution}&event=${decodedEventName}`);
         const data = await res.json();
         setCoordinators(Array.isArray(data) ? data : []);
       } catch (err) {

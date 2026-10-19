@@ -2,6 +2,7 @@ import PlayerMainLayout from "../../components/P_MainLayout";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import "../../styles/PlayerProfile.css";
+import { API_URL } from "../../config";
 
 const PlayerUserProfile = () => {
 
@@ -20,7 +21,7 @@ const PlayerUserProfile = () => {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const res = await fetch(`https://sparta-deployed.onrender.com/api/players/${userId}`);
+        const res = await fetch(`${API_URL}/api/players/${userId}`);
         const data = await res.json();
         setPlayer(data);
         setPreviewSrc(data.profilePic || data.profilePicture || "/default-pfp.jpg"); 
@@ -38,7 +39,7 @@ const PlayerUserProfile = () => {
   // Edit 
   const handleSave = async () => {
     try {
-      const res = await fetch(`https://sparta-deployed.onrender.com/api/players/${userId}/profile`, {
+      const res = await fetch(`${API_URL}/api/players/${userId}/profile`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(player),

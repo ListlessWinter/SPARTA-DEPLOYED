@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import '../../styles/ADMIN_Feedback.css';
 import { VscSearchStop } from "react-icons/vsc";
+import { API_URL } from "../../config";
 
 const Feedback = () => {
 
@@ -16,7 +17,7 @@ const Feedback = () => {
   useEffect(() => {
     const fetchFeedbacks = async () => {
       try {
-        const res = await fetch(`https://sparta-deployed.onrender.com/api/feedback/${decodedEvent}`);
+        const res = await fetch(`${API_URL}/api/feedback/${decodedEvent}`);
         const data = await res.json();
         setFeedbacks(data);
       } catch (err) {

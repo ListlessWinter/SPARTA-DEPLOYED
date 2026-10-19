@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { MdEventNote } from "react-icons/md";
 import '../../styles/ADMIN_Event.css';
+import { API_URL } from "../../config";
 
 const PlayerEvent = () => {
 
@@ -16,7 +17,7 @@ const PlayerEvent = () => {
   //Fetch Events
   useEffect(() => {
     const fetchEvents = async () => {
-      const response = await fetch(`https://sparta-deployed.onrender.com/api/active-events?institution=${user?.institution}&email=${user.email}&role=${user.role}`);
+      const response = await fetch(`${API_URL}/api/active-events?institution=${user?.institution}&email=${user.email}&role=${user.role}`);
       const data = await response.json();
       setEvents(data);
     };

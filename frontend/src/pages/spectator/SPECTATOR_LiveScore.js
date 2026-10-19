@@ -2,6 +2,7 @@ import { useParams } from "react-router-dom";
 import React, { useState, useEffect } from "react";
 import "../../styles/LiveScores.css";
 import { TbCalendarQuestion } from "react-icons/tb";
+import { API_URL } from "../../config";
 
 const SpectatorScore = () => {
   useEffect(() => { document.title = "SPARTA | Live Scores"; }, []);
@@ -19,7 +20,7 @@ const SpectatorScore = () => {
       try {
         // 2. Use the decodedInstitution from the URL
         const response = await fetch(
-          `https://sparta-deployed.onrender.com/api/teams/scores?institution=${encodeURIComponent(decodedInstitution)}&event=${encodeURIComponent(decodedEvent)}`
+          `${API_URL}/api/teams/scores?institution=${encodeURIComponent(decodedInstitution)}&event=${encodeURIComponent(decodedEvent)}`
         );
         const data = await response.json();
         setTeams(data);

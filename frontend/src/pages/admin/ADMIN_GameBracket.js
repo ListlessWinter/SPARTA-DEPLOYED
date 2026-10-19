@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Bracket, Seed, SeedItem, SeedTeam } from "react-brackets";
 import "../../styles/bracket.css";
+import { API_URL } from "../../config";
 
 const GameBracket = () => {
 
@@ -29,7 +30,7 @@ const GameBracket = () => {
   useEffect(() => {
     const fetchGame = async () => {
       try {
-        const res = await fetch(`https://sparta-deployed.onrender.com/api/games/${gameId}`);
+        const res = await fetch(`${API_URL}/api/games/${gameId}`);
         const data = await res.json();
         setGame(data);
       } catch (err) {
@@ -356,7 +357,7 @@ const GameBracket = () => {
 
     try {
       await fetch(
-        `https://sparta-deployed.onrender.com/api/games/${gameId}/matches/${selectedMatch.id}`,
+        `${API_URL}/api/games/${gameId}/matches/${selectedMatch.id}`,
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
@@ -376,7 +377,7 @@ const GameBracket = () => {
     if (!selectedMatch) return;
     try {
       const response = await fetch(
-        `https://sparta-deployed.onrender.com/api/games/${gameId}/matches/${selectedMatch.id}`,
+        `${API_URL}/api/games/${gameId}/matches/${selectedMatch.id}`,
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
@@ -577,7 +578,7 @@ const GameBracket = () => {
       };
 
       await fetch(
-        `https://sparta-deployed.onrender.com/api/games/${gameId}/matches/${selectedMatch.id}/schedule`,
+        `${API_URL}/api/games/${gameId}/matches/${selectedMatch.id}/schedule`,
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
@@ -586,7 +587,7 @@ const GameBracket = () => {
       );
 
       // refresh game after saving
-      const res = await fetch(`https://sparta-deployed.onrender.com/api/games/${gameId}`);
+      const res = await fetch(`${API_URL}/api/games/${gameId}`);
       const updatedGame = await res.json();
 
       setGame(updatedGame);
@@ -780,7 +781,7 @@ const GameBracket = () => {
               <>
                 <h3>Rules PDF</h3>
                 <iframe
-                  src={`https://sparta-deployed.onrender.com${game.rules}`}
+                  src={`${API_URL}${game.rules}`}
                   title="Rules PDF"
                   className="w-full h-[80vh] rounded-md"
                 />
@@ -867,14 +868,14 @@ const GameBracket = () => {
                     type="button"
                     onClick={async () => {
                       try {
-                        await fetch(`https://sparta-deployed.onrender.com/api/${gameId}/video`, {
+                        await fetch(`${API_URL}/api/${gameId}/video`, {
                           method: "PUT",
                           headers: { "Content-Type": "application/json" },
                           body: JSON.stringify({ videoLink: selectedMatch.videoLink }),
                         });
 
                         // Refresh game after saving
-                        const res = await fetch(`https://sparta-deployed.onrender.com/api/games/${gameId}`);
+                        const res = await fetch(`${API_URL}/api/games/${gameId}`);
                         const updated = await res.json();
                         setGame(updated);
 

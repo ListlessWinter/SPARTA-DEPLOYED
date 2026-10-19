@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import "../styles/Service.css"
 import "../styles/Spectator.css"
+import { API_URL } from "../config";
 
 export default function ServicePage() {
   // State for form fields
@@ -31,7 +32,7 @@ export default function ServicePage() {
     }
 
     try {
-      const response = await fetch(`https://sparta-deployed.onrender.com/api/send-request`, {
+      const response = await fetch(`${API_URL}/api/send-request`, {
         method: "POST",
         body: formData,
       });

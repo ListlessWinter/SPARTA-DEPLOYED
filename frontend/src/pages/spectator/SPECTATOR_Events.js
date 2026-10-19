@@ -2,6 +2,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import '../../styles/ADMIN_Event.css';
 import "../../styles/Spectator.css";
+import { API_URL } from "../../config";
 
 const AllEvent = () => {
 
@@ -15,7 +16,7 @@ const AllEvent = () => {
 
   useEffect(() => {
     const fetchEvents = async () => {
-      const response = await fetch(`https://sparta-deployed.onrender.com/api/events?institution=${userInstitution}`);
+      const response = await fetch(`${API_URL}/api/events?institution=${userInstitution}`);
       const data = await response.json();
       setEvents(data);
     };

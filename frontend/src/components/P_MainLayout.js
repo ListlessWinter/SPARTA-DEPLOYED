@@ -3,17 +3,19 @@ import PlayerSideMenu from './P_SideMenu';
 import Header from './Header';
 import Breadcrumbs from './Breadcrumbs';
 import '../styles/MainLayout.css';
+import '../styles/AppShell.css';
 
-const PlayerMainLayout = ({ children }) => {
+// dark: opt-in dark content area for pages that have been redesigned
+const PlayerMainLayout = ({ children, dark = false }) => {
   return (
-    <>
+    <div className={`sh ${dark ? 'sh--dark' : ''}`}>
       <PlayerSideMenu />
       <Header />
-      <div className="main-content">
+      <main className="sh-main">
         <Breadcrumbs />
         {children}
-      </div>
-    </>
+      </main>
+    </div>
   );
 };
 

@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { IoIosInformationCircleOutline } from "react-icons/io";
 import '../../styles/ADMIN_EventCreate.css';
+import { API_URL } from "../../config";
 
 const CreateEvent = () => {
 
@@ -33,7 +34,7 @@ const CreateEvent = () => {
   const handleCreate = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch("https://sparta-deployed.onrender.com/api/event", {
+      const response = await fetch(`${API_URL}/api/event`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

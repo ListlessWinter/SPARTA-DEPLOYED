@@ -1,24 +1,39 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import '../styles/Header.css';
+import { ChevronDown, UserPen, LogOut, CalendarDays } from 'lucide-react';
+import '../styles/Header.css'; // also holds .dropdown-item, used by other pages
+import '../styles/AppShell.css';
+import { API_URL } from "../config";
+
+// First matching rule names the page
+const PAGE_TITLES = [
+  [/\/approval$/, 'Approvals'],
+  [/\/event\/create$/, 'Create Event'],
+  [/\/addteam$/, 'Add Team'],
+  [/\/addgame$/, 'Add Game'],
+  [/\/pending$/, 'Pending Players'],
+  [/\/profile$/, 'Profile'],
+  [/\/players$/, 'Team Players'],
+  [/\/team$/, 'Teams'],
+  [/\/game\/[^/]+$/, 'Game Bracket'],
+  [/\/game$/, 'Games'],
+  [/\/liveScores$/, 'Live Scores'],
+  [/\/feedback$/, 'Feedback'],
+  [/\/ranking$/, 'Rankings'],
+  [/pantheon/, 'Pantheon'],
+  [/dashboard$/, 'Dashboard'],
+  [/\/event\/[^/]+$/, 'Event Details'],
+  [/\/event$/, 'Events'],
+];
+
+const getTitle = (pathname) => (PAGE_TITLES.find(([re]) => re.test(pathname)) || [null, 'SPARTA'])[1];
 
 const Header = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const pageTitles = {
-    '/admin/dashboard': 'DASHBOARD',
-    '/admin/approval': 'APPROVAL',
-    '/admin/event': "ORGANIZER'S EVENT",
-    '/admin/event/create': 'CREATE EVENT',
-    '/admin/event/:eventName': 'EVENT DETAILS',
-    '/admin/event/team': 'TEAM',
-    '/admin/event/game': 'GAME',
-    '/admin/liveScores': 'LIVE SCORES',
-    '/admin/feedback': 'POST GAME FEEDBACKS',
-    '/pantheon': 'PANTHEON',
-  };
-  const currentTitle = pageTitles[location.pathname] || 'SPARTA';
+  const currentTitle = getTitle(location.pathname);
+  const today = new Date().toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
 
   const rawUser = JSON.parse(localStorage.getItem("auth")) || {};
   const [user, setUser] = useState(rawUser);
@@ -83,7 +98,7 @@ const Header = () => {
       }
 
       // Send to Backend
-      const response = await fetch(`https://sparta-deployed.onrender.com/api/players/users/${user._id || user.id}`, {
+      const response = await fetch(`${API_URL}/api/players/users/${user._id || user.id}`, {
         method: 'PUT',
         body: formData, 
       });
@@ -119,71 +134,68 @@ const Header = () => {
   const displayName = user?.playerName || user?.email?.split('@')[0] || 'User';
 
   return (
-    <div className="header">
-      <div className="header-content">
-        <h2>{currentTitle}</h2>
+    <header className="sh-topbar">
+      <div className="sh-topbar-title">
+        <h1>{currentTitle}</h1>
+        <span className="sh-date"><CalendarDays size={14} /> {today}</span>
       </div>
 
-      <div className="user-box" ref={dropdownRef}>
-        
-        <div className="user-meta">
-          <div className="user-nick"> Hi, {displayName}!</div>
-          <div className="user-role">{user.role?.toUpperCase()}</div>
-        </div>
-
+      <div className="sh-user" ref={dropdownRef}>
         <button
-          className="avatar-button"
+          className="sh-user-btn"
           onClick={() => setDropdownOpen((v) => !v)}
           aria-haspopup="menu"
           aria-expanded={dropdownOpen}
         >
-          <img src={avatarSrc} alt="avatar" className="profile-avatar" />
+          <img src={avatarSrc} alt="" className="sh-avatar" />
+          <span className="sh-user-meta">
+            <span className="sh-user-name">{displayName}</span>
+            <span className="sh-user-role">{user.role}</span>
+          </span>
+          <ChevronDown size={16} className={`sh-chevron ${dropdownOpen ? 'open' : ''}`} />
         </button>
 
         {dropdownOpen && (
-          <div className="profile-dropdown" role="menu">
-            <button className="dropdown-item" onClick={openEdit}>Edit user info</button>
-            <div className="dropdown-divider" />
-            <button className="dropdown-item logout" onClick={handleLogout}>Logout</button>
+          <div className="sh-menu" role="menu">
+            <button className="sh-menu-item" role="menuitem" onClick={openEdit}><UserPen size={16} /> Edit profile</button>
+            <div className="sh-menu-divider" />
+            <button className="sh-menu-item danger" role="menuitem" onClick={handleLogout}><LogOut size={16} /> Log out</button>
           </div>
         )}
       </div>
 
       {showEditModal && (
-        <div className="edit-modal-overlay" onClick={() => setShowEditModal(false)}>
-          <div className="edit-modal" onClick={(e) => e.stopPropagation()}>
-            <h3>Edit Profile</h3>
-            <form onSubmit={handleSave} className="edit-form">
-              <div className="edit-photo-row">
-                <div className="photo-preview">
-                  <img src={previewSrc || '/SPARTA_Logo.png'} alt="preview" />
-                </div>
-                <div className="photo-controls" style={{backgroundColor: "white", fontFamily: "Poppins, sans-serif", fontSize: "14px", borderRadius: "8px"}}>
-                  <label className="file-label">
-                    Choose Photo
-                    <input type="file" accept="image/*" onChange={onPhotoChange} />
-                  </label>
-                </div>
+        <div className="sh-modal-overlay" onClick={() => setShowEditModal(false)}>
+          <div className="sh-modal" onClick={(e) => e.stopPropagation()}>
+            <h3>Edit profile</h3>
+            <form onSubmit={handleSave} className="sh-form">
+              <div className="sh-photo-row">
+                <img src={previewSrc || '/SPARTA_Logo.png'} alt="" className="sh-photo" />
+                <label className="sh-btn ghost">
+                  Choose photo
+                  <input type="file" accept="image/*" onChange={onPhotoChange} hidden />
+                </label>
               </div>
 
-              <label className="input-label">
+              <label className="sh-field">
+                <span>Nickname</span>
                 <input type="text" placeholder='Enter nickname' value={playerName} onChange={(e) => setplayerName(e.target.value)} />
               </label>
 
-              <div className="readonly-info">
-                <div><strong>Email:</strong> <span>{user?.email || 'N/A'}</span></div>
-                <div><strong>Institution:</strong> <span>{user?.institution?.name || user?.institution || 'N/A'}</span></div>
-              </div>
+              <dl className="sh-readonly">
+                <div><dt>Email</dt><dd>{user?.email || 'N/A'}</dd></div>
+                <div><dt>Institution</dt><dd>{user?.institution?.name || user?.institution || 'N/A'}</dd></div>
+              </dl>
 
-              <div className="edit-actions">
-                <button type="button" className="btn cancel" onClick={() => setShowEditModal(false)}>Cancel</button>
-                <button type="submit" className="btn save">Save</button>
+              <div className="sh-form-actions">
+                <button type="button" className="sh-btn ghost" onClick={() => setShowEditModal(false)}>Cancel</button>
+                <button type="submit" className="sh-btn primary">Save</button>
               </div>
             </form>
           </div>
         </div>
       )}
-    </div>
+    </header>
   );
 };
 

@@ -5,6 +5,7 @@ import { VscSearchStop } from "react-icons/vsc";
 import { MoreVertical } from "lucide-react";
 import "../../styles/ADMIN_Teams.css";
 import "../../styles/skeleton.css";
+import { API_URL } from "../../config";
 
 const Teams = () => {
 
@@ -37,7 +38,7 @@ const Teams = () => {
   useEffect(() => {
     const fetchCoordinators = async () => {
       try {
-        const res = await fetch(`https://sparta-deployed.onrender.com/api/coordinators?institution=${user?.institution}&event=${decodedName}`);
+        const res = await fetch(`${API_URL}/api/coordinators?institution=${user?.institution}&event=${decodedName}`);
         const data = await res.json();
         setCoordinators(Array.isArray(data) ? data : []);
       } catch (err) {
@@ -65,7 +66,7 @@ const Teams = () => {
     const fetchTeams = async () => {
       setLoading(true); // show skeleton while fetching
       try {
-        const response = await fetch(`https://sparta-deployed.onrender.com/api/teams?institution=${encodeURIComponent(user?.institution)}&event=${encodeURIComponent(decodedName)}`);
+        const response = await fetch(`${API_URL}/api/teams?institution=${encodeURIComponent(user?.institution)}&event=${encodeURIComponent(decodedName)}`);
         const data = await response.json();
         setTeams(data);
       } catch (error) {
@@ -84,7 +85,7 @@ const Teams = () => {
   useEffect(() => {
     const fetchGames = async () => {
       try {
-        const response = await fetch(`https://sparta-deployed.onrender.com/api/games?institution=${encodeURIComponent(user?.institution)}&eventName=${encodeURIComponent(decodedName)}`);
+        const response = await fetch(`${API_URL}/api/games?institution=${encodeURIComponent(user?.institution)}&eventName=${encodeURIComponent(decodedName)}`);
         const games = await response.json();
 
         // If any game exists for this event, set to true
@@ -119,7 +120,7 @@ const Teams = () => {
   const confirmDeleteTeam = async () => {
     if (!teamToDelete) return;
     try {
-      const res = await fetch(`https://sparta-deployed.onrender.com/api/team/${teamToDelete._id}`, {
+      const res = await fetch(`${API_URL}/api/team/${teamToDelete._id}`, {
         method: "DELETE",
       });
       if (!res.ok) throw new Error("Delete failed");
@@ -157,7 +158,7 @@ const Teams = () => {
         formData.append("teamIcon", editTeam.newIcon);
       }
 
-      const res = await fetch(`https://sparta-deployed.onrender.com/api/team/${editTeam._id}`, {
+      const res = await fetch(`${API_URL}/api/team/${editTeam._id}`, {
         method: "PUT",
         body: formData,
       });

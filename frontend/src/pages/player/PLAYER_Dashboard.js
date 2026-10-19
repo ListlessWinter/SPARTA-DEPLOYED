@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import Calendar from 'react-calendar';
 import axios from 'axios';
 import "../../styles/Calendar.css";
+import { API_URL } from "../../config";
 
 const PlayerDashboard = () => {
 
@@ -20,7 +21,7 @@ const PlayerDashboard = () => {
     useEffect(() => {
       const fetchGames = async () => {
         try {
-          const res = await axios.get(`https://sparta-deployed.onrender.com/api/games?institution=${encodeURIComponent(user?.institution)}&eventName=${encodeURIComponent(user?.eventName)}`);
+          const res = await axios.get(`${API_URL}/api/games?institution=${encodeURIComponent(user?.institution)}&eventName=${encodeURIComponent(user?.eventName)}`);
           const matches = [];
           const multiDay = [];
   

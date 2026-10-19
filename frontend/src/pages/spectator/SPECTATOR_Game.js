@@ -6,6 +6,7 @@ import { BiSolidBaseball, BiBaseball } from "react-icons/bi";
 import { FaCircleQuestion } from "react-icons/fa6";
 import '../../styles/ADMIN_SpecificEvents.css';
 import '../../styles/ADMIN_Games.css';
+import { API_URL } from "../../config";
 
 const SpectatorGame = () => {
 
@@ -42,7 +43,7 @@ const SpectatorGame = () => {
     const fetchGames = async () => {
       try {
         const response = await fetch(
-          `https://sparta-deployed.onrender.com/api/games?institution=${encodeURIComponent(decodedInstitution)}&eventName=${encodeURIComponent(decodedName)}`
+          `${API_URL}/api/games?institution=${encodeURIComponent(decodedInstitution)}&eventName=${encodeURIComponent(decodedName)}`
         );
         const data = await response.json();
 
@@ -107,7 +108,7 @@ const SpectatorGame = () => {
             const icon = gameIcons[gameType] || gameIcons.Default;
 
             return (
-              <div style={{ margin: "1rem" }}>
+              <div style={{ margin: "1rem" }} key={combinedType}>
                 <div style={{ width: "100%", display: "flex", justifyContent: "flex-end" }}>
 
                 </div>

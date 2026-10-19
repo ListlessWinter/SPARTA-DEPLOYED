@@ -2,6 +2,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import { VscSearchStop } from "react-icons/vsc";
 import "../../styles/ADMIN_Teams.css";
+import { API_URL } from "../../config";
 
 
 const SpectatorTeams = () => {
@@ -23,7 +24,7 @@ const SpectatorTeams = () => {
             setLoading(true);
             try {
 
-                const response = await fetch(`https://sparta-deployed.onrender.com/api/teams?institution=${encodeURIComponent(decodedInstitution)}&event=${encodeURIComponent(decodedName)}`);
+                const response = await fetch(`${API_URL}/api/teams?institution=${encodeURIComponent(decodedInstitution)}&event=${encodeURIComponent(decodedName)}`);
                 const data = await response.json();
 
                 if (Array.isArray(data)) {

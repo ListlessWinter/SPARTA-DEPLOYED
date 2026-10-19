@@ -1,0 +1,1067 @@
+/* ===== Admin dashboard (dark), scoped under .db ===== */
+.db {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  color: var(--sh-text);
+}
+
+.db h2,
+.db h3,
+.db p {
+  font-family: inherit;
+}
+
+/* Staggered entrance */
+.db > * {
+  animation: db-rise 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+.db > *:nth-child(2) { animation-delay: 0.08s; }
+.db > *:nth-child(3) { animation-delay: 0.16s; }
+.db > *:nth-child(4) { animation-delay: 0.24s; }
+
+.db-stats > * {
+  animation: db-rise 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+.db-stats > *:nth-child(2) { animation-delay: 0.14s; }
+.db-stats > *:nth-child(3) { animation-delay: 0.2s; }
+.db-stats > *:nth-child(4) { animation-delay: 0.26s; }
+
+/* Display titles */
+.db .db-title {
+  font-family: 'Bebas Neue', 'Poppins', sans-serif;
+  font-size: 21px;
+  font-weight: 400;
+  letter-spacing: 1.6px;
+  line-height: 1;
+}
+
+.db .db-title::before {
+  content: "";
+  width: 7px;
+  height: 7px;
+  transform: rotate(45deg);
+  background: var(--sh-gold-400);
+  box-shadow: 0 0 10px rgba(224, 161, 72, 0.8);
+}
+
+.db .db-title:has(svg)::before {
+  display: none;
+}
+
+.db-head-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Cards */
+.db-card {
+  position: relative;
+  padding: 20px;
+  border-radius: 18px;
+  background: linear-gradient(180deg, rgba(22, 35, 63, 0.7) 0%, rgba(12, 20, 38, 0.75) 100%);
+  border: 1px solid var(--sh-line);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+}
+
+/* Gold hairline along the top edge of each card */
+.db-card::before {
+  content: "";
+  position: absolute;
+  top: -1px;
+  left: 24px;
+  right: 24px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(242, 194, 122, 0.55), transparent);
+}
+
+.db-card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.db-card-head h3 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: #fff;
+}
+
+.db-flame {
+  color: #fb923c;
+}
+
+.db-muted {
+  font-size: 12.5px;
+  color: var(--sh-muted);
+}
+
+.db-link {
+  padding: 4px 2px;
+  border: 0;
+  background: none;
+  font: inherit;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--sh-gold-400);
+  cursor: pointer;
+}
+
+.db-link:hover {
+  color: var(--sh-gold-300);
+  text-decoration: underline;
+}
+
+/* Hero */
+.db-hero {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 8px 22px 22px 10px;
+  border-radius: 20px;
+  border: 1px solid rgba(224, 161, 72, 0.25);
+  background:
+    radial-gradient(50% 120% at 88% 50%, rgba(206, 137, 44, 0.28) 0%, transparent 60%),
+    radial-gradient(40% 80% at 0% 0%, rgba(52, 80, 138, 0.35) 0%, transparent 70%),
+    linear-gradient(135deg, #17254a 0%, #0b1426 100%);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+/* Slow light sweep across the banner */
+.db-hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(105deg, transparent 40%, rgba(242, 194, 122, 0.08) 50%, transparent 60%);
+  background-size: 250% 100%;
+  animation: db-sweep 9s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.db-hero-text {
+  position: relative;
+  z-index: 1;
+  flex: 1;
+  min-width: 0;
+}
+
+.db .db-hero-emblem {
+  position: relative;
+  z-index: 1;
+  width: 76px;
+  height: 76px;
+}
+
+.db-hero-meander {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 6px;
+  opacity: 0.5;
+}
+
+.db-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 4px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: var(--sh-gold-300);
+  background: rgba(206, 137, 44, 0.12);
+  border: 1px solid rgba(224, 161, 72, 0.3);
+}
+
+.db-hero h2 {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  color: #fff;
+}
+
+.db-hero h2 span {
+  background: linear-gradient(90deg, var(--sh-gold-300), var(--sh-gold-500), var(--sh-gold-300));
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: db-gold 6s linear infinite;
+}
+
+.db-sub {
+  margin: 2px 0 0;
+  font-size: 13px;
+  color: var(--sh-muted);
+}
+
+.db-hero-actions {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  flex: none;
+}
+
+/* Stats */
+.db-stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.db-stat {
+  --tone: #e0a148;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 18px;
+  border-radius: 16px;
+  background: linear-gradient(180deg, rgba(22, 35, 63, 0.7) 0%, rgba(12, 20, 38, 0.75) 100%);
+  border: 1px solid var(--sh-line);
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.db-stat:hover {
+  transform: translateY(-3px);
+  border-color: color-mix(in srgb, var(--tone) 45%, transparent);
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.3), 0 0 24px color-mix(in srgb, var(--tone) 18%, transparent);
+}
+
+/* Shine that sweeps across on hover */
+.db-stat::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -60%;
+  width: 40%;
+  background: linear-gradient(100deg, transparent, rgba(255, 255, 255, 0.08), transparent);
+  transform: skewX(-20deg);
+  transition: left 0.7s ease;
+  pointer-events: none;
+}
+
+.db-stat:hover::after {
+  left: 130%;
+}
+
+/* Faint tone-coloured glow in the corner */
+.db-stat::before {
+  content: "";
+  position: absolute;
+  right: -30px;
+  top: -30px;
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  background: radial-gradient(circle, color-mix(in srgb, var(--tone) 22%, transparent) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.db-stat.blue { --tone: #60a5fa; }
+.db-stat.green { --tone: #4ade80; }
+.db-stat.violet { --tone: #a78bfa; }
+
+/* Hoplon-style round badge with an inner ring */
+.db-stat-icon {
+  flex: none;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  color: var(--tone);
+  background: radial-gradient(circle at 35% 30%, color-mix(in srgb, var(--tone) 28%, transparent) 0%, color-mix(in srgb, var(--tone) 8%, transparent) 70%);
+  border: 2px solid color-mix(in srgb, var(--tone) 55%, transparent);
+  box-shadow: inset 0 0 0 4px rgba(7, 13, 26, 0.6), inset 0 0 0 5px color-mix(in srgb, var(--tone) 30%, transparent);
+  transition: transform 0.4s ease;
+}
+
+.db-stat > * {
+  position: relative;
+}
+
+.db-stat:hover .db-stat-icon {
+  transform: rotate(-12deg) scale(1.06);
+}
+
+.db-stat-value {
+  font-size: 26px;
+  font-weight: 700;
+  line-height: 1.1;
+  color: #fff;
+}
+
+.db-stat-label {
+  font-size: 12.5px;
+  color: var(--sh-muted);
+}
+
+/* Stats strip inside the calendar card */
+.db-calendar-card .db-stats {
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.db-calendar-card .db-stat {
+  gap: 10px;
+  padding: 10px 12px;
+  background: rgba(3, 6, 13, 0.35);
+}
+
+.db-calendar-card .db-stat-icon {
+  width: 38px;
+  height: 38px;
+}
+
+.db-calendar-card .db-stat-value {
+  font-size: 20px;
+}
+
+.db-calendar-card .db-stat-label {
+  font-size: 11.5px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.db-calendar-card .db-stat > div {
+  min-width: 0;
+}
+
+/* Left: calendar above campaigns; right: match lists spanning both rows.
+   Campaigns stretch so both columns end on the same line. */
+.db-board {
+  grid-template-rows: auto 1fr;
+}
+
+.db-board > .db-calendar-card { grid-column: 1; grid-row: 1; }
+.db-board > .db-col { grid-column: 2; grid-row: 1 / span 2; }
+.db-board > .db-camps-card { grid-column: 1; grid-row: 2; align-self: stretch; }
+
+/* Main board */
+.db-board {
+  display: grid;
+  grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr);
+  gap: 16px;
+  align-items: start;
+}
+
+.db-col {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-height: 0;
+}
+
+.db-fill {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.db-col > .db-fill {
+  flex: 1;
+}
+
+.db-scroll {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  margin-right: -8px;
+  padding-right: 8px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(224, 161, 72, 0.35) transparent;
+}
+
+.db-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+
+.db-scroll::-webkit-scrollbar-thumb {
+  border-radius: 6px;
+  background: rgba(224, 161, 72, 0.35);
+}
+
+/* Calendar (react-calendar), overriding the light Calendar.css still used elsewhere */
+.db-legend {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--sh-muted);
+}
+
+.db-legend i {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--sh-gold-400);
+}
+
+.db .db-calendar {
+  width: 100%;
+  border: 0;
+  background: transparent;
+  font-family: inherit;
+}
+
+.db .db-calendar .react-calendar__navigation {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+
+.db .db-calendar .react-calendar__navigation button {
+  min-width: 36px;
+  height: 36px;
+  border: 1px solid var(--sh-line);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--sh-text);
+  font: inherit;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.db .db-calendar .react-calendar__navigation button:hover {
+  border-color: rgba(224, 161, 72, 0.5);
+  background: rgba(206, 137, 44, 0.08);
+}
+
+.db .db-calendar .react-calendar__navigation__label {
+  font-size: 15px;
+  font-weight: 600;
+  color: #fff;
+}
+
+.db .db-calendar .react-calendar__month-view__weekdays {
+  margin-bottom: 6px;
+}
+
+.db .db-calendar .react-calendar__month-view__weekdays__weekday {
+  padding: 6px 0;
+  text-align: center;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--sh-muted);
+}
+
+.db .db-calendar .react-calendar__month-view__weekdays__weekday abbr {
+  text-decoration: none;
+}
+
+.db .db-calendar .react-calendar__month-view__days {
+  row-gap: 6px;
+}
+
+.db .db-calendar .react-calendar__tile {
+  position: relative;
+  height: clamp(40px, 5.6vh, 62px);
+  min-height: 0; /* Calendar.css sets a min-height on every tile */
+  margin: 0;
+  padding: 6px 0 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 4px;
+  border: 1px solid transparent;
+  border-radius: 12px;
+  background: transparent;
+  color: #c3cde0;
+  font: inherit;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.db .db-calendar .react-calendar__tile:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.db .db-calendar .react-calendar__tile.db-in-range {
+  background: rgba(52, 80, 138, 0.18);
+}
+
+.db .db-calendar .react-calendar__tile.db-has-match {
+  color: #fff;
+  font-weight: 600;
+  background: rgba(206, 137, 44, 0.1);
+  border-color: rgba(224, 161, 72, 0.22);
+}
+
+.db .db-calendar .react-calendar__tile--now {
+  color: var(--sh-gold-300);
+  border-color: rgba(224, 161, 72, 0.6);
+  background: rgba(206, 137, 44, 0.08);
+}
+
+/* Pulsing ring on today's tile */
+.db .db-calendar .react-calendar__tile--now::after {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  border: 1px solid rgba(242, 194, 122, 0.8);
+  animation: db-tile-pulse 2.2s ease-out infinite;
+  pointer-events: none;
+}
+
+.db .db-calendar .react-calendar__tile.db-has-match:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 18px rgba(206, 137, 44, 0.18);
+}
+
+.db .db-calendar .react-calendar__tile--active,
+.db .db-calendar .react-calendar__tile--active.db-has-match {
+  color: #1a1206 !important;
+  background: linear-gradient(135deg, var(--sh-gold-300), var(--sh-gold-500)) !important;
+  border-color: transparent;
+  box-shadow: 0 6px 18px rgba(206, 137, 44, 0.35);
+}
+
+.db-cal-dots {
+  display: flex;
+  gap: 3px;
+}
+
+.db-cal-dots i {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--sh-gold-400);
+}
+
+.react-calendar__tile--active .db-cal-dots i {
+  background: #1a1206;
+}
+
+/* Match lists */
+.db-match-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.db-match-list.scroll {
+  max-height: 60vh;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.db-match {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  border-radius: 14px;
+  border: 1px solid var(--sh-line);
+  background: rgba(3, 6, 13, 0.35);
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 0.2s ease, background 0.2s ease, transform 0.2s ease;
+}
+
+.db-match:hover {
+  transform: translateX(2px);
+  border-color: rgba(224, 161, 72, 0.4);
+  background: rgba(206, 137, 44, 0.06);
+}
+
+.db-match-icon {
+  flex: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  color: var(--sh-gold-300);
+  background: rgba(206, 137, 44, 0.12);
+}
+
+.db-match-body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+/* Keep each match card to three single lines so lists stay dense */
+.db-match-title,
+.db-match-teams,
+.db-match-meta {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.db-card-head h3,
+.db-link {
+  white-space: nowrap;
+}
+
+.db-match-title {
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  color: var(--sh-muted);
+}
+
+.db-match-teams {
+  display: block;
+  font-size: 14px;
+  color: #fff;
+}
+
+.db-match-teams em {
+  margin: 0 6px;
+}
+
+.db-match-teams b {
+  font-weight: 600;
+}
+
+.db-match-teams b.win {
+  color: var(--sh-gold-300);
+}
+
+.db-match-teams em {
+  font-style: normal;
+  font-size: 11px;
+  color: var(--sh-muted);
+}
+
+.db-match-meta {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  color: var(--sh-muted);
+}
+
+.db-match-meta svg + svg,
+.db-match-meta svg:not(:first-child) {
+  margin-left: 6px;
+}
+
+.db-badge {
+  flex: none;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+}
+
+.db-badge.final {
+  color: #a7f3d0;
+  background: rgba(16, 185, 129, 0.14);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.db-badge.live {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #fdba74;
+  background: rgba(249, 115, 22, 0.14);
+  border: 1px solid rgba(249, 115, 22, 0.3);
+}
+
+.db-live-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #f97316;
+  animation: db-ping 1.6s ease-out infinite;
+}
+
+.db-match.is-live {
+  border-color: rgba(249, 115, 22, 0.35);
+  animation: db-live-glow 2.4s ease-in-out infinite;
+}
+
+.db-match-teams b svg {
+  margin-right: 4px;
+  vertical-align: -1px;
+  color: var(--sh-gold-300);
+  filter: drop-shadow(0 0 4px rgba(242, 194, 122, 0.8));
+}
+
+.db-decided {
+  display: inline-flex;
+}
+
+.db-badge.soon {
+  color: #bfdbfe;
+  background: rgba(59, 130, 246, 0.14);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+}
+
+.db-empty {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 18px;
+  border-radius: 14px;
+  border: 1px dashed var(--sh-line);
+  font-size: 13px;
+  color: var(--sh-muted);
+}
+
+.db-skeleton {
+  height: 66px;
+  border-radius: 14px;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.03) 25%, rgba(255, 255, 255, 0.07) 50%, rgba(255, 255, 255, 0.03) 75%);
+  background-size: 200% 100%;
+  animation: db-shimmer 1.4s linear infinite;
+}
+
+.db-skeleton.tall {
+  height: 150px;
+}
+
+/* Campaigns (active events), compact rows */
+.db-camps {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 12px;
+}
+
+.db-camp {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px 14px 12px 18px;
+  border-radius: 14px;
+  border: 1px solid var(--sh-line);
+  background: rgba(3, 6, 13, 0.35);
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 0.2s ease, transform 0.2s ease;
+}
+
+.db-camp::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: var(--event-color);
+  box-shadow: 0 0 16px var(--event-color);
+}
+
+.db-camp:hover {
+  transform: translateX(2px);
+  border-color: rgba(224, 161, 72, 0.4);
+}
+
+.db-camp-top,
+.db-camp-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.db-camp-name {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 14px;
+  font-weight: 600;
+  color: #fff;
+}
+
+.db-camps-card .db-camps {
+  grid-template-columns: 1fr;
+}
+
+.db-camp-meta {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  color: var(--sh-muted);
+}
+
+.db-camp-meta svg:not(:first-child) {
+  margin-left: 8px;
+}
+
+.db-camp-metrics {
+  display: flex;
+  gap: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #c3cde0;
+}
+
+.db-camp-metrics span {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.db-camp-metrics svg {
+  color: var(--sh-muted);
+}
+
+/* Progress drawn as a spear: shaft fills, spearhead leads */
+.db-progress {
+  position: relative;
+  height: 4px;
+  margin: 4px 14px 0 0;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.07);
+}
+
+.db-progress span {
+  position: relative;
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #7a4f17, var(--sh-gold-500) 60%, var(--sh-gold-300));
+  background-size: 200% 100%;
+  animation: db-grow 1.4s cubic-bezier(0.2, 0.8, 0.2, 1) both, db-shaft 3s linear infinite;
+}
+
+.db-progress span::after {
+  content: "";
+  position: absolute;
+  right: -13px;
+  top: 50%;
+  width: 14px;
+  height: 10px;
+  transform: translateY(-50%);
+  background: var(--sh-gold-300);
+  clip-path: polygon(0 20%, 55% 0, 100% 50%, 55% 100%, 0 80%);
+  filter: drop-shadow(0 0 4px rgba(242, 194, 122, 0.9));
+}
+
+.db-progress-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  color: var(--sh-gold-400);
+}
+
+/* Modals */
+.db-modal {
+  max-width: 480px;
+}
+
+.db-modal-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.db-modal-head h3 {
+  margin: 0;
+}
+
+.db-icon-btn {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border: 1px solid var(--sh-line);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--sh-text);
+  cursor: pointer;
+}
+
+.db-icon-btn:hover {
+  border-color: rgba(224, 161, 72, 0.5);
+}
+
+.db button:focus-visible {
+  outline: 2px solid var(--sh-gold-400);
+  outline-offset: 2px;
+}
+
+@keyframes db-shimmer {
+  to { background-position: -200% 0; }
+}
+
+@keyframes db-rise {
+  from { opacity: 0; transform: translateY(18px); }
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes db-sweep {
+  0%, 20% { background-position: 150% 0; }
+  70%, 100% { background-position: -100% 0; }
+}
+
+@keyframes db-gold {
+  to { background-position: 200% center; }
+}
+
+@keyframes db-grow {
+  from { width: 0; }
+}
+
+@keyframes db-shaft {
+  to { background-position: -200% 0; }
+}
+
+@keyframes db-ping {
+  0% { box-shadow: 0 0 0 0 rgba(249, 115, 22, 0.7); }
+  100% { box-shadow: 0 0 0 8px rgba(249, 115, 22, 0); }
+}
+
+@keyframes db-live-glow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(249, 115, 22, 0); }
+  50% { box-shadow: 0 0 18px 0 rgba(249, 115, 22, 0.18); }
+}
+
+@keyframes db-tile-pulse {
+  0% { transform: scale(1); opacity: 0.9; }
+  100% { transform: scale(1.18); opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .db *,
+  .db *::before,
+  .db *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Responsive */
+@media (max-width: 1200px) {
+  .db-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .db-board {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+
+  .db-board {
+    grid-template-columns: 1fr;
+  }
+
+  .db-board > .db-calendar-card,
+  .db-board > .db-col,
+  .db-board > .db-camps-card {
+    grid-column: auto;
+    grid-row: auto;
+  }
+}
+
+@media (max-width: 1000px) {
+  .db .db-hero-emblem {
+    display: none;
+  }
+}
+
+@media (max-width: 760px) {
+  .db-board {
+    grid-template-columns: 1fr;
+  }
+
+  .db-board > .db-calendar-card,
+  .db-board > .db-col,
+  .db-board > .db-camps-card {
+    grid-column: auto;
+    grid-row: auto;
+  }
+}
+
+@media (max-width: 640px) {
+  .db-hero {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 20px 20px 34px;
+  }
+
+  .db-hero h2 {
+    font-size: 21px;
+  }
+
+  .db-hero-actions {
+    width: 100%;
+  }
+
+  .db-hero-actions .sh-btn {
+    flex: 1;
+  }
+
+  .db-stats {
+    gap: 10px;
+  }
+
+  .db-stat {
+    padding: 14px;
+    gap: 10px;
+  }
+
+  .db-stat-icon {
+    width: 38px;
+    height: 38px;
+  }
+
+  .db-stat-value {
+    font-size: 21px;
+  }
+
+  .db-card {
+    padding: 16px;
+  }
+
+  .db .db-calendar .react-calendar__tile {
+    height: 46px;
+    font-size: 13px;
+  }
+}
+
+/* The breadcrumb only repeats the page title here */
+.sh-main:has(> .db) > .breadcrumbs {
+  display: none;
+}

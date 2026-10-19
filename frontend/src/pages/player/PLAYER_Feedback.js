@@ -2,6 +2,7 @@ import PlayerMainLayout from "../../components/P_MainLayout";
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import "../../styles/ADMIN_Feedback.css";
+import { API_URL } from "../../config";
 
 
 const PlayerFeedback = () => {
@@ -31,7 +32,7 @@ const PlayerFeedback = () => {
     const fetchUser = async () => {
       try {
         if (!userId) return;
-        const res = await fetch(`https://sparta-deployed.onrender.com/api/players/${userId?._id}`);
+        const res = await fetch(`${API_URL}/api/players/${userId?._id}`);
         const data = await res.json();
         setUser(data);
       } catch (err) {
@@ -45,7 +46,7 @@ const PlayerFeedback = () => {
   useEffect(() => {
     const fetchFeedbacks = async () => {
       try {
-        const res = await fetch(`https://sparta-deployed.onrender.com/api/feedback/${decodedEvent}`);
+        const res = await fetch(`${API_URL}/api/feedback/${decodedEvent}`);
         const data = await res.json();
         setFeedbacks(data);
       } catch (err) {
@@ -58,7 +59,7 @@ const PlayerFeedback = () => {
   // Post Feedback
   const handlePost = async () => {
     try {
-      const res = await fetch("https://sparta-deployed.onrender.com/api/feedback", {
+      const res = await fetch(`${API_URL}/api/feedback`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

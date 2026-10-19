@@ -8,6 +8,7 @@ import { FaCircleQuestion } from "react-icons/fa6";
 import { IoMdClose } from "react-icons/io";
 import '../../styles/ADMIN_Games.css';
 import "../../styles/skeleton.css";
+import { API_URL } from "../../config";
 
 const Game = () => {
   const { eventName } = useParams();
@@ -49,7 +50,7 @@ const Game = () => {
       setLoading(true);
       try {
         const response = await fetch(
-          `https://sparta-deployed.onrender.com/api/games?institution=${encodeURIComponent(userInstitution)}&eventName=${encodeURIComponent(decodedName)}`
+          `${API_URL}/api/games?institution=${encodeURIComponent(userInstitution)}&eventName=${encodeURIComponent(decodedName)}`
         );
         const data = await response.json();
 
@@ -90,7 +91,7 @@ const Game = () => {
   const confirmDeleteGame = async () => {
     if (!gameToDelete) return;
     try {
-      const res = await fetch(`https://sparta-deployed.onrender.com/api/games/${gameToDelete.id}`, {
+      const res = await fetch(`${API_URL}/api/games/${gameToDelete.id}`, {
         method: "DELETE",
       });
 

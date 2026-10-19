@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import React, { useState, useEffect } from "react";
 import "../../styles/LiveScores.css";
 import { TbCalendarQuestion } from "react-icons/tb";
+import { API_URL } from "../../config";
 
 const LiveScores = () => {
 
@@ -17,7 +18,7 @@ const LiveScores = () => {
   useEffect(() => {
     const fetchTeams = async () => {
       try {
-        const response = await fetch(`https://sparta-deployed.onrender.com/api/teams/scores?institution=${encodeURIComponent(user?.institution)}&event=${encodeURIComponent(decodedEvent)}`);
+        const response = await fetch(`${API_URL}/api/teams/scores?institution=${encodeURIComponent(user?.institution)}&event=${encodeURIComponent(decodedEvent)}`);
         const data = await response.json();
 
         setTeams(data);

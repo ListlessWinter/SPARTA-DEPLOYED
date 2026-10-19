@@ -6,6 +6,7 @@ import { MdSportsVolleyball, MdSportsKabaddi } from "react-icons/md";
 import { BiSolidBaseball, BiBaseball } from "react-icons/bi";
 import { FaCircleQuestion } from "react-icons/fa6";
 import "../../styles/ADMIN_Games.css";
+import { API_URL } from "../../config";
 
 const PlayerGame = () => {
 
@@ -64,7 +65,7 @@ const PlayerGame = () => {
   useEffect(() => {
     const fetchGames = async () => {
       try {
-        const response = await fetch(`https://sparta-deployed.onrender.com/api/games?institution=${encodeURIComponent(user?.institution)}&eventName=${encodeURIComponent(decodedName)}`);
+        const response = await fetch(`${API_URL}/api/games?institution=${encodeURIComponent(user?.institution)}&eventName=${encodeURIComponent(decodedName)}`);
         const data = await response.json();
         const grouped = {};
         data.forEach((game) => {
@@ -86,7 +87,7 @@ const PlayerGame = () => {
   useEffect(() => {
     const fetchTeams = async () => {
       try {
-        const res = await fetch(`https://sparta-deployed.onrender.com/api/teams?institution=${encodeURIComponent(user?.institution)}&event=${encodeURIComponent(decodedName)}`);
+        const res = await fetch(`${API_URL}/api/teams?institution=${encodeURIComponent(user?.institution)}&event=${encodeURIComponent(decodedName)}`);
         const data = await res.json();
         setTeams(data);
       } catch (err) {
@@ -100,7 +101,7 @@ const PlayerGame = () => {
   useEffect(() => {
     const fetchEventRequirements = async () => {
       try {
-        const res = await fetch(`https://sparta-deployed.onrender.com/api/event?eventName=${encodeURIComponent(decodedName)}&institution=${encodeURIComponent(user?.institution)}`);
+        const res = await fetch(`${API_URL}/api/event?eventName=${encodeURIComponent(decodedName)}&institution=${encodeURIComponent(user?.institution)}`);
         const data = await res.json();
         setEventRequirements(data.requirements || []);
       } catch (err) {
@@ -129,7 +130,7 @@ const PlayerGame = () => {
 
     try {
       const res = await fetch(
-        `https://sparta-deployed.onrender.com/api/players/${user._id}/register-game`,
+        `${API_URL}/api/players/${user._id}/register-game`,
         {
           method: "PUT",
           body: formData,

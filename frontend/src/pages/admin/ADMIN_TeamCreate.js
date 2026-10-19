@@ -2,6 +2,7 @@ import MainLayout from "../../components/MainLayout";
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import "../../styles/ADMIN_TeamCreate.css";
+import { API_URL } from "../../config";
 
 const CreateTeam = () => {
 
@@ -49,7 +50,7 @@ const CreateTeam = () => {
         formData.append("teamIcon", teamIcon);
       }
 
-      const response = await fetch("https://sparta-deployed.onrender.com/api/team", {
+      const response = await fetch(`${API_URL}/api/team`, {
         method: "POST",
         body: formData, 
       });
@@ -90,7 +91,7 @@ const CreateTeam = () => {
       const institution = user?.institution;
 
       try {
-        const res = await fetch(`https://sparta-deployed.onrender.com/api/coordinators?institution=${institution}&event=${decodedEventName}`);
+        const res = await fetch(`${API_URL}/api/coordinators?institution=${institution}&event=${decodedEventName}`);
         const data = await res.json();
         setCoordinators(Array.isArray(data) ? data : []);
       } catch (err) {

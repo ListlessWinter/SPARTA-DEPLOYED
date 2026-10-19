@@ -1,0 +1,145 @@
+/* ===== Sparta-themed decorations (components/SpartanDecor.js) ===== */
+.sp-meander {
+  display: block;
+  color: rgba(224, 161, 72, 0.35);
+}
+
+.sp-laurel {
+  fill: #c9973f;
+}
+
+/* Emblem */
+.sp-emblem {
+  position: relative;
+  width: 200px;
+  height: 200px;
+  flex: none;
+}
+
+.sp-emblem > svg,
+.sp-emblem-core {
+  position: absolute;
+  inset: 0;
+}
+
+.sp-emblem-ring {
+  stroke: rgba(242, 194, 122, 0.55);
+  animation: sp-spin 40s linear infinite;
+}
+
+.sp-emblem-spears {
+  stroke: #0b1426;
+  fill: #d9a35c;
+  filter: drop-shadow(0 0 1px rgba(242, 194, 122, 0.9));
+}
+
+.sp-emblem-spears path:first-child {
+  stroke: #c9973f;
+  fill: none;
+}
+
+.sp-emblem-spears .tip {
+  stroke: none;
+}
+
+.sp-emblem-laurel {
+  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.5));
+}
+
+.sp-emblem-core {
+  inset: 25%;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: radial-gradient(circle at 40% 35%, #1f3157 0%, #0b1426 70%);
+  border: 2px solid rgba(224, 161, 72, 0.7);
+  box-shadow:
+    0 0 0 6px rgba(206, 137, 44, 0.08),
+    0 0 40px rgba(206, 137, 44, 0.35),
+    inset 0 0 20px rgba(0, 0, 0, 0.6);
+  animation: sp-glow 4s ease-in-out infinite;
+}
+
+.sp-emblem-core img {
+  width: 70%;
+  height: 70%;
+  object-fit: contain;
+  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.5));
+}
+
+/* Ring */
+.sp-ring {
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+}
+
+.sp-ring svg {
+  position: absolute;
+  inset: 0;
+  transform: rotate(-90deg);
+}
+
+.sp-ring circle {
+  fill: none;
+}
+
+.sp-ring .track {
+  stroke: rgba(255, 255, 255, 0.08);
+}
+
+.sp-ring .bar {
+  stroke: #e0a148;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 1.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+  filter: drop-shadow(0 0 4px rgba(224, 161, 72, 0.7));
+}
+
+.sp-ring-label {
+  position: relative;
+  font-size: 10px;
+  font-weight: 700;
+  color: #f2c27a;
+}
+
+/* Embers */
+.sp-embers {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.sp-embers i {
+  position: absolute;
+  bottom: -6px;
+  border-radius: 50%;
+  background: #f2c27a;
+  box-shadow: 0 0 6px 2px rgba(224, 161, 72, 0.6);
+  opacity: 0;
+  animation: sp-ember 9s linear infinite;
+}
+
+@keyframes sp-spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes sp-glow {
+  0%, 100% { box-shadow: 0 0 0 6px rgba(206, 137, 44, 0.08), 0 0 30px rgba(206, 137, 44, 0.25), inset 0 0 20px rgba(0, 0, 0, 0.6); }
+  50% { box-shadow: 0 0 0 10px rgba(206, 137, 44, 0.12), 0 0 55px rgba(206, 137, 44, 0.45), inset 0 0 20px rgba(0, 0, 0, 0.6); }
+}
+
+@keyframes sp-ember {
+  0% { transform: translate(0, 0); opacity: 0; }
+  10% { opacity: 0.9; }
+  85% { opacity: 0.4; }
+  100% { transform: translate(var(--drift), -260px); opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sp-emblem-ring,
+  .sp-emblem-core,
+  .sp-embers i {
+    animation: none !important;
+  }
+}

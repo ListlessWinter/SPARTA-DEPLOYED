@@ -6,6 +6,7 @@ import { LuSwords } from "react-icons/lu";
 import { MdOutlineScoreboard } from "react-icons/md";
 import { MdOutlineFeedback } from "react-icons/md";
 import '../../styles/ADMIN_SpecificEvents.css';
+import { API_URL } from "../../config";
 
 const PlayerSpecificEvent = () => {
 
@@ -26,7 +27,7 @@ const PlayerSpecificEvent = () => {
   useEffect(() => {
     const fetchEventDetails = async () => {
       try {
-        const response = await fetch(`https://sparta-deployed.onrender.com/api/specific-event?eventName=${encodeURIComponent(decodedName)}`);
+        const response = await fetch(`${API_URL}/api/specific-event?eventName=${encodeURIComponent(decodedName)}`);
         const data = await response.json();
         setEventDetails(data);
       } catch (error) {
@@ -41,7 +42,7 @@ const PlayerSpecificEvent = () => {
     const fetchPlayer = async () => {
       try {
         if (!user?._id) return;
-        const response = await fetch(`https://sparta-deployed.onrender.com/api/players/${user._id}`);
+        const response = await fetch(`${API_URL}/api/players/${user._id}`);
         const data = await response.json();
         setPlayer(data);
       } catch (error) {

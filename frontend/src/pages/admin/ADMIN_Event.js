@@ -6,6 +6,7 @@ import { MdEventNote } from "react-icons/md";
 import { IoIosInformationCircleOutline } from "react-icons/io";
 import "../../styles/ADMIN_Event.css";
 import "../../styles/skeleton.css";
+import { API_URL } from "../../config";
 
 const Event = () => {
 
@@ -27,7 +28,7 @@ const Event = () => {
     const fetchEvents = async () => {
       setLoading(true); // show skeleton
       try {
-        const response = await fetch(`https://sparta-deployed.onrender.com/api/active-events?institution=${user?.institution}&email=${user.email}&role=${user.role}`);
+        const response = await fetch(`${API_URL}/api/active-events?institution=${user?.institution}&email=${user.email}&role=${user.role}`);
         const data = await response.json();
         setEvents(data);
       } catch (err) {
@@ -59,7 +60,7 @@ const Event = () => {
   const performDelete = async () => {
     if (!deleteTarget) return;
     try {
-      await fetch(`https://sparta-deployed.onrender.com/api/event/${deleteTarget._id}`, { method: "DELETE" });
+      await fetch(`${API_URL}/api/event/${deleteTarget._id}`, { method: "DELETE" });
       setEvents(events.filter((e) => e._id !== deleteTarget._id));
     } catch (err) {
       console.error("Delete failed:", err);
@@ -78,7 +79,7 @@ const Event = () => {
   const handleEditSave = async () => {
     try {
       const res = await fetch(
-        `https://sparta-deployed.onrender.com/api/event/${editEvent._id}`,
+        `${API_URL}/api/event/${editEvent._id}`,
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },

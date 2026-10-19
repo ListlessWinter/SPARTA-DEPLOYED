@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import { Bracket, Seed, SeedItem, SeedTeam } from "react-brackets";
 import '../../styles/ADMIN_SpecificEvents.css';
 import "../../styles/bracket.css";
+import { API_URL } from "../../config";
 
 const SpectatorGameBracket = () => {
 
@@ -19,7 +20,7 @@ const SpectatorGameBracket = () => {
   useEffect(() => {
     const fetchGame = async () => {
       try {
-        const res = await fetch(`https://sparta-deployed.onrender.com/api/games/${gameId}`);
+        const res = await fetch(`${API_URL}/api/games/${gameId}`);
         const data = await res.json();
         setGame(data);
       } catch (err) {

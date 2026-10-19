@@ -2,6 +2,7 @@ import MainLayout from "../../components/MainLayout";
 import { useEffect, useState } from "react";
 import { FaSchoolFlag } from "react-icons/fa6";
 import '../../styles/ADMIN_PlayerApproval.css';
+import { API_URL } from "../../config";
 
 const Approval = () => {
 
@@ -19,7 +20,7 @@ const Approval = () => {
   useEffect(() => {
     const fetchPlayers = async () => {
       try {
-        const res = await fetch(`https://sparta-deployed.onrender.com/api/players/pending?institution=${user?.institution}`);
+        const res = await fetch(`${API_URL}/api/players/pending?institution=${user?.institution}`);
         const data = await res.json();
         setPlayers(data);
       } catch (err) {
@@ -42,7 +43,7 @@ const Approval = () => {
   // Approve player
   const handleApprove = async (id) => {
     try {
-      const res = await fetch(`https://sparta-deployed.onrender.com/api/players/approve/${id}`, {
+      const res = await fetch(`${API_URL}/api/players/approve/${id}`, {
         method: "PUT",
       });
       if (res.ok) {
@@ -72,7 +73,7 @@ const Approval = () => {
     closeDeclineConfirm();
 
     try {
-      const res = await fetch(`https://sparta-deployed.onrender.com/api/players/${id}`, {
+      const res = await fetch(`${API_URL}/api/players/${id}`, {
         method: "DELETE",
       });
       if (res.ok) {

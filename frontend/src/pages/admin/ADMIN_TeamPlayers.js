@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import '../../styles/ADMIN_TeamPlayers.css';
 import { LiaGhostSolid } from "react-icons/lia";
+import { API_URL } from "../../config";
 
 const TeamPlayers = () => {
 
@@ -35,7 +36,7 @@ const TeamPlayers = () => {
   useEffect(() => {
     const fetchPlayers = async () => {
       try {
-        const res = await fetch(`https://sparta-deployed.onrender.com/api/players?institution=${encodeURIComponent(user?.institution)}&eventName=${encodeURIComponent(decodedEvent)}&team=${encodeURIComponent(decodedTeam)}`);
+        const res = await fetch(`${API_URL}/api/players?institution=${encodeURIComponent(user?.institution)}&eventName=${encodeURIComponent(decodedEvent)}&team=${encodeURIComponent(decodedTeam)}`);
         const data = await res.json();
         setPlayers(data);
       } catch (err) {
@@ -50,7 +51,7 @@ const TeamPlayers = () => {
   useEffect(() => {
     const fetchTeamDetails = async () => {
       try {
-        const res = await fetch(`https://sparta-deployed.onrender.com/api/team?institution=${encodeURIComponent(user?.institution)}&event=${encodeURIComponent(decodedEvent)}&teamName=${encodeURIComponent(decodedTeam)}`);
+        const res = await fetch(`${API_URL}/api/team?institution=${encodeURIComponent(user?.institution)}&event=${encodeURIComponent(decodedEvent)}&teamName=${encodeURIComponent(decodedTeam)}`);
         const data = await res.json();
         setTeamColor(data.teamColor || "#808080");
       } catch (err) {
@@ -64,7 +65,7 @@ const TeamPlayers = () => {
   useEffect(() => {
     const fetchTeamRankings = async () => {
       try {
-        const res = await fetch(`https://sparta-deployed.onrender.com/api/teams/scores?institution=${encodeURIComponent(user?.institution)}&event=${encodeURIComponent(decodedEvent)}`);
+        const res = await fetch(`${API_URL}/api/teams/scores?institution=${encodeURIComponent(user?.institution)}&event=${encodeURIComponent(decodedEvent)}`);
         const data = await res.json();
 
         // Sort descending by final score
@@ -97,7 +98,7 @@ const TeamPlayers = () => {
     const fetchPendingCount = async () => {
       try {
         const res = await fetch(
-          `https://sparta-deployed.onrender.com/api/players/team-pending?institution=${encodeURIComponent(
+          `${API_URL}/api/players/team-pending?institution=${encodeURIComponent(
             user?.institution
           )}&eventName=${encodeURIComponent(eventName)}&team=${encodeURIComponent(
             teamName

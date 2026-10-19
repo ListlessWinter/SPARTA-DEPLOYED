@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../../styles/Spectator.css";
+import { API_URL } from "../../config";
 
 export default function LandingPage() {
 
@@ -11,7 +12,7 @@ export default function LandingPage() {
     useEffect(() => {
         const fetchInstitutions = async () => {
             try {
-                const res = await fetch(`https://sparta-deployed.onrender.com/api/institutions`);
+                const res = await fetch(`${API_URL}/api/institutions`);
                 const data = await res.json();
                 setInstitutions(data);
             } catch (err) {
