@@ -2,9 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Mail, Lock, KeyRound, Eye, EyeOff, ArrowRight, LoaderCircle,
-  CircleCheck, CircleAlert, Sparkles,
+  CircleCheck, CircleAlert,
 } from 'lucide-react';
 import LoginScene from '../components/LoginScene';
+import DemoToasts from '../components/DemoToasts';
 import { Meander } from '../components/SpartanDecor';
 import '../styles/Login.css'; // shared classes (role buttons, modals) still used by other pages
 import '../styles/LoginPage.css';
@@ -97,6 +98,12 @@ export default function LoginPage() {
 
   return (
     <div className="lp">
+      <DemoToasts
+        toasts={[
+          { icon: 'construction', text: 'Under construction: UI/UX redesigning in progress...' },
+          { icon: 'info', text: 'This is a demo presentation. No authorization required.' },
+        ]}
+      />
       {/* Success Modal */}
       {showLoginSuccess && (
         <div className="lp-modal-overlay">
@@ -127,151 +134,146 @@ export default function LoginPage() {
 
       <main className="lp-main">
         <div className="lp-temple">
-        <div className="lp-pediment" aria-hidden="true">
-          <svg viewBox="0 0 600 64" preserveAspectRatio="none">
-            <polygon points="300,2 596,62 4,62" />
-          </svg>
-          <img src="/SPARTA_Logo.png" alt="" />
-        </div>
-        <div className="lp-entablature" aria-hidden="true"><Meander height={12} /></div>
-        <div className="lp-portico">
-        <span className="lp-col outer" aria-hidden="true" />
-        <span className="lp-col" aria-hidden="true" />
-        <div className="lp-card">
-          <header className="lp-card-head">
-            <div className="lp-brand">
-              <img src="/SPARTA_Logo.png" alt="" />
-              <span>SPARTA</span>
-            </div>
-            <h1>Enter the arena</h1>
-            <p>Sign in to manage your events and teams.</p>
-          </header>
-
-          <div className="lp-segment" role="tablist" aria-label="Account type">
-            <span className={`lp-segment-thumb ${isAdminGroup ? '' : 'right'}`} aria-hidden="true" />
-            <button
-              type="button"
-              role="tab"
-              aria-selected={isAdminGroup}
-              className={isAdminGroup ? 'active' : ''}
-              onClick={() => !isAdminGroup && setRole('admin')}
-            >
-              Organizer
-            </button>
-            <button
-              type="button"
-              role="tab"
-              aria-selected={!isAdminGroup}
-              className={!isAdminGroup ? 'active' : ''}
-              onClick={() => setRole('player')}
-            >
-              Player
-            </button>
+          <div className="lp-pediment" aria-hidden="true">
+            <svg viewBox="0 0 600 64" preserveAspectRatio="none">
+              <polygon points="300,2 596,62 4,62" />
+            </svg>
+            <img src="/SPARTA_Logo.png" alt="" />
           </div>
+          <div className="lp-entablature" aria-hidden="true"><Meander height={12} /></div>
+          <div className="lp-portico">
+            <span className="lp-col outer" aria-hidden="true" />
+            <span className="lp-col" aria-hidden="true" />
+            <div className="lp-card">
+              <header className="lp-card-head">
+                <div className="lp-brand">
+                  <img src="/SPARTA_Logo.png" alt="" />
+                  <span>SPARTA</span>
+                </div>
+                <h1>Enter the arena</h1>
+                <p>Sign in to manage your events and teams.</p>
+              </header>
 
-          <div className={`lp-subroles ${isAdminGroup ? 'open' : ''}`} aria-hidden={!isAdminGroup}>
-            <div className="lp-subroles-inner">
-              {ADMIN_ROLES.map((r) => (
+              <div className="lp-segment" role="tablist" aria-label="Account type">
+                <span className={`lp-segment-thumb ${isAdminGroup ? '' : 'right'}`} aria-hidden="true" />
                 <button
-                  key={r.value}
                   type="button"
-                  tabIndex={isAdminGroup ? 0 : -1}
-                  className={`lp-chip ${role === r.value ? 'active' : ''}`}
-                  onClick={() => setRole(r.value)}
+                  role="tab"
+                  aria-selected={isAdminGroup}
+                  className={isAdminGroup ? 'active' : ''}
+                  onClick={() => !isAdminGroup && setRole('admin')}
                 >
-                  {r.label}
+                  Organizer
                 </button>
-              ))}
+                <button
+                  type="button"
+                  role="tab"
+                  aria-selected={!isAdminGroup}
+                  className={!isAdminGroup ? 'active' : ''}
+                  onClick={() => setRole('player')}
+                >
+                  Player
+                </button>
+              </div>
+
+              <div className={`lp-subroles ${isAdminGroup ? 'open' : ''}`} aria-hidden={!isAdminGroup}>
+                <div className="lp-subroles-inner">
+                  {ADMIN_ROLES.map((r) => (
+                    <button
+                      key={r.value}
+                      type="button"
+                      tabIndex={isAdminGroup ? 0 : -1}
+                      className={`lp-chip ${role === r.value ? 'active' : ''}`}
+                      onClick={() => setRole(r.value)}
+                    >
+                      {r.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <form onSubmit={handleSubmit} className="lp-form" noValidate>
+                <label className="lp-field">
+                  <span className="lp-label">Email</span>
+                  <span className="lp-input">
+                    <Mail size={18} />
+                    <input
+                      type="email"
+                      name="email"
+                      placeholder="you@school.edu.ph"
+                      autoComplete="email"
+                      value={formData.email}
+                      onChange={handleChange}
+                    />
+                  </span>
+                </label>
+
+                {/* Password for Admin and Player, Access Key for Co/Sub Organizer */}
+                {usesAccessKey ? (
+                  <label className="lp-field" key="accessKey">
+                    <span className="lp-label">Access key</span>
+                    <span className="lp-input">
+                      <KeyRound size={18} />
+                      <input
+                        type="text"
+                        name="accessKey"
+                        placeholder="Key from your invitation email"
+                        value={formData.accessKey}
+                        onChange={handleChange}
+                      />
+                    </span>
+                  </label>
+                ) : (
+                  <label className="lp-field" key="password">
+                    <span className="lp-label">Password</span>
+                    <span className="lp-input">
+                      <Lock size={18} />
+                      <input
+                        type={showPassword ? 'text' : 'password'}
+                        name="password"
+                        placeholder="Enter your password"
+                        autoComplete="current-password"
+                        value={formData.password}
+                        onChange={handleChange}
+                      />
+                      <button
+                        type="button"
+                        className="lp-icon-btn"
+                        onClick={() => setShowPassword(!showPassword)}
+                        aria-label={showPassword ? 'Hide password' : 'Show password'}
+                      >
+                        {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                      </button>
+                    </span>
+                  </label>
+                )}
+
+                <button type="submit" className="lp-btn lp-btn-primary lp-submit" disabled={loading}>
+                  {loading ? (
+                    <><LoaderCircle size={18} className="lp-spin" /> Signing in…</>
+                  ) : (
+                    <>Sign in as {ROLE_LABELS[role]} <ArrowRight size={18} /></>
+                  )}
+                </button>
+              </form>
+
+              <div className="lp-divider"><span>or</span></div>
+
+              <button type="button" className="lp-btn lp-btn-ghost" onClick={() => navigate('/spectator/institution')}>
+                <Eye size={18} /> Continue as Spectator
+              </button>
+
+              <p className="lp-footnote">
+                Don't have an account?
+                <button type="button" className="lp-link" onClick={() => navigate('/register')}>
+                  Register here
+                </button>
+              </p>
             </div>
+            <span className="lp-col" aria-hidden="true" />
+            <span className="lp-col outer" aria-hidden="true" />
           </div>
-
-          <form onSubmit={handleSubmit} className="lp-form" noValidate>
-            <label className="lp-field">
-              <span className="lp-label">Email</span>
-              <span className="lp-input">
-                <Mail size={18} />
-                <input
-                  type="email"
-                  name="email"
-                  placeholder="you@school.edu.ph"
-                  autoComplete="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                />
-              </span>
-            </label>
-
-            {/* Password for Admin and Player, Access Key for Co/Sub Organizer */}
-            {usesAccessKey ? (
-              <label className="lp-field" key="accessKey">
-                <span className="lp-label">Access key</span>
-                <span className="lp-input">
-                  <KeyRound size={18} />
-                  <input
-                    type="text"
-                    name="accessKey"
-                    placeholder="Key from your invitation email"
-                    value={formData.accessKey}
-                    onChange={handleChange}
-                  />
-                </span>
-              </label>
-            ) : (
-              <label className="lp-field" key="password">
-                <span className="lp-label">Password</span>
-                <span className="lp-input">
-                  <Lock size={18} />
-                  <input
-                    type={showPassword ? 'text' : 'password'}
-                    name="password"
-                    placeholder="Enter your password"
-                    autoComplete="current-password"
-                    value={formData.password}
-                    onChange={handleChange}
-                  />
-                  <button
-                    type="button"
-                    className="lp-icon-btn"
-                    onClick={() => setShowPassword(!showPassword)}
-                    aria-label={showPassword ? 'Hide password' : 'Show password'}
-                  >
-                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-                  </button>
-                </span>
-              </label>
-            )}
-
-            <div className="lp-demo-note">
-              <Sparkles size={15} />
-              <span><b>Demo mode:</b> no login details needed.</span>
-            </div>
-
-            <button type="submit" className="lp-btn lp-btn-primary lp-submit" disabled={loading}>
-              {loading ? (
-                <><LoaderCircle size={18} className="lp-spin" /> Signing in…</>
-              ) : (
-                <>Sign in as {ROLE_LABELS[role]} <ArrowRight size={18} /></>
-              )}
-            </button>
-          </form>
-
-          <div className="lp-divider"><span>or</span></div>
-
-          <button type="button" className="lp-btn lp-btn-ghost" onClick={() => navigate('/spectator/institution')}>
-            <Eye size={18} /> Continue as Spectator
-          </button>
-
-          <p className="lp-footnote">
-            Don't have an account?
-            <button type="button" className="lp-link" onClick={() => navigate('/register')}>
-              Register here
-            </button>
-          </p>
-        </div>
-        <span className="lp-col" aria-hidden="true" />
-        <span className="lp-col outer" aria-hidden="true" />
-        </div>
-        <div className="lp-steps" aria-hidden="true"><i /><i /><i /></div>
+          <div className="lp-steps" aria-hidden="true"><i /><i /><i /></div>
         </div>
       </main>
     </div>

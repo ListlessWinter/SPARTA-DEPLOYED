@@ -14,7 +14,7 @@
   --lp-field: rgba(6, 11, 23, 0.7);
   --lp-radius: 14px;
   /* Spartans fill the screen height (viewBox 720x900); their spears cross at y=95 of 900 */
-  --lp-clash-y: 6.84vh;
+  --lp-clash-y: 8vh;
 
   /* Locked to the viewport so the page never scrolls */
   position: fixed;
@@ -87,37 +87,24 @@
   background: radial-gradient(60% 70% at 50% 100%, rgba(224, 161, 72, 0.18) 0%, transparent 70%);
 }
 
-/* Bronze statues (viewBox 900x1000): spears cross 60 units above the top edge */
-.lp-statue {
+/* Spartan statues image (1541x1021): swords cross at 20% of its height,
+   feet sit at 94%. Sized so the crossing lands at --lp-clash-y above the temple. */
+.lp-statues {
   position: absolute;
-  bottom: 2vh;
-  height: 86vh;
-  width: 77.4vh;
-  overflow: visible;
-  filter:
-    drop-shadow(0 0 1.5px rgba(255, 200, 120, 0.75))
-    drop-shadow(0 0 26px rgba(230, 130, 40, 0.3));
-}
-
-.lp-statue.left {
-  left: calc(50% - 77.4vh);
-  animation: lp-lunge-left 6s ease-in-out infinite;
-}
-
-.lp-statue.right {
   left: 50%;
-  transform: scaleX(-1);
-  animation: lp-lunge-right 6s ease-in-out infinite;
+  top: calc(var(--lp-clash-y) - 112vh * 0.2);
+  height: 112vh;
+  transform: translateX(-50%);
+  filter:
+    drop-shadow(0 0 1.5px rgba(255, 200, 120, 0.6))
+    drop-shadow(0 0 30px rgba(230, 130, 40, 0.25));
+  animation: lp-statues-breathe 7s ease-in-out infinite;
+  pointer-events: none;
 }
 
-.lp-pedestal {
-  fill: #141b2e;
-}
-
-.lp-pedestal-lip {
-  fill: #2a3556;
-  stroke: rgba(224, 161, 72, 0.5);
-  stroke-width: 2;
+@keyframes lp-statues-breathe {
+  0%, 100% { transform: translateX(-50%) scale(1); }
+  50% { transform: translateX(-50%) scale(1.008); }
 }
 
 /* God rays behind the temple */
@@ -137,15 +124,15 @@
 /* Braziers on the pedestals (positions follow the statue geometry) */
 .lp-brazier {
   position: absolute;
-  bottom: 5.3vh;
+  bottom: 2vh;
   width: 5vh;
   transform: translateX(-50%);
 }
 
-.lp-brazier.outer.left { left: calc(50% - 77.4vh + 6.9vh); }
-.lp-brazier.inner.left { left: calc(50% - 77.4vh + 45vh); }
-.lp-brazier.inner.right { left: calc(50% + 77.4vh - 45vh); }
-.lp-brazier.outer.right { left: calc(50% + 77.4vh - 6.9vh); }
+.lp-brazier.outer.left { left: 4vw; }
+.lp-brazier.inner.left { left: calc(50% - 400px); }
+.lp-brazier.inner.right { left: calc(50% + 400px); }
+.lp-brazier.outer.right { left: calc(100% - 4vw); }
 
 .lp-brazier svg {
   display: block;
@@ -220,7 +207,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: min(100%, 600px);
+  width: min(100%, 680px);
   animation: lp-rise 0.7s ease-out both;
 }
 
@@ -284,15 +271,15 @@
 .lp-col {
   position: relative;
   flex: none;
-  width: 40px;
+  width: 58px;
   margin: 14px 0 12px;
   background:
     linear-gradient(90deg, rgba(0, 0, 0, 0.45) 0%, transparent 35%, rgba(255, 255, 255, 0.08) 60%, rgba(0, 0, 0, 0.5) 100%),
-    repeating-linear-gradient(90deg, #2e3b60 0 6px, #1a2442 6px 8px);
+    repeating-linear-gradient(90deg, #2e3b60 0 8px, #1a2442 8px 11px);
 }
 
 .lp-col.outer {
-  width: 30px;
+  width: 42px;
   opacity: 0.7;
 }
 
@@ -416,7 +403,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: calc(var(--lp-clash-y) + 4vh) 16px 0;
+  padding: calc(var(--lp-clash-y) + 2vh) 16px 2vh;
 }
 
 .lp-card {
@@ -929,7 +916,7 @@
 
 /* Responsive */
 @media (max-width: 1000px), (max-aspect-ratio: 1/1) {
-  .lp-statue,
+  .lp-statues,
   .lp-brazier,
   .lp-clash {
     display: none;
@@ -942,7 +929,7 @@
 
 @media (max-height: 840px) and (min-width: 1001px) and (min-aspect-ratio: 1/1) {
   .lp-main {
-    padding-top: calc(var(--lp-clash-y) + 1.5vh);
+    padding-top: calc(var(--lp-clash-y) + 1vh);
   }
 
   .lp-pediment {

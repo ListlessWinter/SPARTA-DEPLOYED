@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { ChevronDown, UserPen, LogOut, CalendarDays } from 'lucide-react';
 import '../styles/Header.css'; // also holds .dropdown-item, used by other pages
 import '../styles/AppShell.css';
+import { Garland } from './SpartanDecor';
 import { API_URL } from "../config";
 
 // First matching rule names the page
@@ -135,6 +136,7 @@ const Header = () => {
 
   return (
     <header className="sh-topbar">
+      <Garland className="sh-garland" />
       <div className="sh-topbar-title">
         <h1>{currentTitle}</h1>
         <span className="sh-date"><CalendarDays size={14} /> {today}</span>

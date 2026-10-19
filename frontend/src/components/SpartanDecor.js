@@ -18,6 +18,26 @@ export function Meander({ className = "", height = 12 }) {
   );
 }
 
+// Laurel vine strip that tiles horizontally
+export function Garland({ className = "" }) {
+  const id = useId().replace(/:/g, "");
+  return (
+    <svg className={`sp-garland ${className}`} width="100%" height="16" aria-hidden="true">
+      <defs>
+        <pattern id={`gl-${id}`} width="56" height="16" patternUnits="userSpaceOnUse">
+          <path d="M0,8 C14,2 28,14 42,8 C49,5 53,6 56,8" fill="none" strokeWidth="1.4" />
+          <ellipse cx="9" cy="4.5" rx="5" ry="2" transform="rotate(-28 9 4.5)" />
+          <ellipse cx="20" cy="11" rx="5" ry="2" transform="rotate(26 20 11)" />
+          <ellipse cx="33" cy="5" rx="5" ry="2" transform="rotate(-24 33 5)" />
+          <ellipse cx="46" cy="10" rx="4" ry="1.8" transform="rotate(30 46 10)" />
+          <circle cx="27" cy="9.5" r="1.4" className="berry" />
+        </pattern>
+      </defs>
+      <rect width="100%" height="100%" fill={`url(#gl-${id})`} />
+    </svg>
+  );
+}
+
 // Two laurel branches around a circle of radius r centred in a size x size box
 export function Laurel({ size = 200, r = 78, className = "" }) {
   const leaves = useMemo(() => {

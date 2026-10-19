@@ -28,11 +28,6 @@ export default function Sidebar({ items }) {
           );
         })}
       </ul>
-
-      <div className="sh-sidebar-foot">
-        <span className="sh-demo-dot" />
-        Demo mode
-      </div>
     </nav>
   );
 }

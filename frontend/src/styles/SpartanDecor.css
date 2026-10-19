@@ -4,6 +4,17 @@
   color: rgba(224, 161, 72, 0.35);
 }
 
+.sp-garland {
+  display: block;
+  fill: #8f9a4c;
+  stroke: #8f9a4c;
+}
+
+.sp-garland .berry {
+  fill: #e0a148;
+  stroke: none;
+}
+
 .sp-laurel {
   fill: #c9973f;
 }

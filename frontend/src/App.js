@@ -8,6 +8,7 @@ import ServicePage from "./pages/Service";
 
 //ADMIN
 import Dashboard from "./pages/admin/ADMIN_Dashboard";
+import DemoToasts from "./components/DemoToasts";
 import Event from "./pages/admin/ADMIN_Event"
 import CreateEvent from "./pages/admin/ADMIN_EventCreate";
 import SpecificEvent from "./pages/admin/ADMIN_SpecificEvent";
@@ -50,6 +51,8 @@ import SpectatorScore from "./pages/spectator/SPECTATOR_LiveScore";
 import SpectatorTeams from "./pages/spectator/SPECTATOR_Teams";
 import SpectatorTeamPlayers from "./pages/spectator/SPECTATOR_TeamPlayers";
 
+const dummyToast = [{ icon: 'info', text: 'Data shown are dummy data. No real data are being used.' }];
+
 export default function App() {
   return (
     <Router>
@@ -58,7 +61,7 @@ export default function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/service" element={<ServicePage />} />
         {/*Admin*/}
-        <Route path="/admin/dashboard" element={<BlockRoute> <Dashboard /> </BlockRoute>} />
+        <Route path="/admin/dashboard" element={<BlockRoute> <DemoToasts toasts={dummyToast} /> <Dashboard /> </BlockRoute>} />
         <Route path="/admin/approval" element={<BlockRoute> <Approval /> </BlockRoute>} />
         <Route path="/admin/event" element={<BlockRoute> <Event /> </BlockRoute>} />
         <Route path="/admin/event/create" element={<BlockRoute> <CreateEvent /> </BlockRoute>} />
@@ -78,7 +81,7 @@ export default function App() {
         <Route path="/admin/pantheon/:eventName/ranking" element={<BlockRoute> <PantheonRanks /> </BlockRoute>} />
         <Route path="/admin/pantheon/:eventName/:teamName/players" element={<BlockRoute> <PantheonTeam /> </BlockRoute>} />
         {/*Player*/}
-        <Route path="/dashboard" element={<BlockRoute> <PlayerDashboard /> </BlockRoute>} />
+        <Route path="/dashboard" element={<BlockRoute> <DemoToasts toasts={dummyToast} /> <PlayerDashboard /> </BlockRoute>} />
         <Route path=":userId/profile" element={<BlockRoute> <PlayerUserProfile /> </BlockRoute>} />
         <Route path="/event" element={<BlockRoute> <PlayerEvent /> </BlockRoute>} />
         <Route path="/event/:eventName" element={<BlockRoute> <PlayerSpecificEvent /> </BlockRoute>} />
@@ -93,9 +96,9 @@ export default function App() {
         {/*Spectator*/}
         <Route path="/spectator/institution" element={<LandingPage />} />
         <Route path="/spectator/:institution" element={<AllEvent />} />
-        <Route path="/spectator/:institution/:eventName/teams" element={ <SpectatorTeams />} />
+        <Route path="/spectator/:institution/:eventName/teams" element={<SpectatorTeams />} />
         <Route path="/spectator/:institution/:eventName/team/:teamName" element={<SpectatorTeamPlayers />} />
-        <Route path="/spectator/:institution/:eventName/liveScores" element={ <SpectatorScore />} />
+        <Route path="/spectator/:institution/:eventName/liveScores" element={<SpectatorScore />} />
         <Route path="/spectator/:institution/:eventName" element={<SpectatorSpecificEvent />} />
         <Route path="/spectator/:institution/:eventName/game" element={<SpectatorGame />} />
         <Route path="/spectator/:institution/:eventName/game/:game" element={<SpectatorGameBracket />} />
