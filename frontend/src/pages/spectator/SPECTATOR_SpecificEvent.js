@@ -5,6 +5,7 @@ import { LuSwords } from "react-icons/lu";
 import { MdOutlineScoreboard } from "react-icons/md";
 
 import '../../styles/ADMIN_SpecificEvents.css';
+const spartaLogo = "/assets/SPARTA_Logo.svg";
 
 const SpectatorSpecificEvent = () => {
 
@@ -61,7 +62,7 @@ const SpectatorSpecificEvent = () => {
 
       <div className="logo-div">
         <div className="logo-container">
-          <img src="/SPARTA_Logo.png" alt="SPARTA Logo" className="spectator-logo" />
+          <img src={spartaLogo} alt="SPARTA Logo" className="spectator-logo" />
         </div>
       </div>
 

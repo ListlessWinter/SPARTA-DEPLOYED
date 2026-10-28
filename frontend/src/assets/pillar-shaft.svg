@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 100" preserveAspectRatio="none">
+<defs>
+<linearGradient id="marble" x1="0" y1="0" x2="1" y2="0">
+<stop offset="0" stop-color="#b9ad95"/><stop offset="0.18" stop-color="#e9e2d2"/><stop offset="0.45" stop-color="#f7f3ea"/>
+<stop offset="0.7" stop-color="#e2d9c6"/><stop offset="1" stop-color="#a99c82"/>
+</linearGradient>
+<linearGradient id="flute" x1="0" y1="0" x2="1" y2="0">
+<stop offset="0" stop-color="#000" stop-opacity="0.16"/><stop offset="0.5" stop-color="#000" stop-opacity="0.03"/>
+<stop offset="1" stop-color="#fff" stop-opacity="0.35"/>
+</linearGradient>
+</defs>
+<rect width="240" height="100" fill="url(#marble)"/>
+<rect x="12" y="0" width="12" height="100" fill="url(#flute)"/><rect x="36" y="0" width="12" height="100" fill="url(#flute)"/><rect x="60" y="0" width="12" height="100" fill="url(#flute)"/><rect x="84" y="0" width="12" height="100" fill="url(#flute)"/><rect x="108" y="0" width="12" height="100" fill="url(#flute)"/><rect x="132" y="0" width="12" height="100" fill="url(#flute)"/><rect x="156" y="0" width="12" height="100" fill="url(#flute)"/><rect x="180" y="0" width="12" height="100" fill="url(#flute)"/><rect x="204" y="0" width="12" height="100" fill="url(#flute)"/><rect x="228" y="0" width="12" height="100" fill="url(#flute)"/>
+</svg>

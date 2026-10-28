@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import { LiaGhostSolid } from "react-icons/lia";
 import "../../styles/ADMIN_TeamPlayers.css";
 import { API_URL } from "../../config";
+const spartaLogo = "/assets/SPARTA_Logo.svg";
 
 const SpectatorTeamPlayers = () => {
   const { institution, eventName, teamName } = useParams();
@@ -53,7 +54,7 @@ const SpectatorTeamPlayers = () => {
 
       <div className="logo-div">
         <div className="logo-container">
-          <img src="/SPARTA_Logo.png" alt="SPARTA Logo" className="spectator-logo" />
+          <img src={spartaLogo} alt="SPARTA Logo" className="spectator-logo" />
         </div>
       </div>
 

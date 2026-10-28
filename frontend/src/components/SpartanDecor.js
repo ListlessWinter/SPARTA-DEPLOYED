@@ -1,5 +1,6 @@
 import React, { useEffect, useId, useMemo, useRef, useState } from "react";
 import "../styles/SpartanDecor.css";
+const spartaLogo = "/assets/SPARTA_Logo.svg";
 
 // Small Sparta-themed decorations shared by redesigned pages.
 
@@ -18,22 +19,78 @@ export function Meander({ className = "", height = 12 }) {
   );
 }
 
-// Laurel vine strip that tiles horizontally
-export function Garland({ className = "" }) {
-  const id = useId().replace(/:/g, "");
+// Climbing vine with spiral tendrils and leaves, drawn across a bar (viewBox 1600 x 72)
+export function Vines({ className = "" }) {
+  const { stem, branches, tendrils, leaves, berries } = useMemo(() => {
+    const W = 1600, mid = 36;
+    const yAt = (x) => mid + 7 * Math.sin(x / 73) + 4.5 * Math.sin(x / 31 + 0.8);
+    const slope = (x) => (7 / 73) * Math.cos(x / 73) + (4.5 / 31) * Math.cos(x / 31 + 0.8);
+
+    let stem = `M0,${yAt(0).toFixed(1)}`;
+    for (let x = 6; x <= W; x += 6) stem += ` L${x},${yAt(x).toFixed(1)}`;
+
+    // Uneven offshoots keep the vine from reading as a repeated border pattern.
+    const branchPoints = [88, 246, 438, 628, 815, 1036, 1244, 1432];
+    const branches = branchPoints.map((x, i) => {
+      const side = i % 2 ? 1 : -1;
+      const y = yAt(x);
+      const reach = 25 + (i % 3) * 5;
+      return {
+        d: `M${x},${y.toFixed(1)} C${x + 8},${(y + side * 4).toFixed(1)} ${x + 18},${(y + side * reach * 0.72).toFixed(1)} ${x + 31},${(y + side * reach).toFixed(1)}`,
+        x: x + 31,
+        y: y + side * reach,
+        side,
+      };
+    });
+
+    // Sparse tendrils, rather than one on every wave, feel more botanical.
+    const tendrils = [];
+    [172, 356, 570, 748, 958, 1172, 1378, 1532].forEach((x, k) => {
+      const top = k % 2 === 0;
+      const py = yAt(x);
+      const r0 = 9 + (k % 3);
+      const cx = x + (top ? -4 : 4);
+      const cy = py + (top ? -r0 : r0);
+      const a0 = Math.atan2(py - cy, x - cx);
+      const dir = top ? 1 : -1;
+      let d = `M${x},${py.toFixed(1)}`;
+      for (let t = 0; t <= 2.7 * Math.PI; t += 0.25) {
+        const r = r0 * (1 - (t / (2.7 * Math.PI)) * 0.84);
+        const a = a0 + dir * t;
+        d += ` L${(cx + r * Math.cos(a)).toFixed(1)},${(cy + r * Math.sin(a)).toFixed(1)}`;
+      }
+      tendrils.push(d);
+    });
+
+    const leaves = [];
+    const berries = [];
+    const gaps = [31, 38, 27, 43, 34, 29, 40];
+    for (let i = 0, x = 18; x < W; x += gaps[i % gaps.length], i++) {
+      const ang = (Math.atan(slope(x)) * 180) / Math.PI;
+      const side = [1, -1, 1, -1, -1, 1][i % 6];
+      leaves.push({ x, y: yAt(x), rot: ang + side * (48 + (i % 3) * 7), s: 0.68 + ((i * 17) % 9) / 22, delay: (x / W) * 1.8 });
+      if (i % 7 === 3) berries.push({ x: x + 5, y: yAt(x) + side * 7 });
+    }
+
+    branches.forEach((b, i) => {
+      leaves.push({ x: b.x, y: b.y, rot: b.side > 0 ? 68 : -68, s: 0.72 + (i % 2) * 0.12, delay: 0.4 + i * 0.12 });
+    });
+
+    return { stem, branches, tendrils, leaves, berries };
+  }, []);
+
   return (
-    <svg className={`sp-garland ${className}`} width="100%" height="16" aria-hidden="true">
-      <defs>
-        <pattern id={`gl-${id}`} width="56" height="16" patternUnits="userSpaceOnUse">
-          <path d="M0,8 C14,2 28,14 42,8 C49,5 53,6 56,8" fill="none" strokeWidth="1.4" />
-          <ellipse cx="9" cy="4.5" rx="5" ry="2" transform="rotate(-28 9 4.5)" />
-          <ellipse cx="20" cy="11" rx="5" ry="2" transform="rotate(26 20 11)" />
-          <ellipse cx="33" cy="5" rx="5" ry="2" transform="rotate(-24 33 5)" />
-          <ellipse cx="46" cy="10" rx="4" ry="1.8" transform="rotate(30 46 10)" />
-          <circle cx="27" cy="9.5" r="1.4" className="berry" />
-        </pattern>
-      </defs>
-      <rect width="100%" height="100%" fill={`url(#gl-${id})`} />
+    <svg className={`sp-vines ${className}`} viewBox="0 0 1600 72" preserveAspectRatio="xMinYMid slice" aria-hidden="true">
+      <path d={stem} className="stem" pathLength="1" />
+      {branches.map((b, i) => <path key={`b-${i}`} d={b.d} className="branch" pathLength="1" />)}
+      {tendrils.map((d, i) => <path key={`t-${i}`} d={d} className="tendril" pathLength="1" />)}
+      {leaves.map((l, i) => (
+        <g key={`l-${i}`} transform={`translate(${l.x} ${l.y.toFixed(1)}) rotate(${l.rot.toFixed(0)}) scale(${l.s.toFixed(2)})`}>
+          <path className="leaf" d="M0,0 C5,-8 16,-9 23,-1 C18,7 7,9 0,0 Z" style={{ animationDelay: `${l.delay.toFixed(2)}s` }} />
+          <path className="vein" d="M3,0 C9,-1 15,-1 20,-1" />
+        </g>
+      ))}
+      {berries.map((b, i) => <circle key={`r-${i}`} cx={b.x} cy={b.y.toFixed(1)} r="2.4" className="berry" />)}
     </svg>
   );
 }
@@ -119,7 +176,7 @@ export function Emblem({ className = "" }) {
       </svg>
       <Laurel className="sp-emblem-laurel" />
       <div className="sp-emblem-core">
-        <img src="/SPARTA_Logo.png" alt="" />
+        <img src={spartaLogo} alt="" />
       </div>
     </div>
   );

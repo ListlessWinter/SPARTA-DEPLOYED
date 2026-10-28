@@ -1,8 +1,10 @@
 import MainLayout from "../../components/MainLayout";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { MoreVertical } from "lucide-react";
-import "../../styles/Pantheon.css";
+import { ArrowRight, CalendarDays, Landmark, MapPin, MoreVertical, Search, Trophy } from "lucide-react";
+import { Meander } from "../../components/SpartanDecor";
+import "../../styles/ADMIN_Event.css";
+import "../../styles/ArenaPages.css";
 import { API_URL } from "../../config";
 
 const Pantheon = () => {
@@ -11,6 +13,8 @@ const Pantheon = () => {
 
   const navigate= useNavigate();
   const [events, setEvents] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState("");
   const [menuOpen, setMenuOpen] = useState(null);
   const [editEvent, setEditEvent] = useState(null);
   const [, setNewSubOrganizer] = useState(""); 
@@ -20,9 +24,16 @@ const Pantheon = () => {
   // Fetch events
   useEffect(() => {
     const fetchEvents = async () => {
-      const response = await fetch(`${API_URL}/api/past-events?institution=${userInstitution}`);
-      const data = await response.json();
-      setEvents(data);
+      setLoading(true);
+      try {
+        const response = await fetch(`${API_URL}/api/past-events?institution=${userInstitution}`);
+        const data = await response.json();
+        setEvents(data);
+      } catch (err) {
+        console.error("Failed to fetch past events:", err);
+      } finally {
+        setLoading(false);
+      }
     };
     fetchEvents();
   }, [userInstitution]);
@@ -64,46 +75,81 @@ const Pantheon = () => {
     }
   };
 
-  return (
-    <MainLayout>
+  const filteredEvents = events.filter((event) =>
+    event.eventName.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
-      <div style={{width: "100%", display: "flex", justifyContent: "center"}}>
-        <img style={{width: "30vw"}} src="../SPARTA_PANTHEON.png" alt="Pantheon Icon" className="pantheon-icon" />
-      </div>
-      <div className="event-list">
-      {events.map((event) => (
-          <div key={event._id} className="event-item">
-            <div className="event-color" style={{ background: event.eventColor || "#A96B24" }}         
-            >
-              {/* Menu button */}
-              {user.role === "admin" && (
-                <>
-                  <MoreVertical size={20} className="pantheon-menu-icon" onClick={() => setMenuOpen(menuOpen === event._id ? null : event._id)} />
-                  {menuOpen === event._id && (
-                    <div className="menu-dropdown">
-                      <button onClick={() => setEditEvent(event)}>EDIT</button>
-                      <button onClick={() => handleDelete(event._id)}>DELETE</button>
+  return (
+    <MainLayout dark>
+      <section className="arena-page pantheon-page">
+        <header className="arena-hero pantheon-hero">
+          <span className="pantheon-hero-mark" aria-hidden="true"><Landmark size={34} /></span>
+          <div className="arena-hero-copy">
+            <span className="arena-eyebrow">Hall of champions</span>
+            <h2>Pantheon</h2>
+            <p>Return to completed campaigns and revisit the teams that earned their place in history.</p>
+          </div>
+          <div className="arena-hero-stat" aria-label={`${events.length} archived events`}>
+            <strong>{events.length}</strong>
+            <span>Archived campaigns</span>
+          </div>
+          <Meander className="arena-hero-key" height={10} />
+        </header>
+
+        <div className="arena-toolbar">
+          <label className="arena-search">
+            <Search size={18} />
+            <input type="search" placeholder="Search the archives" aria-label="Search archived events" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} />
+          </label>
+          <span className="arena-result-count">{filteredEvents.length} {filteredEvents.length === 1 ? "record" : "records"}</span>
+        </div>
+
+        {loading ? (
+          <div className="pantheon-grid" aria-label="Loading archived events">
+            {Array.from({ length: 6 }).map((_, i) => <div key={i} className="pantheon-card arena-card-skeleton"><div className="arena-skeleton-block" /><div className="arena-skeleton-line wide" /><div className="arena-skeleton-line" /></div>)}
+          </div>
+        ) : events.length === 0 ? (
+          <div className="arena-empty-state">
+            <span className="arena-empty-icon"><Landmark size={30} /></span>
+            <h3>The Pantheon awaits</h3>
+            <p>Completed events will be preserved here with their final rankings.</p>
+          </div>
+        ) : filteredEvents.length === 0 ? (
+          <div className="arena-empty-state compact"><span className="arena-empty-icon"><Search size={27} /></span><h3>No matching records</h3><p>Try another event name.</p></div>
+        ) : (
+          <div className="pantheon-grid">
+            {filteredEvents.map((event) => (
+              <article key={event._id} className="pantheon-card" style={{ "--event-accent": event.eventColor || "#c3982b" }}>
+                <div className="pantheon-card-top">
+                  <span className="pantheon-medallion"><Trophy size={20} /></span>
+                  <span className="pantheon-state">Completed</span>
+                  {user.role === "admin" && (
+                    <div className="arena-card-menu">
+                      <button type="button" className="arena-icon-btn" aria-label={`Manage ${event.eventName}`} onClick={() => setMenuOpen(menuOpen === event._id ? null : event._id)}><MoreVertical size={18} /></button>
+                      {menuOpen === event._id && (
+                        <div className="arena-menu" role="menu">
+                          <button type="button" role="menuitem" onClick={() => { setMenuOpen(null); setEditEvent(event); }}>Edit record</button>
+                          <button type="button" role="menuitem" className="danger" onClick={() => { setMenuOpen(null); handleDelete(event._id); }}>Delete record</button>
+                        </div>
+                      )}
                     </div>
                   )}
-                </>
-              )}
-            </div>
+                </div>
 
-            <div className="event-name" onClick={() => handleClickEvent(event)}>
-              {event.eventName}
-              <p>
-                {event?.eventStartDate
-                  ? new Date(event.eventStartDate).toLocaleDateString()
-                  : "Loading..."}{" "}
-                -{" "}
-                {event?.eventEndDate
-                  ? new Date(event.eventEndDate).toLocaleDateString()
-                  : "Loading..."}
-              </p>
-            </div>
+                <button type="button" className="pantheon-card-open" onClick={() => handleClickEvent(event)}>
+                  <span className="arena-card-kicker">Final standings</span>
+                  <span className="pantheon-card-title">{event.eventName}</span>
+                  <span className="arena-card-meta">
+                    <span><CalendarDays size={15} />{event?.eventStartDate ? new Date(event.eventStartDate).toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" }) : "Date unavailable"}</span>
+                    {event.location && <span><MapPin size={15} />{event.location}</span>}
+                  </span>
+                  <span className="pantheon-card-link">View final rankings <ArrowRight size={16} /></span>
+                </button>
+              </article>
+            ))}
           </div>
-        ))}
-      </div>
+        )}
+      </section>
       
       {/* Edit Modal */}
       {editEvent && (
@@ -197,7 +243,7 @@ const Pantheon = () => {
               {/* Co & Sub-organizers just like CreateEvent */}
               <hr />
               <h4>CO & SUB-ORGANIZERS</h4>
-              <p style={{ color: "#3E64AF", fontSize: "10px" }}>
+              <p style={{ color: "#66666e", fontSize: "10px" }}>
                 *Optional – you may add multiple*
               </p>
               <button
@@ -266,7 +312,7 @@ const Pantheon = () => {
                     <button
                       type="button"
                       style={{
-                        background: "#d32f2f",
+                        background: "#e5cb8a",
                         color: "white",
                         borderRadius: "6px",
                         padding: "6px 12px",

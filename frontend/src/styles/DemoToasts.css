@@ -1,13 +1,12 @@
 .dt-stack {
   position: fixed;
-  top: 16px;
-  left: 50%;
-  transform: translateX(-50%);
+  right: 20px;
+  bottom: 20px;
   z-index: 10000;
   display: flex;
   flex-direction: column;
   gap: 10px;
-  width: min(92vw, 460px);
+  width: min(92vw, 380px);
   pointer-events: none;
 }
 
@@ -18,17 +17,19 @@
   gap: 10px;
   padding: 12px 14px;
   border-radius: 12px;
-  color: #fff;
-  font-size: 14px;
-  background: rgba(24, 24, 32, 0.88);
-  border: 1px solid rgba(255, 255, 255, 0.14);
+  color: #e4e1db;
+  font-size: 13px;
+  font-family: 'Poppins', system-ui, sans-serif;
+  background: rgba(19, 19, 21, 0.92);
+  border: 1px solid rgba(218, 182, 89, 0.3);
+  border-left: 3px solid #d3a738;
   backdrop-filter: blur(10px);
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
   opacity: 0;
   animation: dt-in 0.4s ease forwards;
 }
 
-.dt-toast svg:first-child { flex-shrink: 0; color: #f5b942; }
+.dt-toast svg:first-child { flex-shrink: 0; color: #dab659; }
 .dt-toast span { flex: 1; }
 
 .dt-toast button {
@@ -43,7 +44,7 @@
 .dt-toast button:hover { opacity: 1; }
 
 @keyframes dt-in {
-  from { opacity: 0; transform: translateY(-14px); }
+  from { opacity: 0; transform: translateY(14px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
@@ -53,6 +54,6 @@
 
 @keyframes dt-out {
   from { opacity: 1; transform: translateY(0); }
-  to { opacity: 0; transform: translateY(-40px) scale(0.96); }
+  to { opacity: 0; transform: translateX(40px) scale(0.96); }
 }
 

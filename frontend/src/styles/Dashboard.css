@@ -31,10 +31,11 @@
 
 /* Display titles */
 .db .db-title {
-  font-family: 'Bebas Neue', 'Poppins', sans-serif;
-  font-size: 21px;
-  font-weight: 400;
-  letter-spacing: 1.6px;
+  font-family: 'Cinzel', Georgia, serif;
+  font-weight: 700;
+  font-size: 15.12px;
+  
+  letter-spacing: 0.8px;
   line-height: 1;
 }
 
@@ -44,7 +45,7 @@
   height: 7px;
   transform: rotate(45deg);
   background: var(--sh-gold-400);
-  box-shadow: 0 0 10px rgba(224, 161, 72, 0.8);
+  box-shadow: 0 0 10px rgba(218, 182, 89, 0.8);
 }
 
 .db .db-title:has(svg)::before {
@@ -62,7 +63,7 @@
   position: relative;
   padding: 20px;
   border-radius: 18px;
-  background: linear-gradient(180deg, rgba(22, 35, 63, 0.7) 0%, rgba(12, 20, 38, 0.75) 100%);
+  background: linear-gradient(180deg, rgba(34, 34, 38, 0.7) 0%, rgba(20, 20, 22, 0.75) 100%);
   border: 1px solid var(--sh-line);
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
 }
@@ -75,7 +76,7 @@
   left: 24px;
   right: 24px;
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(242, 194, 122, 0.55), transparent);
+  background: linear-gradient(90deg, transparent, rgba(220, 216, 208, 0.55), transparent);
 }
 
 .db-card-head {
@@ -93,11 +94,11 @@
   margin: 0;
   font-size: 15px;
   font-weight: 600;
-  color: #fff;
+  color: #eae8e4;
 }
 
 .db-flame {
-  color: #fb923c;
+  color: #d7ae48;
 }
 
 .db-muted {
@@ -131,11 +132,11 @@
   gap: 20px;
   padding: 8px 22px 22px 10px;
   border-radius: 20px;
-  border: 1px solid rgba(224, 161, 72, 0.25);
+  border: 1px solid rgba(218, 182, 89, 0.25);
   background:
-    radial-gradient(50% 120% at 88% 50%, rgba(206, 137, 44, 0.28) 0%, transparent 60%),
-    radial-gradient(40% 80% at 0% 0%, rgba(52, 80, 138, 0.35) 0%, transparent 70%),
-    linear-gradient(135deg, #17254a 0%, #0b1426 100%);
+    radial-gradient(50% 120% at 88% 50%, rgba(195, 152, 43, 0.28) 0%, transparent 60%),
+    radial-gradient(40% 80% at 0% 0%, rgba(82, 82, 89, 0.35) 0%, transparent 70%),
+    linear-gradient(135deg, #26262a 0%, #141416 100%);
   box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.05);
 }
 
@@ -144,7 +145,7 @@
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(105deg, transparent 40%, rgba(242, 194, 122, 0.08) 50%, transparent 60%);
+  background: linear-gradient(105deg, transparent 40%, rgba(220, 216, 208, 0.08) 50%, transparent 60%);
   background-size: 250% 100%;
   animation: db-sweep 9s ease-in-out infinite;
   pointer-events: none;
@@ -184,8 +185,8 @@
   letter-spacing: 1.2px;
   text-transform: uppercase;
   color: var(--sh-gold-300);
-  background: rgba(206, 137, 44, 0.12);
-  border: 1px solid rgba(224, 161, 72, 0.3);
+  background: rgba(195, 152, 43, 0.12);
+  border: 1px solid rgba(218, 182, 89, 0.3);
 }
 
 .db-hero h2 {
@@ -193,7 +194,7 @@
   font-size: 22px;
   font-weight: 700;
   letter-spacing: -0.5px;
-  color: #fff;
+  color: #eae8e4;
 }
 
 .db-hero h2 span {
@@ -228,7 +229,7 @@
 }
 
 .db-stat {
-  --tone: #e0a148;
+  --tone: #dab659;
   position: relative;
   overflow: hidden;
   display: flex;
@@ -236,7 +237,7 @@
   gap: 14px;
   padding: 18px;
   border-radius: 16px;
-  background: linear-gradient(180deg, rgba(22, 35, 63, 0.7) 0%, rgba(12, 20, 38, 0.75) 100%);
+  background: linear-gradient(180deg, rgba(34, 34, 38, 0.7) 0%, rgba(20, 20, 22, 0.75) 100%);
   border: 1px solid var(--sh-line);
   transition: transform 0.2s ease, border-color 0.2s ease;
 }
@@ -278,9 +279,9 @@
   pointer-events: none;
 }
 
-.db-stat.blue { --tone: #60a5fa; }
-.db-stat.green { --tone: #4ade80; }
-.db-stat.violet { --tone: #a78bfa; }
+.db-stat.blue { --tone: #d3a738; }
+.db-stat.green { --tone: #8fae5a; }
+.db-stat.violet { --tone: #dcd8d0; }
 
 /* Hoplon-style round badge with an inner ring */
 .db-stat-icon {
@@ -293,7 +294,7 @@
   color: var(--tone);
   background: radial-gradient(circle at 35% 30%, color-mix(in srgb, var(--tone) 28%, transparent) 0%, color-mix(in srgb, var(--tone) 8%, transparent) 70%);
   border: 2px solid color-mix(in srgb, var(--tone) 55%, transparent);
-  box-shadow: inset 0 0 0 4px rgba(7, 13, 26, 0.6), inset 0 0 0 5px color-mix(in srgb, var(--tone) 30%, transparent);
+  box-shadow: inset 0 0 0 4px rgba(13, 13, 14, 0.6), inset 0 0 0 5px color-mix(in srgb, var(--tone) 30%, transparent);
   transition: transform 0.4s ease;
 }
 
@@ -309,7 +310,7 @@
   font-size: 26px;
   font-weight: 700;
   line-height: 1.1;
-  color: #fff;
+  color: #eae8e4;
 }
 
 .db-stat-label {
@@ -391,7 +392,7 @@
   margin-right: -8px;
   padding-right: 8px;
   scrollbar-width: thin;
-  scrollbar-color: rgba(224, 161, 72, 0.35) transparent;
+  scrollbar-color: rgba(218, 182, 89, 0.35) transparent;
 }
 
 .db-scroll::-webkit-scrollbar {
@@ -400,7 +401,7 @@
 
 .db-scroll::-webkit-scrollbar-thumb {
   border-radius: 6px;
-  background: rgba(224, 161, 72, 0.35);
+  background: rgba(218, 182, 89, 0.35);
 }
 
 /* Calendar (react-calendar), overriding the light Calendar.css still used elsewhere */
@@ -446,14 +447,14 @@
 }
 
 .db .db-calendar .react-calendar__navigation button:hover {
-  border-color: rgba(224, 161, 72, 0.5);
-  background: rgba(206, 137, 44, 0.08);
+  border-color: rgba(218, 182, 89, 0.5);
+  background: rgba(195, 152, 43, 0.08);
 }
 
 .db .db-calendar .react-calendar__navigation__label {
   font-size: 15px;
   font-weight: 600;
-  color: #fff;
+  color: #eae8e4;
 }
 
 .db .db-calendar .react-calendar__month-view__weekdays {
@@ -492,7 +493,7 @@
   border: 1px solid transparent;
   border-radius: 12px;
   background: transparent;
-  color: #c3cde0;
+  color: #dcd8d0;
   font: inherit;
   font-size: 14px;
   cursor: pointer;
@@ -504,20 +505,20 @@
 }
 
 .db .db-calendar .react-calendar__tile.db-in-range {
-  background: rgba(52, 80, 138, 0.18);
+  background: rgba(82, 82, 89, 0.18);
 }
 
 .db .db-calendar .react-calendar__tile.db-has-match {
-  color: #fff;
+  color: #eae8e4;
   font-weight: 600;
-  background: rgba(206, 137, 44, 0.1);
-  border-color: rgba(224, 161, 72, 0.22);
+  background: rgba(195, 152, 43, 0.1);
+  border-color: rgba(218, 182, 89, 0.22);
 }
 
 .db .db-calendar .react-calendar__tile--now {
   color: var(--sh-gold-300);
-  border-color: rgba(224, 161, 72, 0.6);
-  background: rgba(206, 137, 44, 0.08);
+  border-color: rgba(218, 182, 89, 0.6);
+  background: rgba(195, 152, 43, 0.08);
 }
 
 /* Pulsing ring on today's tile */
@@ -526,22 +527,22 @@
   position: absolute;
   inset: -1px;
   border-radius: inherit;
-  border: 1px solid rgba(242, 194, 122, 0.8);
+  border: 1px solid rgba(220, 216, 208, 0.8);
   animation: db-tile-pulse 2.2s ease-out infinite;
   pointer-events: none;
 }
 
 .db .db-calendar .react-calendar__tile.db-has-match:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 18px rgba(206, 137, 44, 0.18);
+  box-shadow: 0 8px 18px rgba(195, 152, 43, 0.18);
 }
 
 .db .db-calendar .react-calendar__tile--active,
 .db .db-calendar .react-calendar__tile--active.db-has-match {
-  color: #1a1206 !important;
+  color: #0e0e10 !important;
   background: linear-gradient(135deg, var(--sh-gold-300), var(--sh-gold-500)) !important;
   border-color: transparent;
-  box-shadow: 0 6px 18px rgba(206, 137, 44, 0.35);
+  box-shadow: 0 6px 18px rgba(195, 152, 43, 0.35);
 }
 
 .db-cal-dots {
@@ -557,7 +558,7 @@
 }
 
 .react-calendar__tile--active .db-cal-dots i {
-  background: #1a1206;
+  background: #0e0e10;
 }
 
 /* Match lists */
@@ -594,8 +595,8 @@
 
 .db-match:hover {
   transform: translateX(2px);
-  border-color: rgba(224, 161, 72, 0.4);
-  background: rgba(206, 137, 44, 0.06);
+  border-color: rgba(218, 182, 89, 0.4);
+  background: rgba(195, 152, 43, 0.06);
 }
 
 .db-match-icon {
@@ -606,7 +607,7 @@
   display: grid;
   place-items: center;
   color: var(--sh-gold-300);
-  background: rgba(206, 137, 44, 0.12);
+  background: rgba(195, 152, 43, 0.12);
 }
 
 .db-match-body {
@@ -642,7 +643,7 @@
 .db-match-teams {
   display: block;
   font-size: 14px;
-  color: #fff;
+  color: #eae8e4;
 }
 
 .db-match-teams em {
@@ -686,30 +687,30 @@
 }
 
 .db-badge.final {
-  color: #a7f3d0;
-  background: rgba(16, 185, 129, 0.14);
-  border: 1px solid rgba(16, 185, 129, 0.3);
+  color: #c8d6a0;
+  background: rgba(143, 174, 90, 0.14);
+  border: 1px solid rgba(143, 174, 90, 0.3);
 }
 
 .db-badge.live {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  color: #fdba74;
-  background: rgba(249, 115, 22, 0.14);
-  border: 1px solid rgba(249, 115, 22, 0.3);
+  color: #e5cb8a;
+  background: rgba(211, 167, 56, 0.14);
+  border: 1px solid rgba(211, 167, 56, 0.3);
 }
 
 .db-live-dot {
   width: 7px;
   height: 7px;
   border-radius: 50%;
-  background: #f97316;
+  background: #d3a738;
   animation: db-ping 1.6s ease-out infinite;
 }
 
 .db-match.is-live {
-  border-color: rgba(249, 115, 22, 0.35);
+  border-color: rgba(211, 167, 56, 0.35);
   animation: db-live-glow 2.4s ease-in-out infinite;
 }
 
@@ -717,7 +718,7 @@
   margin-right: 4px;
   vertical-align: -1px;
   color: var(--sh-gold-300);
-  filter: drop-shadow(0 0 4px rgba(242, 194, 122, 0.8));
+  filter: drop-shadow(0 0 4px rgba(220, 216, 208, 0.8));
 }
 
 .db-decided {
@@ -725,9 +726,9 @@
 }
 
 .db-badge.soon {
-  color: #bfdbfe;
-  background: rgba(59, 130, 246, 0.14);
-  border: 1px solid rgba(59, 130, 246, 0.3);
+  color: #dcd8d0;
+  background: rgba(218, 182, 89, 0.14);
+  border: 1px solid rgba(218, 182, 89, 0.3);
 }
 
 .db-empty {
@@ -790,7 +791,7 @@
 
 .db-camp:hover {
   transform: translateX(2px);
-  border-color: rgba(224, 161, 72, 0.4);
+  border-color: rgba(218, 182, 89, 0.4);
 }
 
 .db-camp-top,
@@ -808,7 +809,7 @@
   white-space: nowrap;
   font-size: 14px;
   font-weight: 600;
-  color: #fff;
+  color: #eae8e4;
 }
 
 .db-camps-card .db-camps {
@@ -832,7 +833,7 @@
   gap: 12px;
   font-size: 12px;
   font-weight: 600;
-  color: #c3cde0;
+  color: #dcd8d0;
 }
 
 .db-camp-metrics span {
@@ -859,7 +860,7 @@
   display: block;
   height: 100%;
   border-radius: inherit;
-  background: linear-gradient(90deg, #7a4f17, var(--sh-gold-500) 60%, var(--sh-gold-300));
+  background: linear-gradient(90deg, #8e6f1f, var(--sh-gold-500) 60%, var(--sh-gold-300));
   background-size: 200% 100%;
   animation: db-grow 1.4s cubic-bezier(0.2, 0.8, 0.2, 1) both, db-shaft 3s linear infinite;
 }
@@ -874,7 +875,7 @@
   transform: translateY(-50%);
   background: var(--sh-gold-300);
   clip-path: polygon(0 20%, 55% 0, 100% 50%, 55% 100%, 0 80%);
-  filter: drop-shadow(0 0 4px rgba(242, 194, 122, 0.9));
+  filter: drop-shadow(0 0 4px rgba(220, 216, 208, 0.9));
 }
 
 .db-progress-label {
@@ -914,7 +915,7 @@
 }
 
 .db-icon-btn:hover {
-  border-color: rgba(224, 161, 72, 0.5);
+  border-color: rgba(218, 182, 89, 0.5);
 }
 
 .db button:focus-visible {
@@ -949,13 +950,13 @@
 }
 
 @keyframes db-ping {
-  0% { box-shadow: 0 0 0 0 rgba(249, 115, 22, 0.7); }
-  100% { box-shadow: 0 0 0 8px rgba(249, 115, 22, 0); }
+  0% { box-shadow: 0 0 0 0 rgba(211, 167, 56, 0.7); }
+  100% { box-shadow: 0 0 0 8px rgba(211, 167, 56, 0); }
 }
 
 @keyframes db-live-glow {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(249, 115, 22, 0); }
-  50% { box-shadow: 0 0 18px 0 rgba(249, 115, 22, 0.18); }
+  0%, 100% { box-shadow: 0 0 0 0 rgba(211, 167, 56, 0); }
+  50% { box-shadow: 0 0 18px 0 rgba(211, 167, 56, 0.18); }
 }
 
 @keyframes db-tile-pulse {
@@ -1064,4 +1065,26 @@
 /* The breadcrumb only repeats the page title here */
 .sh-main:has(> .db) > .breadcrumbs {
   display: none;
+}
+
+/* Lighter charcoal surfaces so the dashboard is not a wall of black */
+.db-card,
+.db-stat {
+  background: linear-gradient(180deg, #2b2b32 0%, #222228 100%);
+  border-color: rgba(255, 255, 255, 0.09);
+}
+
+.db-hero {
+  background:
+    radial-gradient(50% 120% at 88% 50%, rgba(195, 152, 43, 0.24) 0%, transparent 60%),
+    linear-gradient(135deg, #34343c 0%, #222228 100%);
+}
+
+.db-match,
+.db-camp {
+  background: #1c1c21;
+}
+
+.db-match:hover {
+  background: #26262c;
 }

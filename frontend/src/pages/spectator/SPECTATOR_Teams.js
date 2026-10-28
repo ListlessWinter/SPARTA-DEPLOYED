@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { VscSearchStop } from "react-icons/vsc";
 import "../../styles/ADMIN_Teams.css";
 import { API_URL } from "../../config";
+const spartaLogo = "/assets/SPARTA_Logo.svg";
 
 
 const SpectatorTeams = () => {
@@ -67,7 +68,7 @@ const SpectatorTeams = () => {
 
         <div className="logo-div">
           <div className="logo-container">
-            <img src="/SPARTA_Logo.png" alt="SPARTA Logo" className="spectator-logo" />
+            <img src={spartaLogo} alt="SPARTA Logo" className="spectator-logo" />
           </div>
         </div>
 

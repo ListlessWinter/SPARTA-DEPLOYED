@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import "../styles/Service.css"
 import "../styles/Spectator.css"
 import { API_URL } from "../config";
+const spartaLogo = "/assets/SPARTA_Logo.svg";
 
 export default function ServicePage() {
   // State for form fields
@@ -69,7 +70,7 @@ export default function ServicePage() {
 
       <div className="logo-div">
         <div className="logo-container">
-          <img src="/SPARTA_Logo.png" alt="SPARTA Logo" className="spectator-logo" />
+          <img src={spartaLogo} alt="SPARTA Logo" className="spectator-logo" />
         </div>
       </div>
 

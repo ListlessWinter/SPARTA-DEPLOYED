@@ -10,6 +10,7 @@ import { Meander } from '../components/SpartanDecor';
 import '../styles/Login.css'; // shared classes (role buttons, modals) still used by other pages
 import '../styles/LoginPage.css';
 import { API_URL } from "../config";
+const spartaLogo = "/assets/SPARTA_Logo.svg";
 
 const ADMIN_ROLES = [
   { value: 'admin', label: 'Main Admin' },
@@ -136,22 +137,31 @@ export default function LoginPage() {
         <div className="lp-temple">
           <div className="lp-pediment" aria-hidden="true">
             <svg viewBox="0 0 600 64" preserveAspectRatio="none">
-              <polygon points="300,2 596,62 4,62" />
+              <defs>
+                <linearGradient id="lp-pediment-stone" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0" stopColor="#424249" />
+                  <stop offset="0.55" stopColor="#29292d" />
+                  <stop offset="1" stopColor="#1a1a1d" />
+                </linearGradient>
+              </defs>
+              <polygon className="lp-pediment-roof" points="300,2 596,62 4,62" />
+              <polygon className="lp-pediment-relief" points="300,12 544,56 56,56" />
+              <path className="lp-pediment-line" d="M78 53 L300 17 L522 53" />
             </svg>
-            <img src="/SPARTA_Logo.png" alt="" />
           </div>
           <div className="lp-entablature" aria-hidden="true"><Meander height={12} /></div>
           <div className="lp-portico">
-            <span className="lp-col outer" aria-hidden="true" />
-            <span className="lp-col" aria-hidden="true" />
+            <span className="lp-col outer" aria-hidden="true"><i /></span>
+            <span className="lp-col" aria-hidden="true"><i /></span>
             <div className="lp-card">
               <header className="lp-card-head">
                 <div className="lp-brand">
-                  <img src="/SPARTA_Logo.png" alt="" />
+                  <img src={spartaLogo} alt="" />
                   <span>SPARTA</span>
                 </div>
+                <span className="lp-kicker">Sports command center</span>
                 <h1>Enter the arena</h1>
-                <p>Sign in to manage your events and teams.</p>
+                <p>Command events, rally teams, and track every victory.</p>
               </header>
 
               <div className="lp-segment" role="tablist" aria-label="Account type">
@@ -202,6 +212,7 @@ export default function LoginPage() {
                       name="email"
                       placeholder="you@school.edu.ph"
                       autoComplete="email"
+                      required
                       value={formData.email}
                       onChange={handleChange}
                     />
@@ -218,6 +229,8 @@ export default function LoginPage() {
                         type="text"
                         name="accessKey"
                         placeholder="Key from your invitation email"
+                        autoComplete="one-time-code"
+                        required
                         value={formData.accessKey}
                         onChange={handleChange}
                       />
@@ -233,6 +246,7 @@ export default function LoginPage() {
                         name="password"
                         placeholder="Enter your password"
                         autoComplete="current-password"
+                        required
                         value={formData.password}
                         onChange={handleChange}
                       />
@@ -270,8 +284,8 @@ export default function LoginPage() {
                 </button>
               </p>
             </div>
-            <span className="lp-col" aria-hidden="true" />
-            <span className="lp-col outer" aria-hidden="true" />
+            <span className="lp-col" aria-hidden="true"><i /></span>
+            <span className="lp-col outer" aria-hidden="true"><i /></span>
           </div>
           <div className="lp-steps" aria-hidden="true"><i /><i /><i /></div>
         </div>

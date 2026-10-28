@@ -1,10 +1,12 @@
 import MainLayout from "../../components/MainLayout";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { MoreVertical } from "lucide-react";
+import { ArrowUpRight, CalendarDays, MapPin, MoreVertical, Plus, Search } from "lucide-react";
 import { MdEventNote } from "react-icons/md";
+import { Meander } from "../../components/SpartanDecor";
 import { IoIosInformationCircleOutline } from "react-icons/io";
 import "../../styles/ADMIN_Event.css";
+import "../../styles/ArenaPages.css";
 import "../../styles/skeleton.css";
 import { API_URL } from "../../config";
 
@@ -101,87 +103,99 @@ const Event = () => {
   );
 
   return (
-    <MainLayout>
-      <div className="event-list-container">
-        <div className="event-main-header">
-          <input
-            type="text"
-            className="event-search-bar"
-            placeholder="Search events..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
+    <MainLayout dark>
+      <section className="arena-page events-page">
+        <header className="arena-hero">
+          <div className="arena-hero-copy">
+            <span className="arena-eyebrow">Current season</span>
+            <h2>Events</h2>
+            <p>Command active tournaments, schedules, teams, and match operations.</p>
+          </div>
+          <div className="arena-hero-stat" aria-label={`${events.length} active events`}>
+            <strong>{events.length}</strong>
+            <span>Active campaigns</span>
+          </div>
+          <Meander className="arena-hero-key" height={10} />
+        </header>
+
+        <div className="arena-toolbar">
+          <label className="arena-search">
+            <Search size={18} />
+            <input
+              type="search"
+              placeholder="Search active events"
+              aria-label="Search active events"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </label>
+          <span className="arena-result-count">{filteredEvents.length} {filteredEvents.length === 1 ? "event" : "events"}</span>
           {user.role === "admin" && (
-            <button className="new-event-btn" onClick={handleAddEvent}>
-              + New Event
+            <button className="arena-primary-btn" onClick={handleAddEvent}>
+              <Plus size={18} /> New event
             </button>
           )}
         </div>
 
         {loading ? (
-          // Skeleton loader grid while loading
-          <div className="event-list">
-            {Array.from({ length: 8 }).map((_, i) => (
-              <div key={i} className="event-item skeleton">
-                <div className="event-color skeleton-block" />
-                <div className="event-name">
-                  <div className="skeleton-line skeleton-title" />
-                  <div className="skeleton-line skeleton-sub" />
-                </div>
+          <div className="arena-event-grid" aria-label="Loading events">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <div key={i} className="arena-event-card arena-card-skeleton">
+                <div className="arena-skeleton-block" />
+                <div className="arena-skeleton-line wide" />
+                <div className="arena-skeleton-line" />
               </div>
             ))}
           </div>
         ) : events.length === 0 ? (
-          <div className="no-events">
-            <MdEventNote size={"50"} />
-            <p>No on-going events found. {user.role === "admin" && "Click 'New Event' to create one."}</p>
+          <div className="arena-empty-state">
+            <span className="arena-empty-icon"><MdEventNote size={30} /></span>
+            <h3>No active events</h3>
+            <p>{user.role === "admin" ? "Create an event to open a new campaign." : "There are no ongoing events for your institution."}</p>
+            {user.role === "admin" && <button className="arena-primary-btn" onClick={handleAddEvent}><Plus size={18} /> Create event</button>}
+          </div>
+        ) : filteredEvents.length === 0 ? (
+          <div className="arena-empty-state compact">
+            <span className="arena-empty-icon"><Search size={27} /></span>
+            <h3>No matching events</h3>
+            <p>Try another event name.</p>
           </div>
         ) : (
-          <div className="event-list">
+          <div className="arena-event-grid">
             {filteredEvents.map((event) => (
-              <div key={event._id} className="event-item">
-                <div className="event-color" style={{ background: event.eventColor || "#A96B24" }}
-                >
-                  {/* Menu button */}
+              <article key={event._id} className="arena-event-card" style={{ "--event-accent": event.eventColor || "#c3982b" }}>
+                <div className={`arena-event-band ${new Date(event.eventStartDate) > new Date() ? "is-upcoming" : ""}`}>
+                  <span className="arena-status-dot" />
+                  <span>{new Date(event.eventStartDate) > new Date() ? "Upcoming" : "In progress"}</span>
                   {user.role === "admin" && (
-                    <div className="menu-container">
-                      <MoreVertical
-                        size={20}
-                        className="menu-icon"
-                        onClick={() => setMenuOpen(menuOpen === event._id ? null : event._id)}
-                      />
+                    <div className="arena-card-menu">
+                      <button type="button" className="arena-icon-btn" aria-label={`Manage ${event.eventName}`} onClick={() => setMenuOpen(menuOpen === event._id ? null : event._id)}>
+                        <MoreVertical size={18} />
+                      </button>
 
                       {menuOpen === event._id && (
-                        <div className="dropdown-menu">
-                          <div className="dropdown-item" onClick={() => setEditEvent(event)}>
-                            Edit
-                          </div>
-                          <div className="dropdown-item delete" onClick={() => { setMenuOpen(null); openDeleteModal(event); }}>
-                            Delete
-                          </div>
+                        <div className="arena-menu" role="menu">
+                          <button type="button" role="menuitem" onClick={() => { setMenuOpen(null); setEditEvent(event); }}>Edit event</button>
+                          <button type="button" role="menuitem" className="danger" onClick={() => { setMenuOpen(null); openDeleteModal(event); }}>Delete event</button>
                         </div>
                       )}
                     </div>
                   )}
                 </div>
 
-                <div className="event-name" onClick={() => handleEventClick(event)}>
-                  {event.eventName}
-                  <p>
-                    {event?.eventStartDate
-                      ? new Date(event.eventStartDate).toLocaleDateString()
-                      : "Loading..."}{" "}
-                    -{" "}
-                    {event?.eventEndDate
-                      ? new Date(event.eventEndDate).toLocaleDateString()
-                      : "Loading..."}
-                  </p>
-                </div>
-              </div>
+                <button type="button" className="arena-event-open" onClick={() => handleEventClick(event)}>
+                  <span className="arena-card-kicker">Tournament</span>
+                  <span className="arena-event-title">{event.eventName}<ArrowUpRight size={19} /></span>
+                  <span className="arena-card-meta">
+                    <span><CalendarDays size={15} />{event?.eventStartDate ? new Date(event.eventStartDate).toLocaleDateString(undefined, { month: "short", day: "numeric" }) : "TBA"} – {event?.eventEndDate ? new Date(event.eventEndDate).toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" }) : "TBA"}</span>
+                    {event.location && <span><MapPin size={15} />{event.location}</span>}
+                  </span>
+                </button>
+              </article>
             ))}
           </div>
         )}
-      </div>
+      </section>
 
 
       {/* Edit Modal */}
@@ -292,7 +306,7 @@ const Event = () => {
                   </div>
                 </div>
               </div>
-              <p style={{ color: "#3E64AF", fontSize: "10px" }}>
+              <p style={{ color: "#66666e", fontSize: "10px" }}>
                 *You may add multiple Co & Sub-organizers*
               </p>
               <button
@@ -361,7 +375,7 @@ const Event = () => {
                     <button
                       type="button"
                       style={{
-                        background: "#d32f2f",
+                        background: "#e5cb8a",
                         color: "white",
                         borderRadius: "6px",
                         padding: "6px 12px",
@@ -399,7 +413,7 @@ const Event = () => {
             <p>Are you sure you want to delete the event "<strong>{deleteTarget.eventName}</strong>"? This action cannot be undone.</p>
             <div style={{ display: "flex", justifyContent: "center", gap: 12, marginTop: 12 }}>
               <button className="modal-cancel-btn" type="button" onClick={cancelDelete}>Cancel</button>
-              <button className="modal-save-btn" type="button" onClick={performDelete} style={{ background: "#d32f2f" }}>Delete</button>
+              <button className="modal-save-btn" type="button" onClick={performDelete} style={{ background: "#e5cb8a" }}>Delete</button>
             </div>
           </div>
         </div>

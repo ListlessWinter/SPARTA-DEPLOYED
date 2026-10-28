@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import "../../styles/LiveScores.css";
 import { TbCalendarQuestion } from "react-icons/tb";
 import { API_URL } from "../../config";
+const spartaLogo = "/assets/SPARTA_Logo.svg";
 
 const SpectatorScore = () => {
   useEffect(() => { document.title = "SPARTA | Live Scores"; }, []);
@@ -51,7 +52,7 @@ const SpectatorScore = () => {
 
         <div className="logo-div">
           <div className="logo-container">
-            <img src="/SPARTA_Logo.png" alt="SPARTA Logo" className="spectator-logo" />
+            <img src={spartaLogo} alt="SPARTA Logo" className="spectator-logo" />
           </div>
         </div>
 

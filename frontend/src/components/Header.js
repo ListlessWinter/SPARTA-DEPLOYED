@@ -3,8 +3,9 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { ChevronDown, UserPen, LogOut, CalendarDays } from 'lucide-react';
 import '../styles/Header.css'; // also holds .dropdown-item, used by other pages
 import '../styles/AppShell.css';
-import { Garland } from './SpartanDecor';
+import { Vines } from './SpartanDecor';
 import { API_URL } from "../config";
+const spartaLogo = "/assets/SPARTA_Logo.svg";
 
 // First matching rule names the page
 const PAGE_TITLES = [
@@ -131,12 +132,12 @@ const Header = () => {
     }
   };
 
-  const avatarSrc = user?.profilePic || '/SPARTA_Logo.png';
+  const avatarSrc = user?.profilePic || spartaLogo;
   const displayName = user?.playerName || user?.email?.split('@')[0] || 'User';
 
   return (
     <header className="sh-topbar">
-      <Garland className="sh-garland" />
+      <Vines className="sh-vines" />
       <div className="sh-topbar-title">
         <h1>{currentTitle}</h1>
         <span className="sh-date"><CalendarDays size={14} /> {today}</span>
@@ -172,7 +173,7 @@ const Header = () => {
             <h3>Edit profile</h3>
             <form onSubmit={handleSave} className="sh-form">
               <div className="sh-photo-row">
-                <img src={previewSrc || '/SPARTA_Logo.png'} alt="" className="sh-photo" />
+                <img src={previewSrc || spartaLogo} alt="" className="sh-photo" />
                 <label className="sh-btn ghost">
                   Choose photo
                   <input type="file" accept="image/*" onChange={onPhotoChange} hidden />

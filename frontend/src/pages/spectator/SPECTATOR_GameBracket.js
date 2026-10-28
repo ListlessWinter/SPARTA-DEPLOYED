@@ -4,6 +4,7 @@ import { Bracket, Seed, SeedItem, SeedTeam } from "react-brackets";
 import '../../styles/ADMIN_SpecificEvents.css';
 import "../../styles/bracket.css";
 import { API_URL } from "../../config";
+const spartaLogo = "/assets/SPARTA_Logo.svg";
 
 const SpectatorGameBracket = () => {
 
@@ -266,7 +267,7 @@ const SpectatorGameBracket = () => {
 
       <div className="logo-div">
         <div className="logo-container">
-          <img src="/SPARTA_Logo.png" alt="SPARTA Logo" className="spectator-logo" />
+          <img src={spartaLogo} alt="SPARTA Logo" className="spectator-logo" />
         </div>
       </div>
 

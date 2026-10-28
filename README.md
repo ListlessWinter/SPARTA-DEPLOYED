@@ -20,4 +20,4 @@ To go back to the real backend, remove `import './mock/mockApi'` from `frontend/
 
 **Overall:**  
 1. `npm init -y` – install dependencies or used dependencies 
-2. `npm install [package]` – install packages shits
+2. `npm install [package]` – install packages

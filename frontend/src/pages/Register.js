@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../styles/Register.css';
 import { API_URL } from "../config";
+const loginImg = "/assets/LoginIMG.svg";
 
 export default function RegisterPage() {
   const [role, setRole] = useState('admin');
@@ -100,7 +101,7 @@ export default function RegisterPage() {
     <div className="register-container">
       <div className="register-box">
         <div className="register-right">
-          <img src="./LoginIMG.png" alt="Login Illustration" className="register-image" />
+          <img src={loginImg} alt="Login Illustration" className="register-image" />
         </div>
 
         <div className="register-left">

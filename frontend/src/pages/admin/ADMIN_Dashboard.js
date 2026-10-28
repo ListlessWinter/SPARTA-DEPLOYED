@@ -258,7 +258,7 @@ const Dashboard = () => {
   }), { games: 0, teams: 0, players: 0 });
 
   const stats = [
-    { label: "Active events", value: eventsSummary.length, icon: CalendarCheck, tone: "gold" },
+    { label: "Events", value: eventsSummary.length, icon: CalendarCheck, tone: "gold" },
     { label: "Games", value: totals.games, icon: Trophy, tone: "blue" },
     { label: "Teams", value: totals.teams, icon: Shield, tone: "green" },
     { label: "Players", value: totals.players, icon: Users, tone: "violet" },
@@ -322,7 +322,7 @@ const Dashboard = () => {
           <Embers count={14} />
           <Emblem className="db-hero-emblem" />
           <div className="db-hero-text">
-            <p className="db-eyebrow"><Swords size={13} /> War room · {user?.institution}</p>
+            <p className="db-eyebrow"><Swords size={13} />{user?.institution}</p>
             <h2>{greeting()}, <span>{user?.playerName || user?.name || "Organizer"}</span></h2>
             <p className="db-sub">
               {loading ? "Gathering your forces…" : `${todaysMatches.length} battle${todaysMatches.length === 1 ? "" : "s"} on today's schedule across ${eventsSummary.length} active event${eventsSummary.length === 1 ? "" : "s"}.`}
@@ -356,7 +356,7 @@ const Dashboard = () => {
               ))}
             </div>
             <div className="db-card-head">
-              <h3 className="db-title">Battle calendar</h3>
+              <h3 className="db-title">Calendar</h3>
               <span className="db-legend"><i /> Has matches · click a day for details</span>
             </div>
             <Calendar
@@ -373,77 +373,77 @@ const Dashboard = () => {
           </div>
 
           <div className="db-col">
-          <div className="db-card db-fill">
-            <div className="db-card-head">
-              <h3 className="db-title"><Flame size={16} className="db-flame" /> Today's battles</h3>
-              <span className="db-head-right">
-                {!loading && todaysMatches.length > 0 && (
-                  <span className="db-decided" title="Matches decided today">
-                    <Ring value={decidedToday / todaysMatches.length} size={34} stroke={3}>{decidedToday}/{todaysMatches.length}</Ring>
-                  </span>
-                )}
-                <button type="button" className="db-link" onClick={() => openListModal("ongoing")}>View all</button>
-              </span>
+            <div className="db-card db-fill">
+              <div className="db-card-head">
+                <h3 className="db-title"><Flame size={16} className="db-flame" /> Today's Events</h3>
+                <span className="db-head-right">
+                  {!loading && todaysMatches.length > 0 && (
+                    <span className="db-decided" title="Matches decided today">
+                      <Ring value={decidedToday / todaysMatches.length} size={34} stroke={3}>{decidedToday}/{todaysMatches.length}</Ring>
+                    </span>
+                  )}
+                  <button type="button" className="db-link" onClick={() => openListModal("ongoing")}>View all</button>
+                </span>
+              </div>
+              <MatchList items={todaysMatches.slice(0, 4)} empty="No matches scheduled for today." />
             </div>
-            <MatchList items={todaysMatches.slice(0, 4)} empty="No matches scheduled for today." />
-          </div>
 
             <div className="db-card db-fill">
               <div className="db-card-head">
-                <h3 className="db-title">Upcoming clashes</h3>
+                <h3 className="db-title">Upcoming Events</h3>
                 <button type="button" className="db-link" onClick={() => openListModal("upcoming")}>View all</button>
               </div>
               <MatchList items={upcomingMatches.slice(0, 4)} showDate empty="No upcoming matches." />
             </div>
           </div>
 
-        <div className="db-card db-camps-card">
-              <div className="db-card-head">
-                <h3 className="db-title">Active campaigns</h3>
-                <span className="db-muted">{eventsSummary.length} running</span>
+          <div className="db-card db-camps-card">
+            <div className="db-card-head">
+              <h3 className="db-title">Active campaigns</h3>
+              <span className="db-muted">{eventsSummary.length} running</span>
+            </div>
+            {loading ? (
+              <div className="db-camps">{[0, 1].map(i => <div key={i} className="db-skeleton" />)}</div>
+            ) : eventsSummary.length === 0 ? (
+              <div className="db-empty"><CalendarX2 size={22} /> No active events found.</div>
+            ) : (
+              <div className="db-camps">
+                {eventsSummary.map(s => (
+                  <button
+                    type="button"
+                    key={s.title}
+                    className="db-camp"
+                    style={{ "--event-color": s.color || "#c3982b" }}
+                    onClick={() => navigate(`/admin/event/${encodeURIComponent(s.title)}`)}
+                  >
+                    <span className="db-camp-top">
+                      <span className="db-camp-name">{s.title}</span>
+                      <span className={`db-badge ${s.isOngoing ? "live" : "soon"}`}>{s.isOngoing ? "Ongoing" : "Upcoming"}</span>
+                    </span>
+                    <span className="db-camp-meta">
+                      <CalendarCheck size={12} /> {fmt(s.start)} – {fmt(s.end)}
+                      {s.location && <><MapPin size={12} /> {s.location}</>}
+                    </span>
+                    <span className="db-progress" aria-label={`${Math.round(s.progress * 100)}% complete`}>
+                      <span style={{ width: `${Math.max(4, Math.round(s.progress * 100))}%` }} />
+                    </span>
+                    <span className="db-camp-foot">
+                      <span className="db-progress-label">
+                        {s.isOngoing
+                          ? `Day ${Math.floor((new Date() - s.start) / 86400000) + 1} of ${Math.round((s.end - s.start) / 86400000)}`
+                          : `Starts in ${Math.ceil((s.start - new Date()) / 86400000)} days`}
+                      </span>
+                      <span className="db-camp-metrics">
+                        <span title="Games"><Trophy size={12} /> {s.gamesCount}</span>
+                        <span title="Teams"><Shield size={12} /> {s.teamsCount}</span>
+                        <span title="Players"><Users size={12} /> {s.registeredPlayersCount}</span>
+                      </span>
+                    </span>
+                  </button>
+                ))}
               </div>
-              {loading ? (
-                <div className="db-camps">{[0, 1].map(i => <div key={i} className="db-skeleton" />)}</div>
-              ) : eventsSummary.length === 0 ? (
-                <div className="db-empty"><CalendarX2 size={22} /> No active events found.</div>
-              ) : (
-                <div className="db-camps">
-                  {eventsSummary.map(s => (
-                    <button
-                      type="button"
-                      key={s.title}
-                      className="db-camp"
-                      style={{ "--event-color": s.color || "#ce892c" }}
-                      onClick={() => navigate(`/admin/event/${encodeURIComponent(s.title)}`)}
-                    >
-                      <span className="db-camp-top">
-                        <span className="db-camp-name">{s.title}</span>
-                        <span className={`db-badge ${s.isOngoing ? "live" : "soon"}`}>{s.isOngoing ? "Ongoing" : "Upcoming"}</span>
-                      </span>
-                      <span className="db-camp-meta">
-                        <CalendarCheck size={12} /> {fmt(s.start)} – {fmt(s.end)}
-                        {s.location && <><MapPin size={12} /> {s.location}</>}
-                      </span>
-                      <span className="db-progress" aria-label={`${Math.round(s.progress * 100)}% complete`}>
-                        <span style={{ width: `${Math.max(4, Math.round(s.progress * 100))}%` }} />
-                      </span>
-                      <span className="db-camp-foot">
-                        <span className="db-progress-label">
-                          {s.isOngoing
-                            ? `Day ${Math.floor((new Date() - s.start) / 86400000) + 1} of ${Math.round((s.end - s.start) / 86400000)}`
-                            : `Starts in ${Math.ceil((s.start - new Date()) / 86400000)} days`}
-                        </span>
-                        <span className="db-camp-metrics">
-                          <span title="Games"><Trophy size={12} /> {s.gamesCount}</span>
-                          <span title="Teams"><Shield size={12} /> {s.teamsCount}</span>
-                          <span title="Players"><Users size={12} /> {s.registeredPlayersCount}</span>
-                        </span>
-                      </span>
-                    </button>
-                  ))}
-                </div>
-              )}
-        </div>
+            )}
+          </div>
         </section>
 
         {/* Day Modal */}

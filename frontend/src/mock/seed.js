@@ -98,17 +98,17 @@ export function buildSeed() {
 
   const events = [
     {
-      eventName: ACTIVE_EVENT, eventStartDate: at(-5), eventEndDate: at(25), eventColor: "#3E64AF",
+      eventName: ACTIVE_EVENT, eventStartDate: at(-5), eventEndDate: at(25), eventColor: "#d4a537",
       description: "The annual university-wide intramurals featuring basketball, volleyball, badminton and chess.",
       location: "ADNU Main Campus", requirements: ["Medical Certificate", "Parent Consent Form"], coordinators: coord,
     },
     {
-      eventName: "Founders Week Sportsfest", eventStartDate: at(10), eventEndDate: at(40), eventColor: "#8B5CF6",
+      eventName: "Founders Week Sportsfest", eventStartDate: at(10), eventEndDate: at(40), eventColor: "#2f5bd8",
       description: "Friendly inter-college games to celebrate Founders Week.",
       location: "ADNU Sports Complex", requirements: ["Medical Certificate"], coordinators: [],
     },
     {
-      eventName: PAST_EVENT, eventStartDate: at(-380), eventEndDate: at(-350), eventColor: "#0F766E",
+      eventName: PAST_EVENT, eventStartDate: at(-380), eventEndDate: at(-350), eventColor: "#8a8f99",
       description: "Last year's intramurals.", location: "ADNU Main Campus", requirements: ["Medical Certificate"], coordinators: [],
     },
   ];

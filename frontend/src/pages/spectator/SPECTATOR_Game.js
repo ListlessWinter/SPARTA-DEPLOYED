@@ -7,6 +7,7 @@ import { FaCircleQuestion } from "react-icons/fa6";
 import '../../styles/ADMIN_SpecificEvents.css';
 import '../../styles/ADMIN_Games.css';
 import { API_URL } from "../../config";
+const spartaLogo = "/assets/SPARTA_Logo.svg";
 
 const SpectatorGame = () => {
 
@@ -77,7 +78,7 @@ const SpectatorGame = () => {
 
       <div className="logo-div">
         <div className="logo-container">
-          <img src="/SPARTA_Logo.png" alt="SPARTA Logo" className="spectator-logo" />
+          <img src={spartaLogo} alt="SPARTA Logo" className="spectator-logo" />
         </div>
       </div>
 

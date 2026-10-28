@@ -4,7 +4,7 @@ import axios from "axios";
 import { buildSeed } from "./seed";
 import { newId, shuffleArray, generateMatches, updateMatch } from "./brackets";
 
-const STORAGE_KEY = "sparta-demo-db";
+const STORAGE_KEY = "sparta-demo-db-v4";
 
 function load() {
   try {

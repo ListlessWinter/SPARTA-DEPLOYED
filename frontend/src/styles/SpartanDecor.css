@@ -1,22 +1,85 @@
 /* ===== Sparta-themed decorations (components/SpartanDecor.js) ===== */
 .sp-meander {
   display: block;
-  color: rgba(224, 161, 72, 0.35);
+  color: rgba(218, 182, 89, 0.35);
 }
 
-.sp-garland {
+.sp-vines {
   display: block;
-  fill: #8f9a4c;
-  stroke: #8f9a4c;
+  overflow: visible;
+  filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.32));
 }
 
-.sp-garland .berry {
-  fill: #e0a148;
-  stroke: none;
+.sp-vines .stem,
+.sp-vines .branch,
+.sp-vines .tendril {
+  fill: none;
+  stroke-linecap: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: sp-grow 2.6s ease-out forwards;
+}
+
+.sp-vines .stem {
+  stroke: #667b34;
+  stroke-width: 3;
+}
+
+.sp-vines .branch {
+  stroke: #72853a;
+  stroke-width: 1.8;
+  animation-delay: 0.55s;
+}
+
+.sp-vines .tendril {
+  stroke: #424249;
+  stroke-width: 1.25;
+  animation-delay: 1.2s;
+}
+
+.sp-vines .leaf {
+  fill: #668f35;
+  stroke: #354f1c;
+  stroke-width: 0.9;
+  transform-box: fill-box;
+  transform-origin: 0 50%;
+  opacity: 0;
+  animation: sp-leaf 0.6s ease-out forwards;
+}
+
+.sp-vines g:nth-of-type(3n) .leaf {
+  fill: #7c9e43;
+}
+
+.sp-vines g:nth-of-type(4n) .leaf {
+  fill: #4e7629;
+}
+
+.sp-vines .vein {
+  fill: none;
+  stroke: rgba(217, 228, 163, 0.48);
+  stroke-width: 0.75;
+  stroke-linecap: round;
+}
+
+.sp-vines .berry {
+  fill: #d1a22e;
+  stroke: #8e6f1f;
+  stroke-width: 0.5;
+  filter: drop-shadow(0 0 2px rgba(218, 182, 89, 0.55));
+}
+
+@keyframes sp-grow {
+  to { stroke-dashoffset: 0; }
+}
+
+@keyframes sp-leaf {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 .sp-laurel {
-  fill: #c9973f;
+  fill: #d4a93c;
 }
 
 /* Emblem */
@@ -34,18 +97,18 @@
 }
 
 .sp-emblem-ring {
-  stroke: rgba(242, 194, 122, 0.55);
+  stroke: rgba(220, 216, 208, 0.55);
   animation: sp-spin 40s linear infinite;
 }
 
 .sp-emblem-spears {
-  stroke: #0b1426;
-  fill: #d9a35c;
-  filter: drop-shadow(0 0 1px rgba(242, 194, 122, 0.9));
+  stroke: #141416;
+  fill: #dfbe6c;
+  filter: drop-shadow(0 0 1px rgba(220, 216, 208, 0.9));
 }
 
 .sp-emblem-spears path:first-child {
-  stroke: #c9973f;
+  stroke: #d4a93c;
   fill: none;
 }
 
@@ -62,11 +125,11 @@
   display: grid;
   place-items: center;
   border-radius: 50%;
-  background: radial-gradient(circle at 40% 35%, #1f3157 0%, #0b1426 70%);
-  border: 2px solid rgba(224, 161, 72, 0.7);
+  background: radial-gradient(circle at 40% 35%, #2f2f34 0%, #141416 70%);
+  border: 2px solid rgba(218, 182, 89, 0.7);
   box-shadow:
-    0 0 0 6px rgba(206, 137, 44, 0.08),
-    0 0 40px rgba(206, 137, 44, 0.35),
+    0 0 0 6px rgba(195, 152, 43, 0.08),
+    0 0 40px rgba(195, 152, 43, 0.35),
     inset 0 0 20px rgba(0, 0, 0, 0.6);
   animation: sp-glow 4s ease-in-out infinite;
 }
@@ -100,17 +163,17 @@
 }
 
 .sp-ring .bar {
-  stroke: #e0a148;
+  stroke: #dab659;
   stroke-linecap: round;
   transition: stroke-dashoffset 1.2s cubic-bezier(0.2, 0.8, 0.2, 1);
-  filter: drop-shadow(0 0 4px rgba(224, 161, 72, 0.7));
+  filter: drop-shadow(0 0 4px rgba(218, 182, 89, 0.7));
 }
 
 .sp-ring-label {
   position: relative;
   font-size: 10px;
   font-weight: 700;
-  color: #f2c27a;
+  color: #dcd8d0;
 }
 
 /* Embers */
@@ -125,8 +188,8 @@
   position: absolute;
   bottom: -6px;
   border-radius: 50%;
-  background: #f2c27a;
-  box-shadow: 0 0 6px 2px rgba(224, 161, 72, 0.6);
+  background: #dcd8d0;
+  box-shadow: 0 0 6px 2px rgba(218, 182, 89, 0.6);
   opacity: 0;
   animation: sp-ember 9s linear infinite;
 }
@@ -136,8 +199,8 @@
 }
 
 @keyframes sp-glow {
-  0%, 100% { box-shadow: 0 0 0 6px rgba(206, 137, 44, 0.08), 0 0 30px rgba(206, 137, 44, 0.25), inset 0 0 20px rgba(0, 0, 0, 0.6); }
-  50% { box-shadow: 0 0 0 10px rgba(206, 137, 44, 0.12), 0 0 55px rgba(206, 137, 44, 0.45), inset 0 0 20px rgba(0, 0, 0, 0.6); }
+  0%, 100% { box-shadow: 0 0 0 6px rgba(195, 152, 43, 0.08), 0 0 30px rgba(195, 152, 43, 0.25), inset 0 0 20px rgba(0, 0, 0, 0.6); }
+  50% { box-shadow: 0 0 0 10px rgba(195, 152, 43, 0.12), 0 0 55px rgba(195, 152, 43, 0.45), inset 0 0 20px rgba(0, 0, 0, 0.6); }
 }
 
 @keyframes sp-ember {

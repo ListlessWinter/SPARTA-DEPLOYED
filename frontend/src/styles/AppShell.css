@@ -6,35 +6,52 @@ body {
 .sh {
   --sh-side-w: 240px;
   --sh-top-h: 72px;
-  --sh-navy-950: #050a15;
-  --sh-navy-900: #0a1222;
-  --sh-navy-800: #0f1a30;
-  --sh-navy-700: #16233f;
-  --sh-gold-500: #ce892c;
-  --sh-gold-400: #e0a148;
-  --sh-gold-300: #f2c27a;
-  --sh-text: #e6ebf5;
-  --sh-muted: #8d9bb8;
-  --sh-line: rgba(148, 163, 196, 0.14);
+  --sh-curtain-w: clamp(64px, 5.5vw, 96px);
+  --sh-navy-950: #0a0a0b;
+  --sh-navy-900: #121213;
+  --sh-navy-800: #19191c;
+  --sh-navy-700: #222226;
+  --sh-gold-500: #c3982b;
+  --sh-gold-400: #dab659;
+  --sh-gold-300: #dcd8d0;
+  --sh-text: #e7e4df;
+  --sh-muted: #95959d;
+  --sh-line: rgba(158, 158, 165, 0.14);
 
   /* Content area, light by default until a page opts into dark */
   --sh-bg: #f4f6fb;
-  --sh-crumb: #64748b;
-  --sh-crumb-link: #1a2a49;
+  --sh-crumb: #6e6e78;
+  --sh-crumb-link: #29292d;
 
   min-height: 100vh;
   font-family: 'Poppins', system-ui, -apple-system, 'Segoe UI', sans-serif;
   background: var(--sh-bg);
 }
 
+/* A slim theater curtain frames the workspace without covering controls. */
+.sh::after {
+  content: "";
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 39;
+  width: var(--sh-curtain-w);
+  pointer-events: none;
+  /* Drawn for a left edge, so mirror it for the right */
+  background: url("../assets/curtain-side.svg") 0 0 / 100% 100% no-repeat;
+  transform: scaleX(-1);
+  filter: drop-shadow(8px 0 14px rgba(0, 0, 0, 0.45));
+}
+
 .sh--dark {
-  --sh-bg: #070d1a;
-  --sh-crumb: #8d9bb8;
-  --sh-crumb-link: #f2c27a;
+  --sh-bg: #19191d;
+  --sh-crumb: #95959d;
+  --sh-crumb-link: #dcd8d0;
   color: var(--sh-text);
   background:
-    radial-gradient(60% 40% at 85% 0%, rgba(206, 137, 44, 0.07) 0%, transparent 70%),
-    radial-gradient(50% 40% at 20% 100%, rgba(52, 80, 138, 0.12) 0%, transparent 70%),
+    radial-gradient(60% 40% at 85% 0%, rgba(195, 152, 43, 0.07) 0%, transparent 70%),
+    radial-gradient(50% 40% at 20% 100%, rgba(82, 82, 89, 0.12) 0%, transparent 70%),
     var(--sh-bg);
   background-attachment: fixed;
 }
@@ -56,7 +73,7 @@ body {
   padding: 22px 16px;
   color: var(--sh-text);
   background:
-    radial-gradient(120% 40% at 0% 0%, rgba(52, 80, 138, 0.25) 0%, transparent 60%),
+    radial-gradient(120% 40% at 0% 0%, rgba(82, 82, 89, 0.25) 0%, transparent 60%),
     linear-gradient(180deg, var(--sh-navy-900) 0%, var(--sh-navy-950) 100%);
   border-right: 1px solid var(--sh-line);
 }
@@ -73,13 +90,14 @@ body {
   width: 38px;
   height: 38px;
   object-fit: contain;
-  filter: drop-shadow(0 4px 12px rgba(206, 137, 44, 0.35));
+  filter: drop-shadow(0 4px 12px rgba(195, 152, 43, 0.35));
 }
 
 .sh .sh-logo span {
-  font-family: 'Bebas Neue', 'Poppins', sans-serif;
-  font-size: 28px;
-  letter-spacing: 4px;
+  font-family: 'Cinzel', Georgia, serif;
+  font-weight: 700;
+  font-size: 20.16px;
+  letter-spacing: 2px;
   line-height: 1;
   color: var(--sh-gold-300);
 }
@@ -119,7 +137,7 @@ body {
 
 .sh-nav a.active {
   color: var(--sh-gold-300);
-  background: linear-gradient(90deg, rgba(206, 137, 44, 0.18) 0%, rgba(206, 137, 44, 0.04) 100%);
+  background: linear-gradient(90deg, rgba(195, 152, 43, 0.18) 0%, rgba(195, 152, 43, 0.04) 100%);
 }
 
 .sh-nav a.active::before {
@@ -131,7 +149,7 @@ body {
   width: 3px;
   border-radius: 0 3px 3px 0;
   background: var(--sh-gold-400);
-  box-shadow: 0 0 12px rgba(224, 161, 72, 0.8);
+  box-shadow: 0 0 12px rgba(218, 182, 89, 0.8);
 }
 
 .sh-nav a:focus-visible {
@@ -156,8 +174,8 @@ body {
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: #4ade80;
-  box-shadow: 0 0 8px rgba(74, 222, 128, 0.8);
+  background: #8fae5a;
+  box-shadow: 0 0 8px rgba(143, 174, 90, 0.8);
 }
 
 /* ----- Top bar ----- */
@@ -172,69 +190,223 @@ body {
   align-items: center;
   justify-content: space-between;
   gap: 16px;
-  padding: 0 28px;
+  padding: 0 calc(28px + var(--sh-curtain-w)) 0 28px;
   color: var(--sh-text);
-  background: rgba(8, 14, 28, 0.82);
+  background: rgba(14, 14, 15, 0.82);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
   border-bottom: 1px solid var(--sh-line);
 }
 
-/* Laurel vine hanging along the bottom edge of the top bar */
-.sh-garland {
+.sh-topbar::before {
+  content: "";
   position: absolute;
-  left: 0;
+  top: 0;
   right: 0;
-  bottom: -9px;
-  opacity: 0.7;
+  z-index: 0;
+  width: calc(360px + var(--sh-curtain-w));
+  height: 62px;
   pointer-events: none;
-  animation: sh-sway 6s ease-in-out infinite;
+  background: url("../assets/curtain-top.svg") 0 0 / 100% 100% no-repeat;
+  filter: drop-shadow(0 5px 6px rgba(0, 0, 0, 0.42));
 }
 
-@keyframes sh-sway {
-  0%, 100% { transform: translateX(0); }
-  50% { transform: translateX(6px); }
+/* Swirling vines across the top bar, behind its content */
+.sh-vines {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.72;
+  pointer-events: none;
+  /* Keep the title, date and profile button clear of leaves */
+  -webkit-mask-image: linear-gradient(90deg, transparent 0, transparent 300px, #000 420px, #000 calc(100% - 340px), transparent calc(100% - 240px));
+  mask-image: linear-gradient(90deg, transparent 0, transparent 300px, #000 420px, #000 calc(100% - 340px), transparent calc(100% - 240px));
 }
 
-/* Sidebar drawn as a fluted column: capital on top, base at the bottom */
+.sh-topbar-title,
+.sh-user {
+  position: relative;
+  z-index: 1;
+}
+
+/* Sidebar drawn as a fluted marble column with an Ionic capital and attic base */
 @media (min-width: 901px) {
   .sh-sidebar {
-    padding-top: 40px;
-    padding-bottom: 44px;
+    padding-top: 104px;
+    padding-bottom: 68px;
+    /* Marble column wrapped in ivy */
     background:
-      linear-gradient(90deg, rgba(0, 0, 0, 0.45) 0%, transparent 28%, rgba(255, 255, 255, 0.05) 55%, rgba(0, 0, 0, 0.5) 100%),
-      repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.025) 0 16px, rgba(0, 0, 0, 0.22) 16px 20px),
-      linear-gradient(180deg, var(--sh-navy-900) 0%, var(--sh-navy-950) 100%);
+      url("../assets/ivy-tile.svg") 0 60px / 100% auto repeat-y,
+      url("../assets/pillar-shaft.svg") 0 0 / 100% 100% no-repeat;
+    border-right: 2px solid rgba(174, 136, 38, 0.62);
+    box-shadow: 8px 0 24px rgba(0, 0, 0, 0.3);
   }
 
-  .sh-sidebar::before,
+  .sh-sidebar::before {
+    content: none;
+  }
+
   .sh-sidebar::after {
-    content: "";
+    content: none;
+  }
+
+  .sh-capital,
+  .sh-base {
     position: absolute;
     left: 0;
-    right: 0;
+    width: 100%;
+    z-index: 3;
     pointer-events: none;
+    filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.5));
   }
 
-  /* Capital: abacus slab over a curved echinus with volute curls at the corners */
-  .sh-sidebar::before {
+  .sh-capital {
     top: 0;
-    height: 26px;
-    background:
-      radial-gradient(circle at 10px 18px, transparent 4px, rgba(224, 161, 72, 0.7) 5px, transparent 6px),
-      radial-gradient(circle at calc(100% - 10px) 18px, transparent 4px, rgba(224, 161, 72, 0.7) 5px, transparent 6px),
-      linear-gradient(180deg, #2b3758 0 12px, #1a2442 12px 100%);
-    border-bottom: 1px solid rgba(224, 161, 72, 0.55);
-    border-radius: 0 0 40% 40% / 0 0 100% 100%;
-    box-shadow: inset 0 -1px 0 rgba(224, 161, 72, 0.3), 0 4px 12px rgba(0, 0, 0, 0.4);
+    height: 96px;
   }
 
-  /* Base: stepped plinth */
-  .sh-sidebar::after {
+  .sh-base {
     bottom: 0;
+    height: 52px;
+  }
+
+  .sh-capital .stone,
+  .sh-base .stone {
+    stroke: rgba(155, 121, 34, 0.7);
+    stroke-width: 1;
+    vector-effect: non-scaling-stroke;
+  }
+
+  .sh-capital .trim,
+  .sh-base .trim {
+    fill: none;
+    stroke: #3c3c43;
+    stroke-width: 1.4;
+    vector-effect: non-scaling-stroke;
+  }
+
+  .sh-capital .acanthus {
+    stroke: rgba(142, 111, 31, 0.66);
+    stroke-width: 0.9;
+    vector-effect: non-scaling-stroke;
+  }
+
+  .sh-base .shadow {
+    fill: #85858f;
+  }
+
+  .sh-nav a {
+    color: #26262a;
+    border-radius: 7px;
+    background: linear-gradient(90deg, rgba(38, 38, 42, 0.06), rgba(236, 234, 230, 0.12));
+    border: 1px solid rgba(147, 114, 32, 0.14);
+    box-shadow: inset 0 1px rgba(243, 241, 238, 0.24);
+    text-shadow: 0 1px rgba(233, 230, 225, 0.48);
+  }
+
+  .sh-nav a:hover {
+    color: #18181a;
+    background: rgba(142, 111, 31, 0.13);
+    border-color: rgba(35, 35, 39, 0.28);
+  }
+
+  .sh-nav a.active {
+    color: #eceae5;
+    background: linear-gradient(90deg, #a48024 0%, #d2a431 58%, #977621 100%);
+    border-color: rgba(142, 111, 31, 0.6);
+    box-shadow: inset 0 1px rgba(220, 216, 208, 0.2), 0 3px 7px rgba(142, 111, 31, 0.28);
+    text-shadow: 0 1px 1px rgba(146, 113, 32, 0.75);
+  }
+
+  .sh-nav a.active::before {
+    left: -8px;
+    background: #d5ab40;
+    box-shadow: 0 0 8px rgba(147, 114, 32, 0.48);
+  }
+
+  .sh-logo {
+    margin: 0 -4px;
+    padding: 8px 10px;
+    border-radius: 12px;
+    background: rgba(10, 10, 11, 0.9);
+    border: 1px solid rgba(180, 140, 39, 0.44);
+    box-shadow: 0 8px 18px rgba(30, 30, 33, 0.24);
+  }
+
+  .sh-meander {
+    margin: 0 4px 12px;
+    color: #8e6f1f;
+    opacity: 0.72;
+  }
+
+  .sh-scroll {
+    position: relative;
+    z-index: 2;
+    flex: 1;
+    min-height: 0;
+    margin: 16px -4px 14px;
+    padding: 40px 10px 22px;
+    background: url("../assets/scroll-crest.svg") top center / 104px auto no-repeat;
+    filter: drop-shadow(0 9px 11px rgba(17, 17, 18, 0.4));
+  }
+
+  .sh-scroll::before,
+  .sh-scroll::after {
+    content: "";
+    position: absolute;
+    left: -10px;
+    right: -10px;
+    z-index: 3;
     height: 30px;
-    background:
-      linear-gradient(180deg, transparent 0 10px, rgba(224, 161, 72, 0.5) 10px 11px, #222d4b 11px 20px, rgba(224, 161, 72, 0.5) 20px 21px, #161f38 21px 100%);
+    background: url("../assets/scroll-rod.svg") 0 0 / 100% 100% no-repeat;
+  }
+
+  .sh-scroll::before {
+    top: 16px;
+  }
+
+  .sh-scroll::after {
+    bottom: 0;
+    transform: rotate(0.4deg);
+  }
+
+  .sh-scroll-paper {
+    position: relative;
+    z-index: 2;
+    height: 100%;
+    min-height: 160px;
+    padding: 22px 14px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(37, 37, 41, 0.45) transparent;
+    background: url("../assets/scroll-paper.svg") 0 0 / 100% 100% no-repeat;
+  }
+
+  .sh-scroll-paper::-webkit-scrollbar { width: 5px; }
+  .sh-scroll-paper::-webkit-scrollbar-thumb { background: rgba(37, 37, 41, 0.42); border-radius: 6px; }
+
+  .sh-nav,
+  .sh-logo,
+  .sh-sidebar-foot,
+  .sh-scroll-paper {
+    position: relative;
+    z-index: 2;
+  }
+
+  .sh-column-vines {
+    position: absolute;
+    top: 72px;
+    left: 222px;
+    z-index: 4;
+    width: calc(100vh - 126px);
+    height: 66px;
+    opacity: 0.66;
+    transform: rotate(90deg);
+    transform-origin: 0 0;
+    pointer-events: none;
+    -webkit-mask-image: linear-gradient(90deg, #000 0%, #000 76%, transparent 100%);
+    mask-image: linear-gradient(90deg, #000 0%, #000 76%, transparent 100%);
   }
 }
 
@@ -256,7 +428,7 @@ body {
   font-size: 20px;
   font-weight: 700;
   letter-spacing: -0.2px;
-  color: #fff;
+  color: #eae8e4;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -286,7 +458,7 @@ body {
   padding: 5px 10px 5px 5px;
   border-radius: 999px;
   border: 1px solid var(--sh-line);
-  background: rgba(255, 255, 255, 0.03);
+  background: rgba(13, 13, 14, 0.92); /* stays legible over the valance */
   color: var(--sh-text);
   font: inherit;
   cursor: pointer;
@@ -294,7 +466,7 @@ body {
 }
 
 .sh-user-btn:hover {
-  border-color: rgba(224, 161, 72, 0.45);
+  border-color: rgba(218, 182, 89, 0.45);
   background: rgba(255, 255, 255, 0.05);
 }
 
@@ -304,7 +476,7 @@ body {
   border-radius: 50%;
   object-fit: cover;
   background: var(--sh-navy-800);
-  border: 2px solid rgba(224, 161, 72, 0.6);
+  border: 2px solid rgba(218, 182, 89, 0.6);
 }
 
 .sh-user-meta {
@@ -385,7 +557,7 @@ body {
 /* ----- Content ----- */
 .sh-main {
   margin-left: var(--sh-side-w);
-  padding: calc(var(--sh-top-h) + 16px) 28px 32px;
+  padding: calc(var(--sh-top-h) + 16px) calc(28px + var(--sh-curtain-w)) 32px 28px;
 }
 
 .sh .breadcrumbs {
@@ -430,7 +602,7 @@ body {
   border-radius: 20px;
   color: var(--sh-text);
   background: linear-gradient(180deg, var(--sh-navy-700) 0%, var(--sh-navy-900) 100%);
-  border: 1px solid rgba(224, 161, 72, 0.22);
+  border: 1px solid rgba(218, 182, 89, 0.22);
   box-shadow: 0 30px 80px rgba(0, 0, 0, 0.55);
   animation: sh-pop 0.2s ease-out;
 }
@@ -439,7 +611,7 @@ body {
   margin: 0 0 18px;
   font-family: inherit;
   font-size: 18px;
-  color: #fff;
+  color: #eae8e4;
 }
 
 .sh-form {
@@ -460,7 +632,7 @@ body {
   border-radius: 50%;
   object-fit: cover;
   background: var(--sh-navy-800);
-  border: 2px solid rgba(224, 161, 72, 0.6);
+  border: 2px solid rgba(218, 182, 89, 0.6);
 }
 
 .sh-field {
@@ -469,7 +641,7 @@ body {
   gap: 6px;
   font-size: 12.5px;
   font-weight: 600;
-  color: #c3cde0;
+  color: #dcd8d0;
 }
 
 .sh-field input {
@@ -488,7 +660,7 @@ body {
 
 .sh-field input:focus {
   border-color: var(--sh-gold-400);
-  box-shadow: 0 0 0 4px rgba(206, 137, 44, 0.16);
+  box-shadow: 0 0 0 4px rgba(195, 152, 43, 0.16);
 }
 
 .sh-readonly {
@@ -541,9 +713,10 @@ body {
 
 .sh-btn.primary {
   border: 0;
-  color: #1a1206;
-  background: linear-gradient(135deg, var(--sh-gold-300) 0%, var(--sh-gold-500) 70%);
-  box-shadow: 0 8px 20px rgba(206, 137, 44, 0.25);
+  color: #eae8e4;
+  background: linear-gradient(180deg, #d3a738 0%, #cea02d 55%, #a88325 100%);
+  border: 1px solid rgba(218, 182, 89, 0.55);
+  box-shadow: 0 8px 20px rgba(206, 160, 45, 0.35), inset 0 1px 0 rgba(231, 229, 224, 0.18);
 }
 
 .sh-btn.primary:hover {
@@ -558,8 +731,8 @@ body {
 }
 
 .sh-btn.ghost:hover {
-  border-color: rgba(224, 161, 72, 0.5);
-  background: rgba(206, 137, 44, 0.08);
+  border-color: rgba(218, 182, 89, 0.5);
+  background: rgba(195, 152, 43, 0.08);
 }
 
 @keyframes sh-pop {
@@ -571,6 +744,13 @@ body {
 @media (max-width: 900px) {
   .sh {
     --sh-top-h: 60px;
+    --sh-curtain-w: 0px;
+  }
+
+  .sh::after,
+  .sh-topbar::before,
+  .sh-column-vines {
+    display: none;
   }
 
   .sh-sidebar {
@@ -581,7 +761,7 @@ body {
     padding: 6px 8px calc(6px + env(safe-area-inset-bottom));
     border-right: 0;
     border-top: 1px solid var(--sh-line);
-    background: rgba(8, 14, 28, 0.94);
+    background: rgba(14, 14, 15, 0.94);
     backdrop-filter: blur(14px);
     -webkit-backdrop-filter: blur(14px);
   }
@@ -590,6 +770,11 @@ body {
   .sh-meander,
   .sh-sidebar-foot {
     display: none;
+  }
+
+  .sh-scroll,
+  .sh-scroll-paper {
+    display: contents;
   }
 
   .sh-nav {
@@ -637,5 +822,90 @@ body {
   .sh-main {
     margin-left: 0;
     padding: calc(var(--sh-top-h) + 12px) 16px 88px;
+  }
+}
+
+/* Pottery finish for shared buttons: flat clay, hard corners, no glow */
+.sh-btn {
+  border-radius: 3px;
+}
+
+.sh-btn.primary {
+  color: #e6e3dd;
+  background: #d4a839;
+  border: 1px solid #debd6a;
+  box-shadow: none;
+}
+
+.sh-btn.primary:hover {
+  transform: none;
+  filter: none;
+  background: #d9b353;
+}
+
+/* Gold fills carry dark text */
+.sh-btn.primary,
+.sh-nav a.active {
+  color: #0d0d10;
+  text-shadow: none;
+}
+
+/* ===== Placeholder artwork (Canva previews, to be swapped for licensed files) ===== */
+
+/* Side curtain hangs the full height of the right edge; the topbar stops beside it */
+.sh::after {
+  top: 0;
+  background: url("../assets/placeholder/curtain-side.png") right top / auto 100% no-repeat;
+  transform: none;
+  filter: drop-shadow(-8px 0 14px rgba(0, 0, 0, 0.5));
+}
+
+.sh-topbar {
+  right: var(--sh-curtain-w);
+  padding-right: 28px;
+}
+
+/* Valance runs across the top-right and over the side curtain's top, joining the two */
+.sh-topbar::before {
+  right: calc(-1 * var(--sh-curtain-w));
+  width: calc(340px + var(--sh-curtain-w));
+  height: auto;
+  aspect-ratio: 334 / 56;
+  background: url("../assets/placeholder/curtain-top.png") 0 0 / 100% 100% no-repeat;
+  opacity: 1;
+}
+
+@media (min-width: 901px) {
+  /* Ivy-wrapped marble column (its own capital and base are in the artwork) */
+  .sh-sidebar {
+    background: url("../assets/placeholder/pillar.png") center / 100% 100% no-repeat;
+    border-right: 0;
+  }
+
+  .sh-capital,
+  .sh-base {
+    display: none;
+  }
+
+  /* Parchment scroll: rods keep their shape while the paper stretches */
+  .sh-scroll {
+    padding: 0;
+    background: none;
+    border-style: solid;
+    border-width: 41px 33px 29px 33px;
+    border-image: url("../assets/placeholder/scroll.png") 64 52 45 52 fill / 41px 33px 29px 33px stretch;
+  }
+
+  .sh-scroll::before,
+  .sh-scroll::after {
+    content: none;
+  }
+
+  .sh-scroll-paper {
+    padding: 6px 0;
+    background: none;
+    clip-path: none;
+    border: 0;
+    box-shadow: none;
   }
 }
